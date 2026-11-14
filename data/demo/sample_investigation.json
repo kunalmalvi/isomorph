@@ -4083,6 +4083,7 @@
     ],
     "direction": "lower",
     "experiment_kind": "strip_rolling_gauge",
+    "illustrative": false,
     "mean_relative_improvement": 0.41772486736686404,
     "metric": "rms_dev_mm",
     "min_effect": 0.05,
