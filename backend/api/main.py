@@ -41,7 +41,8 @@ def create_app(settings: Optional[Settings] = None, session_factory=None, synchr
         Base.metadata.create_all(session_factory.kw["bind"])
     kb = default_knowledge(settings.data_dir)
     orch = Orchestrator(SqlRunStore(session_factory), kb, provider_factory=lambda name: get_provider(settings, name))
-    recover_interrupted_runs(orch.store)  # runs left queued or running by a previous process can never finish
+    if settings.recover_interrupted_runs:  # disable when running more than one API process
+        recover_interrupted_runs(orch.store)  # runs left queued or running by a previous process can never finish
     app.state.annotations = (JsonFileAnnotationStore(os.path.join(settings.state_dir, "annotations")) if settings.state_dir
                              else InMemoryAnnotationStore())
     app.state.settings = settings

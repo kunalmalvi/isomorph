@@ -91,9 +91,15 @@ export async function streamWithReconnect(
 ): Promise<void> {
   let last: string | undefined;
   for (let attempt = 0; attempt <= MAX_RECONNECTS && !signal.aborted; attempt++) {
-    const r = await streamEvents(url, token, onMessage, signal, last);
-    last = r.lastEventId;
-    if (r.finished) return;
+    try {
+      const r = await streamEvents(url, token, onMessage, signal, last);
+      last = r.lastEventId ?? last;
+      if (r.finished) return;
+    } catch (err) {
+      if (signal.aborted) return;
+      if (attempt === MAX_RECONNECTS) throw err; // network error or non-2xx: retry, then surface it
+    }
     await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
+  if (!signal.aborted) throw new Error("live progress stopped: too many reconnects");
 }

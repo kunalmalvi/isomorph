@@ -39,6 +39,7 @@ class Settings:
     trusted_proxies: tuple = ()
     state_dir: Optional[str] = None
     sse_max_seconds: float = 30.0
+    recover_interrupted_runs: bool = True
 
     def validate(self) -> "Settings":
         if self.ai_provider not in PROVIDERS:
@@ -85,4 +86,5 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         trusted_proxies=tuple(x.strip() for x in g("TRUSTED_PROXIES", "").split(",") if x.strip()),
         state_dir=g("ISOMORPH_STATE_DIR") or None,
         sse_max_seconds=float(g("SSE_MAX_SECONDS", "30")),
+        recover_interrupted_runs=g("RECOVER_INTERRUPTED_RUNS", "true").strip().lower() not in ("0", "false", "no", "off"),
     ).validate()

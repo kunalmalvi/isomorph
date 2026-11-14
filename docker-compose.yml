@@ -31,6 +31,10 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
       USE_PGVECTOR: ${USE_PGVECTOR:-true}
+      ISOMORPH_STATE_DIR: ${ISOMORPH_STATE_DIR:-/var/lib/isomorph}
+      RECOVER_INTERRUPTED_RUNS: ${RECOVER_INTERRUPTED_RUNS:-true}
+    volumes:
+      - isomorph_state:/var/lib/isomorph
     depends_on:
       db:
         condition: service_healthy
@@ -52,3 +56,4 @@ services:
 
 volumes:
   pgdata:
+  isomorph_state:
