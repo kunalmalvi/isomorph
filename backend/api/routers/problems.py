@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+import os
 import uuid
 from datetime import datetime, timezone
 from typing import Optional
@@ -9,7 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from core.errors import NotFound, ValidationFailed
-from core.uploads import validate_upload
+from core.uploads import interpretation, purge_uploads, store_upload, validate_upload
 from database.models import (Assumption, Constraint, Evidence, Problem, ProblemEntity, ProblemRelationship, Source, User, Variable)
 from intelligence.perception import perceive_csv, perceive_text
 from intelligence.schemas import RELATIONS
@@ -64,10 +66,16 @@ def update_problem(problem_id: uuid.UUID, body: ProblemPatch, db: Session = Depe
 
 
 @router.delete("/{problem_id}", status_code=204)
-def delete_problem(problem_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def delete_problem(problem_id: uuid.UUID, request: Request, db: Session = Depends(get_db), user: User = Depends(current_user)):
     pr = load_problem(db, user, problem_id, "editor")
     pr.deleted_at = datetime.now(timezone.utc)
     db.commit()
+    state_dir = request.app.state.settings.state_dir
+    if state_dir:
+        try:  # already committed; startup cleanup is the backstop
+            purge_uploads(os.path.join(state_dir, "uploads"), str(problem_id))
+        except OSError:
+            logging.getLogger(__name__).warning("upload purge failed", exc_info=True)
     return Response(status_code=204)
 
 
@@ -122,16 +130,20 @@ def add_evidence(problem_id: uuid.UUID, body: EvidenceIn, db: Session = Depends(
 @router.post("/{problem_id}/uploads")
 async def upload(problem_id: uuid.UUID, request: Request, file: UploadFile = File(...), db: Session = Depends(get_db),
                  user: User = Depends(current_user)):
-    """Validate an upload and, for text-like files, return proposed structure. Nothing is stored automatically."""
+    """Validate an upload. Text and CSV return proposed structure. PDF, image and JSON files are stored (when STATE_DIR is
+    set) and flagged `interpreted: false` with a note; their content is never read."""
     load_problem(db, user, problem_id, "editor")
     max_bytes = request.app.state.settings.max_upload_bytes
     data = await file.read(max_bytes + 1)  # never read more than the limit plus one byte
     up = validate_upload(file.filename or "", data, max_bytes, file.content_type)
-    res = {"filename": up.filename, "kind": up.kind, "size": up.size, "processed": False, "proposal": None}
+    res = {"filename": up.filename, "kind": up.kind, "size": up.size, "processed": False, "proposal": None, **interpretation(up.kind)}
+    state_dir = request.app.state.settings.state_dir
+    if state_dir and up.kind not in ("text", "csv"):
+        res["provenance"] = store_upload(os.path.join(state_dir, "uploads"), str(problem_id), up)
     if up.kind in ("text", "csv"):
         text = up.data.decode("utf-8")
         per = perceive_csv(text, up.filename) if up.kind == "csv" else perceive_text(text, up.filename)
         res.update(processed=True, proposal=per.to_dict())
     else:
-        res["reason"] = f"{up.kind} content is validated but not interpreted in this version"
+        res["reason"] = res["note"]
     return res

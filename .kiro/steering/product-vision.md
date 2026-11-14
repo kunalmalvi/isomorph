@@ -11,3 +11,11 @@ ISOMORPH helps people solve hard problems by finding structurally similar solved
 ## Non-goals
 - Claiming real-world validation from simulation.
 - Replacing expert judgment.
+
+## Concrete consequences in the product (phase 3)
+- Match output shows the six component scores and the weights (25, 25, 20, 15, 10, 5). Domain distance is shown beside the score and never added to it.
+- A mapping lists unmapped elements. When no valid mapping exists the engine says so.
+- Reports carry a provenance disclaimer and mark stages that have not run.
+- Simulations are models. Validation labels them with a caveat.
+- Perception is keyword based with synonyms. It does not understand arbitrary prose, and the UI and docs must not imply it does.
+- PDF and image uploads are stored only. The response says they were not interpreted.

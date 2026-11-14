@@ -1,15 +1,18 @@
 from __future__ import annotations
 
+import logging
+import os
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from core.errors import Conflict, NotFound, ValidationFailed
-from database.models import Project, ProjectMember, User
+from core.uploads import purge_uploads
+from database.models import DiscoverySession, Problem, Project, ProjectMember, User
 from ..deps import current_user, get_db, load_project, page, pagination, row_dict
 from ..schemas import MemberIn, ProjectIn, ProjectPatch
 
@@ -61,10 +64,21 @@ def update_project(project_id: uuid.UUID, body: ProjectPatch, db: Session = Depe
 
 
 @router.delete("/{project_id}", status_code=204)
-def delete_project(project_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def delete_project(project_id: uuid.UUID, request: Request, db: Session = Depends(get_db), user: User = Depends(current_user)):
     proj, _ = load_project(db, user, project_id, "owner")
     proj.deleted_at = datetime.now(timezone.utc)  # soft delete
+    problem_ids = [str(i) for i in db.execute(select(Problem.id).where(Problem.project_id == project_id)).scalars()]
+    run_ids = [str(i) for i in db.execute(select(DiscoverySession.id).where(DiscoverySession.project_id == project_id)).scalars()]
     db.commit()
+    try:  # the delete already committed; a file error must not turn it into a 500. Startup cleanup is the backstop.
+        for rid in run_ids:  # reviewer notes are not reachable once the project is gone; do not leave them on disk
+            request.app.state.annotations.purge_run(rid)
+        state_dir = request.app.state.settings.state_dir
+        for pid in problem_ids:
+            if state_dir:
+                purge_uploads(os.path.join(state_dir, "uploads"), pid)
+    except OSError:
+        logging.getLogger(__name__).warning("purge after project delete failed", exc_info=True)
     return Response(status_code=204)
 
 

@@ -15,3 +15,7 @@
 - T1-T8 done (hypothesis_engine, validation_engine, experiments/), plus server side decisions and notes in phase 2.
 - Executed: tests/intelligence/test_reasoning.py, test_review_fixes.py and the end to end test in test_phase2_platform.py. Template experiments are labelled illustrative and capped at inconclusive.
 - Checkboxes above are the original plan. Treat this section as the current state.
+
+## Status (phase 3)
+- Phase 3: no engine change. The roller model's material parameters are placeholders; see docs/benchmark-notes.md.
+- Requirement to test mapping is in requirements.md.

@@ -43,15 +43,13 @@ def plan_seed(data_dir: Optional[str] = None) -> dict:
                     sources.setdefault(src["citation"], {"citation": src["citation"], "title": src["citation"][:200],
                                                          "source_type": _source_type(src.get("kind", ""))})
                     refs.append(src["citation"])
-                if len(refs) > 1:
-                    # The schema links one source per system and mechanism. Extra citations are still loaded as sources.
-                    log.info("seed: %s has %d sources, linking the first only (%s)", s["id"], len(refs), refs[0])
+                refs = list(dict.fromkeys(refs))  # keep order, drop repeats
                 if not refs:
                     sources.setdefault("ISOMORPH seed data", {"citation": "ISOMORPH seed data", "title": "ISOMORPH seed data", "source_type": "internal"})
                     refs = ["ISOMORPH seed data"]
                 nodes = {n["id"]: n for n in s["graph"]["nodes"]}
                 systems.append({"key": s["id"], "domain": s["domain"], "name": s["name"], "description": s.get("summary", ""),
-                                "source": refs[0],
+                                "source": refs[0], "sources": refs,
                                 "entities": [{"key": n["id"], "name": n["label"], "kind": n.get("kind"), "role": n.get("role")}
                                              for n in nodes.values()],
                                 "relationships": [{"key": e["id"], "source": e["source"], "target": e["target"],
@@ -59,7 +57,7 @@ def plan_seed(data_dir: Optional[str] = None) -> dict:
                                                   for e in s["graph"]["edges"] if e["source"] in nodes and e["target"] in nodes]})
                 if folder == "mechanisms":
                     mechanisms.append({"system": s["id"], "name": s["name"], "description": s.get("summary", ""),
-                                       "function_tag": s.get("kind"), "source": refs[0]})
+                                       "function_tag": s.get("kind"), "source": refs[0], "sources": refs})
     return {"domains": domains, "sources": sorted(sources.values(), key=lambda x: x["citation"]),
             "systems": sorted(systems, key=lambda x: x["key"]), "mechanisms": sorted(mechanisms, key=lambda x: x["system"])}
 
@@ -71,7 +69,8 @@ class Sink(Protocol):
 
 def apply_plan(plan: dict, sink: Sink) -> Dict[str, int]:
     """Insert the plan through a sink. Returns the number of rows created per table (all zero on a second run)."""
-    created: Dict[str, int] = {t: 0 for t in ("domains", "sources", "domain_systems", "system_entities", "system_relationships", "mechanisms")}
+    created: Dict[str, int] = {t: 0 for t in ("domains", "sources", "domain_systems", "system_entities", "system_relationships", "mechanisms",
+                                                   "domain_system_sources", "mechanism_sources")}
 
     def ensure(table, key, values):
         rid, new = sink.ensure(table, key, values)
@@ -88,6 +87,8 @@ def apply_plan(plan: dict, sink: Sink) -> Dict[str, int]:
         sid = sys_ids[s["key"]] = ensure("domain_systems", (dom[s["domain"]], s["name"]),
                                          {"domain_id": dom[s["domain"]], "name": s["name"], "description": s["description"],
                                           "source_id": src[s["source"]], "provenance": "source"})
+        for c in s["sources"]:  # every citation is linked; source_id above is the first (primary) one
+            ensure("domain_system_sources", (sid, src[c]), {"domain_system_id": sid, "source_id": src[c]})
         ents = {e["key"]: ensure("system_entities", (sid, e["name"]), {"domain_system_id": sid, "name": e["name"], "kind": e["kind"], "role": e["role"]})
                 for e in s["entities"]}
         for r in s["relationships"]:
@@ -95,9 +96,11 @@ def apply_plan(plan: dict, sink: Sink) -> Dict[str, int]:
                    {"domain_system_id": sid, "source_entity_id": ents[r["source"]], "target_entity_id": ents[r["target"]],
                     "relation_type": r["relation_type"], "weight": r["weight"]})
     for m in plan["mechanisms"]:
-        ensure("mechanisms", (sys_ids[m["system"]], m["name"]),
-               {"domain_system_id": sys_ids[m["system"]], "name": m["name"], "description": m["description"],
-                "function_tag": m["function_tag"], "source_id": src[m["source"]], "provenance": "source"})
+        mid = ensure("mechanisms", (sys_ids[m["system"]], m["name"]),
+                     {"domain_system_id": sys_ids[m["system"]], "name": m["name"], "description": m["description"],
+                      "function_tag": m["function_tag"], "source_id": src[m["source"]], "provenance": "source"})
+        for c in m["sources"]:
+            ensure("mechanism_sources", (mid, src[c]), {"mechanism_id": mid, "source_id": src[c]})
     return created
 
 
@@ -125,21 +128,36 @@ class SqlSink:
                        "domain_systems": (m.DomainSystem, ("domain_id", "name")),
                        "system_entities": (m.SystemEntity, ("domain_system_id", "name")),
                        "system_relationships": (m.SystemRelationship, ("domain_system_id", "source_entity_id", "target_entity_id", "relation_type")),
-                       "mechanisms": (m.Mechanism, ("domain_system_id", "name"))}
+                       "mechanisms": (m.Mechanism, ("domain_system_id", "name")),
+                       "domain_system_sources": (m.DomainSystemSource, ("domain_system_id", "source_id")),
+                       "mechanism_sources": (m.MechanismSource, ("mechanism_id", "source_id"))}
 
-    def ensure(self, table, key, values):
+    def _find(self, model, cols, key):
         from sqlalchemy import select
-        model, cols = self.models[table]
         stmt = select(model)
         for c, v in zip(cols, key):
             stmt = stmt.where(getattr(model, c) == v)
-        row = self.s.execute(stmt).scalars().first()
+        return self.s.execute(stmt).scalars().first()
+
+    def ensure(self, table, key, values):
+        """Find by natural key, else insert. A unique constraint conflict (a concurrent seeder inserted the same row)
+        rolls back only this insert (SAVEPOINT) and returns the existing row."""
+        from sqlalchemy.exc import IntegrityError
+        model, cols = self.models[table]
+        row = self._find(model, cols, key)
         if row is not None:
             return row.id, False
-        row = model(**values)
-        self.s.add(row)
-        self.s.flush()
-        return row.id, True
+        try:
+            with self.s.begin_nested():
+                row = model(**values)
+                self.s.add(row)
+                self.s.flush()
+            return row.id, True
+        except IntegrityError:
+            row = self._find(model, cols, key)
+            if row is None:
+                raise
+            return row.id, False
 
 
 def seed_database(session_factory, data_dir: Optional[str] = None) -> Dict[str, int]:

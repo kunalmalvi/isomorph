@@ -121,6 +121,7 @@ class Assumption(IdMixin, TimestampMixin, Base):
 
 class Source(IdMixin, TimestampMixin, Base):
     __tablename__ = 'sources'
+    __table_args__ = (UniqueConstraint('citation', name='uq_sources_citation'),)
     title: Mapped[str] = mapped_column(Text, nullable=False)
     citation: Mapped[str] = mapped_column(Text, nullable=False)
     url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -146,6 +147,7 @@ class Domain(IdMixin, TimestampMixin, Base):
 
 class DomainSystem(IdMixin, TimestampMixin, Base):
     __tablename__ = 'domain_systems'
+    __table_args__ = (UniqueConstraint('domain_id', 'name', name='uq_domain_systems_domain_id_name'),)
     domain_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('domains.id', ondelete='CASCADE'), nullable=False, index=True)
     name: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -155,6 +157,7 @@ class DomainSystem(IdMixin, TimestampMixin, Base):
 
 class Mechanism(IdMixin, TimestampMixin, Base):
     __tablename__ = 'mechanisms'
+    __table_args__ = (UniqueConstraint('domain_system_id', 'name', name='uq_mechanisms_domain_system_id_name'),)
     domain_system_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('domain_systems.id', ondelete='CASCADE'), nullable=False, index=True)
     name: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -165,6 +168,7 @@ class Mechanism(IdMixin, TimestampMixin, Base):
 
 class SystemEntity(IdMixin, TimestampMixin, Base):
     __tablename__ = 'system_entities'
+    __table_args__ = (UniqueConstraint('domain_system_id', 'name', name='uq_system_entities_domain_system_id_name'),)
     domain_system_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('domain_systems.id', ondelete='CASCADE'), nullable=False, index=True)
     name: Mapped[str] = mapped_column(Text, nullable=False)
     kind: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -173,11 +177,28 @@ class SystemEntity(IdMixin, TimestampMixin, Base):
 
 class SystemRelationship(IdMixin, TimestampMixin, Base):
     __tablename__ = 'system_relationships'
+    __table_args__ = (UniqueConstraint('domain_system_id', 'source_entity_id', 'target_entity_id', 'relation_type', name='uq_system_relationships_natural_key'),)
     domain_system_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('domain_systems.id', ondelete='CASCADE'), nullable=False, index=True)
     source_entity_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('system_entities.id', ondelete='CASCADE'), nullable=False, index=True)
     target_entity_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('system_entities.id', ondelete='CASCADE'), nullable=False, index=True)
     relation_type: Mapped[str] = mapped_column(Text, nullable=False)
     weight: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+
+class DomainSystemSource(IdMixin, TimestampMixin, Base):
+    """Every citation of a domain system. `domain_systems.source_id` stays the primary (first) one."""
+    __tablename__ = 'domain_system_sources'
+    __table_args__ = (UniqueConstraint('domain_system_id', 'source_id', name='uq_domain_system_sources_domain_system_id_source_id'),)
+    domain_system_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('domain_systems.id', ondelete='CASCADE'), nullable=False, index=True)
+    source_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('sources.id', ondelete='RESTRICT'), nullable=False, index=True)
+
+
+class MechanismSource(IdMixin, TimestampMixin, Base):
+    """Every citation of a mechanism. `mechanisms.source_id` stays the primary (first) one."""
+    __tablename__ = 'mechanism_sources'
+    __table_args__ = (UniqueConstraint('mechanism_id', 'source_id', name='uq_mechanism_sources_mechanism_id_source_id'),)
+    mechanism_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('mechanisms.id', ondelete='CASCADE'), nullable=False, index=True)
+    source_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('sources.id', ondelete='RESTRICT'), nullable=False, index=True)
 
 
 class Embedding(IdMixin, TimestampMixin, Base):

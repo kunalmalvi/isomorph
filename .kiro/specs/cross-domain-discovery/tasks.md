@@ -15,3 +15,7 @@
 - T1-T8 done in backend/intelligence/analogy_engine and tests/intelligence/test_matching.py.
 - Executed: stdlib tests pass. The roller demo top score is about 36.5 out of 100, see docs/benchmark-notes.md for why.
 - Checkboxes above are the original plan. Treat this section as the current state.
+
+## Status (phase 3)
+- Phase 3: every source citation of a system and mechanism is linked when loading knowledge (test_phase3_followups.py::test_every_citation_is_linked_for_systems_and_mechanisms). Best roller demo cross-domain score stays about 36.5/100; it was not tuned.
+- Requirement to test mapping is in requirements.md.

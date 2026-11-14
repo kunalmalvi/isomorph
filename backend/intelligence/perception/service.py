@@ -46,6 +46,24 @@ for _role, _terms in ROLE_LEXICON.items():
     for _t in _terms:
         LEXICON[_t] = _role
 
+# Unfamiliar wording -> a lexicon term. Lookup is on the lowercased, singularised phrase. A synonym hit gives the
+# entity the role of the lexicon term but keeps the user's own words as its label.
+SYNONYMS: Dict[str, str] = {
+    "boiler": "furnace", "kiln": "furnace", "heating element": "heater", "radiator": "cooler", "refrigerator": "cooler",
+    "air conditioner": "cooler", "thermocouple": "thermometer", "thermistor": "thermometer", "radar": "detector",
+    "lidar": "detector", "accelerometer": "sensor", "pipeline": "pipe", "hose": "pipe", "artery": "pipe",
+    "vein": "pipe", "highway": "road", "street": "road", "motorway": "road", "power line": "wire",
+    "river": "channel", "canal": "channel", "internet": "network", "vendor": "supplier",
+    "shopper": "customer", "buyer": "customer", "subscriber": "customer", "patron": "customer", "cistern": "tank",
+    "silo": "tank", "lake": "reservoir", "faucet": "valve",
+    "microcontroller": "controller", "supervisor": "manager", "coordinator": "manager", "switchboard": "switch",
+    "dynamo": "generator", "grinder": "mill", "crusher": "mill", "blower": "fan", "propeller": "turbine",
+    "crossroad": "intersection", "roundabout": "intersection", "stockroom": "warehouse",
+    "depot": "warehouse", "pantry": "warehouse", "sunlight": "sun", "gasoline": "fuel", "petrol": "fuel", "diesel": "fuel",
+    "electricity": "energy", "liquid": "fluid", "goods": "product", "cargo": "product",
+    "parcel": "product", "viscosity": "drag",
+}
+
 # cue stem -> (relation, reverse). reverse=True means object -> subject.
 VERB_CUES: Dict[str, Tuple[str, bool]] = {
     "drive": ("transmits", False), "power": ("transmits", False), "transmit": ("transmits", False),
@@ -90,7 +108,7 @@ HARD_CUES = ("must not", "cannot", "can not", "never", "shall not", "may not", "
              "not exceed", "not vary", "maximum", "minimum", "upper limit", "lower limit", "must stay", "must remain")
 SOFT_CUES = ("should", "prefer", "ideally", "try to", "would like")
 LE_WORDS = {"the", "a", "an", "is", "are", "of", "and", "to", "in", "with", "by", "for", "must", "should", "that"}
-LIMITATIONS = ("Lexicon and verb cue based. Passive voice, pronouns, implicit entities and non-English text are "
+LIMITATIONS = ("Lexicon, synonym table and verb cue based. Passive voice, pronouns, implicit entities and non-English text are "
                "not handled reliably. Output needs human review.")
 
 
@@ -126,6 +144,35 @@ def _norm(tok: str) -> str:
     if t.endswith("s") and not t.endswith("ss") and len(t) > 3 and t[:-1] in LEXICON:
         return t[:-1]
     return t
+
+
+def _singulars(tok: str) -> List[str]:
+    """Lowercased token plus its plausible singular forms (simple suffix rules, no dictionary)."""
+    t = tok.lower()
+    if t.endswith("'s"):
+        t = t[:-2]
+    out = [t]
+    if t.endswith("ies") and len(t) > 4:
+        out.append(t[:-3] + "y")
+    if t.endswith(("ches", "shes", "xes", "sses", "zes")) and len(t) > 4:
+        out.append(t[:-2])
+    if t.endswith("s") and not t.endswith("ss") and len(t) > 3:
+        out.append(t[:-1])
+    return out
+
+
+def _lookup_role(tokens: List[Tuple[str, int, int]]) -> Optional[Tuple[str, str]]:
+    """Normalised lexicon or synonym lookup for a token window. Returns (label, role) or None."""
+    forms: List[List[str]] = [[""]]
+    for t in tokens:
+        forms.append([(p + " " + f).strip() for p in forms[-1] for f in _singulars(t[0])])
+    for phrase in forms[-1]:
+        if phrase in LEXICON:
+            return phrase, LEXICON[phrase]
+    for phrase in forms[-1]:
+        if phrase in SYNONYMS:
+            return phrase, LEXICON[SYNONYMS[phrase]]
+    return None
 
 
 def _verb_stem(tok: str) -> Optional[str]:
@@ -165,11 +212,15 @@ def _entities_in(tokens: List[Tuple[str, int, int]]) -> List[dict]:
                 continue
             phrase = " ".join(_norm(t[0]) for t in tokens[i:i + n])
             if phrase in LEXICON:
-                hit = (phrase, n)
+                hit = (phrase, n, LEXICON[phrase])
+                break
+            alt = _lookup_role(tokens[i:i + n])
+            if alt is not None:
+                hit = (alt[0], n, alt[1])
                 break
         if hit:
-            phrase, n = hit
-            found.append({"key": phrase, "role": LEXICON[phrase], "start_tok": i, "end_tok": i + n - 1,
+            phrase, n, role = hit
+            found.append({"key": phrase, "role": role, "start_tok": i, "end_tok": i + n - 1,
                           "start": tokens[i][1], "end": tokens[i + n - 1][2]})
             i += n
         else:

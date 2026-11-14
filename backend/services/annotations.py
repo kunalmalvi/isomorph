@@ -54,6 +54,40 @@ class AnnotationStore:
             self._write(run_id, data)
             return dict(rec)
 
+    def _run_ids(self) -> list:
+        raise NotImplementedError
+
+    def _remove(self, run_id: str) -> None:
+        raise NotImplementedError
+
+    def purge_run(self, run_id: str) -> bool:
+        """Remove every annotation of a run (for example when its project is deleted). True if anything existed."""
+        with self._lock:
+            existed = run_id in self._run_ids()
+            if existed:
+                self._remove(run_id)
+            return existed
+
+    def cleanup_orphans(self, live_run_ids) -> list:
+        """Remove annotation data for runs not in `live_run_ids`. Returns the removed run ids, sorted."""
+        live = set(live_run_ids)
+        with self._lock:
+            gone = sorted(r for r in self._run_ids() if r not in live)
+            for r in gone:
+                self._remove(r)
+            return gone
+
+    def safe_cleanup_orphans(self, live_run_ids) -> list:
+        """`cleanup_orphans` that refuses to run when the live set is empty.
+
+        An empty set usually means a fresh, restored or wrong database, and deleting every note then is not reversible.
+        Notes of a project that was really deleted are removed by `purge_run` at delete time instead.
+        """
+        live = set(live_run_ids)
+        if not live:
+            return []
+        return self.cleanup_orphans(live)
+
     def delete(self, run_id: str, hypothesis_id: str) -> bool:
         with self._lock:
             data = self._load(run_id)
@@ -69,10 +103,16 @@ class InMemoryAnnotationStore(AnnotationStore):
         self._data: Dict[str, Dict[str, dict]] = {}
 
     def _load(self, run_id):
-        return self._data.setdefault(run_id, {})
+        return self._data.get(run_id, {})
 
     def _write(self, run_id, data):
         self._data[run_id] = data
+
+    def _run_ids(self):
+        return list(self._data)
+
+    def _remove(self, run_id):
+        self._data.pop(run_id, None)
 
 
 class JsonFileAnnotationStore(AnnotationStore):
@@ -80,7 +120,8 @@ class JsonFileAnnotationStore(AnnotationStore):
 
     Single process only. The lock is in process and each update reads and rewrites the whole file, so two API
     processes sharing the directory can lose each other's updates. Move to a database table before scaling out.
-    Files are kept when a discovery is soft deleted; the API hides notes for hypotheses that no longer exist.
+    Files of deleted projects are removed with `purge_run`, and `cleanup_orphans` (run at startup) removes files whose
+    discovery no longer exists. The API also hides notes for hypotheses that no longer exist.
     """
 
     def __init__(self, directory: str, clock: Callable[[], float] = time.time):
@@ -106,3 +147,14 @@ class JsonFileAnnotationStore(AnnotationStore):
         with os.fdopen(fd, "w") as f:
             json.dump(data, f, sort_keys=True)
         os.replace(tmp, p)
+
+    _SUFFIX = ".annotations.json"
+
+    def _run_ids(self):
+        return sorted(f[: -len(self._SUFFIX)] for f in os.listdir(self.dir) if f.endswith(self._SUFFIX))
+
+    def _remove(self, run_id):
+        try:
+            os.remove(self._path(run_id))
+        except FileNotFoundError:
+            pass

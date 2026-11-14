@@ -1,6 +1,7 @@
 """FastAPI application factory. UNVERIFIED in the authoring sandbox (FastAPI is not installable there)."""
 from __future__ import annotations
 
+import logging
 import os
 from typing import Optional
 
@@ -14,6 +15,7 @@ from ai_providers import get_provider
 from core.config import Settings, load_settings
 from core.errors import AppError, TooManyRequests, error_envelope
 from core.rate_limit import RateLimiter
+from core.uploads import cleanup_uploads
 from database.session import make_engine, make_session_factory
 from services.annotations import InMemoryAnnotationStore, JsonFileAnnotationStore
 from services.knowledge import default_knowledge
@@ -27,6 +29,29 @@ from .routers import (archive, auth, discoveries, knowledge, matches, pipeline, 
                       structural)
 
 API_PREFIX = "/api/v1"
+
+
+def _cleanup_orphan_annotations(store, session_factory, uploads_dir: Optional[str] = None) -> None:
+    """Remove annotation files whose discovery is gone or whose project was deleted. Never blocks startup."""
+    try:
+        from sqlalchemy import select
+        from database.models import DiscoverySession, Problem
+        # Soft deleted rows still exist, so their notes and uploads are kept. Only rows that are gone count as orphans.
+        with session_factory() as db:
+            live = [str(i) for i in db.execute(select(DiscoverySession.id)).scalars().all()]
+            live_problems = [str(i) for i in db.execute(select(Problem.id)).scalars().all()]
+        log = logging.getLogger(__name__)
+        removed = store.safe_cleanup_orphans(live)  # skipped when the database has no runs
+        if removed:
+            log.info("removed annotations of %d orphaned runs", len(removed))
+        elif not live:
+            log.info("annotation sweep skipped: no discovery runs in the database")
+        if uploads_dir:
+            gone = cleanup_uploads(uploads_dir, live_problems)
+            if gone:
+                log.info("removed uploads of %d orphaned problems", len(gone))
+    except Exception:  # tables may not exist yet (create_tables or migrations pending)
+        logging.getLogger(__name__).warning("annotation cleanup skipped", exc_info=True)
 
 
 def create_app(settings: Optional[Settings] = None, session_factory=None, synchronous_jobs: bool = False,
@@ -45,6 +70,8 @@ def create_app(settings: Optional[Settings] = None, session_factory=None, synchr
         recover_interrupted_runs(orch.store)  # runs left queued or running by a previous process can never finish
     app.state.annotations = (JsonFileAnnotationStore(os.path.join(settings.state_dir, "annotations")) if settings.state_dir
                              else InMemoryAnnotationStore())
+    _cleanup_orphan_annotations(app.state.annotations, session_factory,
+                               os.path.join(settings.state_dir, "uploads") if settings.state_dir else None)
     app.state.settings = settings
     app.state.session_factory = session_factory
     app.state.kb = kb
