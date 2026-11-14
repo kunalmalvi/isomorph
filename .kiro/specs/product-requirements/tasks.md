@@ -15,3 +15,7 @@
 - T1-T4 written in backend/api, backend/services and backend/database. T5-T8 tests are in tests/platform/test_api.py.
 - UNVERIFIED: the API tests are skipped without FastAPI. The orchestrator, run stores and reports are executed by stdlib tests.
 - Checkboxes above are the original plan. Treat this section as the current state.
+
+## Status (phase 3)
+- Phase 3: perception handles paraphrases through synonyms and singular forms (still keyword based). Uploads of PDF and image files are not interpreted.
+- Requirement to test mapping is in requirements.md.

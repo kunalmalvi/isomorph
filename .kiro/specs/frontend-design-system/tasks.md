@@ -14,3 +14,7 @@
 - T1-T4 written under frontend/, including the phase 2 3D Discovery Universe view (frontend/components/graph/universe-3d.tsx, pure layout in frontend/lib/universe-layout.ts).
 - UNVERIFIED: npm install is blocked. Only pure lib modules ran under Node type stripping. T5 and T6 are written, never run. T7 not done.
 - Checkboxes above are the original plan. Treat this section as the current state.
+
+## Status (phase 3)
+- Phase 3: no frontend code changed. All frontend items remain UNVERIFIED (no npm, tsc or vitest).
+- Requirement to test mapping is in requirements.md.

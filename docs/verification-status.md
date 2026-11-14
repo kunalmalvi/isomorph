@@ -6,7 +6,7 @@ Command run: `cd backend && python3 -m pytest tests -q -rs`
 
 Result after phase 2: 169 passed, 2 skipped (baseline before phase 2 was 148 passed, 2 skipped). `python3 -m compileall -q backend scripts` passes.
 
-Phase 3 FEAT-001 follow-ups: 177 passed, 2 skipped. Executed (stdlib): annotation purge and orphan cleanup in `services/annotations.py`, seed links for every citation (`database/seed.py` plan and `MemorySink`), upload `interpreted` flag and `store_upload` in `core/uploads.py`, perception synonyms and plural normalisation, SSE default of 15 seconds. UNVERIFIED (no FastAPI or SQLAlchemy): the calls in `api/main.py` (startup cleanup), `api/routers/projects.py` (purge on delete), `api/routers/problems.py` (upload response), `SqlSink` savepoint conflict handling, the new models and `migrations/versions/0002_seed_constraints.py`. `npm install --package-lock-only` in `frontend/` still fails with 403, so no lock file exists (UNVERIFIED).
+Phase 3 FEAT-001 follow-ups (see the Phase 3 section below for final counts): 177 passed, 2 skipped. Executed (stdlib): annotation purge and orphan cleanup in `services/annotations.py`, seed links for every citation (`database/seed.py` plan and `MemorySink`), upload `interpreted` flag and `store_upload` in `core/uploads.py`, perception synonyms and plural normalisation, SSE default of 15 seconds. UNVERIFIED (no FastAPI or SQLAlchemy): the calls in `api/main.py` (startup cleanup), `api/routers/projects.py` (purge on delete), `api/routers/problems.py` (upload response), `SqlSink` savepoint conflict handling, the new models and `migrations/versions/0002_seed_constraints.py`. `npm install --package-lock-only` in `frontend/` still fails with 403, so no lock file exists (UNVERIFIED).
 
 ## Executed and passing (stdlib only)
 | Area | Test files | What is covered |
@@ -97,3 +97,23 @@ In `-rs` output the skips read `could not import 'fastapi'` and `could not impor
 
 ## Phase 2 review follow-ups (UNVERIFIED frontend)
 After two review rounds the following frontend changes were written but not run (no vitest, tsc or npm): debounced and ordered note saves in the hypotheses page, newer-edit merge in `lib/arena.ts`, unbounded SSE reconnect with a 10 consecutive failure limit in `services/sse.ts`. Backend parts (X-Forwarded-For line joining, seed source logging) are covered by stdlib tests. The annotation orphan filter in `discoveries.py` and the compose volume are UNVERIFIED. Known open: SSE holds one threadpool thread per stream (max 30 s), SQL seed sink has no unique constraints, orphan annotation files stay on disk.
+
+## Phase 3 (FEAT-001 and FEAT-002)
+
+Final counts: `cd backend && python3 -m pytest tests -q` gives 177 passed, 2 skipped (169 passed, 2 skipped at the start of phase 3; 8 tests added in `tests/platform/test_phase3_followups.py`). The two skips are the SQLAlchemy model comparison in `test_migration_schema.py` and the FastAPI API tests module guard in `test_api.py`.
+
+Reruns at the end of phase 3: `python3 -m compileall -q backend scripts` passes. `python3 scripts/validate_seed_data.py` prints `seed data OK`. `python3 scripts/run_demo.py` exits 0; it rewrote `data/demo/sample_investigation.json` only in the perception limitations text (now mentions the synonym table). `python3 scripts/evaluate_benchmarks.py` exits 0 with MRR 0.9286 against a lexical baseline of 0.2566. The benchmark has n=7 and tuning overlaps evaluation, see `docs/benchmark-notes.md`. The roller demo best cross-domain score is still about 36.5/100 and was not tuned.
+
+| Item | Executed | UNVERIFIED |
+|---|---|---|
+| Annotation purge and orphan cleanup | `test_purge_and_orphan_cleanup`, `test_cleanup_removes_files_and_ignores_foreign_files` | Startup call in `api/main.py`, purge on delete in `api/routers/projects.py` |
+| Every citation linked for systems and mechanisms | `test_every_citation_is_linked_for_systems_and_mechanisms` (seed plan and `MemorySink`) | `SqlSink` writes, new link tables |
+| Upload `interpreted` flag | `test_interpretation_flag`, `test_pdf_is_stored_and_flagged_not_interpreted` | Response wiring in `api/routers/problems.py` |
+| Perception synonyms and plural normalisation | three perception tests in `test_phase3_followups.py`, benchmark MRR unchanged | None. Still keyword based. |
+| Seed unique constraints, migration 0002, savepoint conflict handling | Nothing (needs SQLAlchemy and PostgreSQL) | All of it |
+| SSE default 15 s | `test_default_sse_duration_is_short` and other SSE tests | Router streaming under load, sizing guidance in `docs/api-contracts.md` is untested |
+| `npm install --package-lock-only` | Attempted, HTTP 403 | `frontend/package-lock.json` still absent |
+| Kiro specs and steering | Documentation only. Each spec has requirements, user stories, acceptance criteria, edge cases and a test traceability table pointing to real tests. Each steering file has concrete rules taken from the code. | Test names were checked against the files in `backend/tests`; skipped API tests are marked as such in the specs |
+| Frontend (all of it) | Nothing new this phase | No npm, tsc, vitest or Playwright. Docker is broken, no image was built. |
+
+Known open after phase 3: the SSE design still holds one thread per open stream. The rate limiter is per process. The OpenAI, Gemini and Anthropic adapters have never called a real endpoint. PDF and image uploads are stored but not read.

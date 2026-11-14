@@ -850,7 +850,7 @@
     "statement": "Role of 'energy' inferred as medium from keyword lexicon"
    }
   ],
-  "limitations": "Lexicon and verb cue based. Passive voice, pronouns, implicit entities and non-English text are not handled reliably. Output needs human review.",
+  "limitations": "Lexicon, synonym table and verb cue based. Passive voice, pronouns, implicit entities and non-English text are not handled reliably. Output needs human review.",
   "problem": {
    "constraints": [
     {

@@ -35,3 +35,21 @@ Test strategy, CI checks, and Docker Compose deployment.
 - Demo script exit code 0
 - Skip reporting
 - Compose config lint (not runnable in sandbox)
+
+## Traceability to tests (phase 3)
+Paths are relative to backend/tests unless stated. "Skipped without FastAPI" means the test exists but did not run in this sandbox.
+
+| Item | Test or check |
+|---|---|
+| AC1 stdlib suite | cd backend && python3 -m pytest tests -q (177 passed, 2 skipped at the start of FEAT-002) |
+| AC2 skips listed | docs/verification-status.md section Skipped tests and reasons |
+| AC3 compose healthchecks | Written, never run. UNVERIFIED |
+| AC4 secrets in env | platform/test_rate_limit_uploads.py::test_settings_defaults_and_validation; platform/test_ai_providers.py::test_provider_status_has_no_key_material |
+| AC5 honest docs | docs/verification-status.md |
+| Demo and benchmark | python3 scripts/run_demo.py; python3 scripts/evaluate_benchmarks.py; python3 scripts/validate_seed_data.py |
+| Provider adapters on mocked transport | platform/test_ai_providers.py::test_openai_request_shape_and_structured_output, test_anthropic_adapter, test_gemini_adapter_and_empty_response, test_retry_on_429_then_success_and_backoff |
+
+## Edge case status (phase 3)
+- Network in tests: None; the provider tests use a mocked transport.
+- Docker: Docker is broken in the sandbox, builds are UNVERIFIED.
+- Package install: pip and npm return 403 here.

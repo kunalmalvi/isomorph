@@ -15,3 +15,7 @@
 - T1-T8 done (perception, structural_model, graph_engine, fingerprint).
 - Executed: tests/intelligence/test_perception_fingerprint.py and test_schemas_graph.py.
 - Checkboxes above are the original plan. Treat this section as the current state.
+
+## Status (phase 3)
+- Phase 3: perception gained lowercase and singular normalization and a synonym table. Node labels keep the user's wording. The semantic embedding is lexical, not a learned model.
+- Requirement to test mapping is in requirements.md.

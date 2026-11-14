@@ -40,3 +40,22 @@ ISOMORPH finds structural analogies between a user's problem and solved systems 
 - Project membership authorization matrix
 - Provenance field present on all returned claims
 - Empty-match response shape
+
+## Traceability to tests (phase 3)
+Paths are relative to backend/tests unless stated. "Skipped without FastAPI" means the test exists but did not run in this sandbox.
+
+| Item | Test or check |
+|---|---|
+| AC1 problem needs entity and goal | platform/test_api.py::test_problem_children_validation (skipped without FastAPI); platform/test_orchestrator.py::test_create_run_input_validation (runs) |
+| AC2 provenance on claims | intelligence/test_schemas_graph.py::test_roundtrip_and_provenance_enum; platform/test_derivation_reports.py::test_report_has_provenance_disclaimer_and_marks_missing_stages |
+| AC3 25/25/20/15/10/5 breakdown | intelligence/test_matching.py::test_score_is_weighted_sum_of_bounded_components |
+| AC4 no LLM needed | platform/test_ai_providers.py::test_local_default_no_key_and_deterministic, test_local_refuses_unsupported_task_instead_of_fabricating; platform/test_orchestrator.py::test_full_run_all_stages_inspectable |
+| AC5 no dead UI | Review only. UNVERIFIED |
+| Roles and membership | platform/test_api.py::test_rbac_viewer_editor_owner, test_last_owner_cannot_be_removed (skipped without FastAPI) |
+| Archive and reports | test_api.py::test_archive_and_restore (skipped); test_derivation_reports.py (runs) |
+| Whole pipeline | test_generality_and_demo.py::test_unrelated_text_problem_runs_through_whole_pipeline; python3 scripts/run_demo.py (exit 0) |
+
+## Edge case status (phase 3)
+- Non-English or empty input: test_perception_fingerprint.py::test_empty_and_non_english_input.
+- Unfamiliar phrasing: Phase 3 normalization and SYNONYMS table in backend/intelligence/perception/service.py; test_synonyms_map_unfamiliar_words_to_roles_and_keep_user_wording, test_plurals_and_case_are_normalised, test_unknown_word_still_has_no_role.
+- PDF and image problem uploads: Stored, not read, flagged interpreted=false.

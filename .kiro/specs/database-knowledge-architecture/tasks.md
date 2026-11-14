@@ -15,3 +15,7 @@
 - T1, T2, T3, T5 written as models and migration 0001. T4: scripts/validate_seed_data.py runs, and the phase 2 seeding function loads data/ JSON idempotently (not run automatically).
 - UNVERIFIED: T7 and T8 need PostgreSQL. The migration is checked against docs/database-design.md by test_migration_schema.py (executed); the ORM comparison test is skipped without SQLAlchemy.
 - Checkboxes above are the original plan. Treat this section as the current state.
+
+## Status (phase 3)
+- Phase 3: migration 0002 added. It and the model changes are UNVERIFIED.
+- Requirement to test mapping is in requirements.md.
