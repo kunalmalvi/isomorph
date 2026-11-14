@@ -47,7 +47,7 @@ def create_app(settings: Optional[Settings] = None, session_factory=None, synchr
     app.state.auth_limiter = RateLimiter(settings.auth_attempts_per_minute, 60.0)
 
     app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins), allow_credentials=False,
-                       allow_methods=["GET", "POST", "PATCH", "DELETE"], allow_headers=["Authorization", "Content-Type"])
+                       allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"], allow_headers=["Authorization", "Content-Type"])
 
     @app.exception_handler(AppError)
     async def _app_error(_: Request, exc: AppError):

@@ -4,7 +4,7 @@ This file states what was executed in the authoring sandbox and what was only wr
 
 Command run: `cd backend && python3 -m pytest tests -q -rs`
 
-Result when this was written: 138 passed, 2 skipped. `python3 -m compileall -q backend scripts` passes.
+Result when this was written (re-run after the frontend feature): 138 passed, 2 skipped. `python3 -m compileall -q backend scripts` passes.
 
 ## Executed and passing (stdlib only)
 | Area | Test files | What is covered |
@@ -23,6 +23,25 @@ These files compile (`compileall`) but have never been imported with their real 
 - `backend/database/**`: SQLAlchemy 2.x models and session helpers.
 - `backend/migrations/**` and `backend/alembic.ini`: Alembic environment and initial migration, including the pgvector path and the JSON fallback.
 - `backend/Dockerfile` and `backend/requirements.txt`: versions pinned to a compatible set, never installed, image never built.
+
+## Frontend, Docker and deployment files (UNVERIFIED)
+`npm install` returns HTTP 403 in the authoring sandbox and Docker cannot run (no conmon), so none of the following was built, linted, rendered or executed.
+- `frontend/**`: Next.js 14 App Router, strict TypeScript, Tailwind, hand written shadcn style components, React Flow, Recharts, lucide-react. Eleven sections (Overview, New Discovery, My Investigations with a workspace page, Structural DNA, Discovery Universe, Transformation Studio, Hypothesis Arena, Validation Lab, Discovery Archive, Knowledge Library, Settings), a login page and a command palette.
+- `frontend/tests/unit/*.test.ts` (vitest) and `frontend/e2e/*.spec.ts` (Playwright): written, never run.
+- `docker-compose.yml`, `frontend/Dockerfile`, `.env.example`: never built or started.
+
+What was actually run for the frontend:
+- `python3 -m json.tool` on `package.json` and `tsconfig.json`: valid JSON.
+- The globally installed TypeScript 5.9 compiler on the project without React, Next or other packages: every reported error was a consequence of the missing type packages (module not found, implicit any on event handlers, missing `children` and `key` props, `process` and `__dirname`). No error pointed at an application logic mistake, but this is a weak check and does not replace `npm run typecheck`.
+- Node 22 with type stripping executed the pure modules `lib/format.ts`, `lib/arena.ts`, `lib/graph-layout.ts`, `lib/commands.ts` and `services/sse.ts` against a small assertion script (weights total, CSV escaping and formula neutralisation, comparison limit of three, layout termination on cycles, SSE buffer parsing). All assertions passed. The vitest files were not run.
+
+Frontend behavior that is intentionally limited, and visible as such in the UI:
+- PDF and image uploads are accepted and validated by the API but not interpreted. The New Discovery page says so.
+- The Discovery Universe has no 3D view.
+- Hypothesis Arena decisions and notes live in `localStorage` only, because the API has no endpoint for them. Only editing a saved hypothesis statement and saving from the Transformation Studio go to the server.
+- Stage progress and status badges come from the SSE endpoint (`fetch` based reader with an Authorization header). Counts on the Overview come from the `total` field of list endpoints. No metric is computed or invented in the browser.
+
+Backend change made while writing the frontend: `backend/api/main.py` CORS `allow_methods` now includes `PUT`, which the stage edit endpoint needs from a browser on another origin.
 
 ## Skipped tests and reasons
 | Test | Reason for skip | What it checks when it runs |
