@@ -10,6 +10,9 @@ batch mode so SQLite can run the migration.
 """
 from __future__ import annotations
 
+import uuid
+from datetime import datetime, timezone
+
 import sqlalchemy as sa
 from alembic import op
 
@@ -46,6 +49,18 @@ def upgrade() -> None:
             sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
             sa.UniqueConstraint(owner_col, "source_id", name=uq),
         )
+    # Backfill the primary citation so a database seeded before this migration has links without a reseed. Other
+    # citations of a system or mechanism appear once `python -m database.seed` is rerun. Plain INSERT .. SELECT is
+    # portable; gen_random_uuid is not, so ids are generated in Python.
+    conn = op.get_bind()
+    stamp = datetime.now(timezone.utc)
+    for table, owner_col, owner_table, _ in LINKS:
+        rows = conn.execute(sa.text(f"SELECT id, source_id FROM {owner_table} WHERE source_id IS NOT NULL")).fetchall()
+        link = sa.table(table, sa.column("id", sa.Uuid()), sa.column(owner_col, sa.Uuid()), sa.column("source_id", sa.Uuid()),
+                        sa.column("created_at", sa.DateTime(timezone=True)), sa.column("updated_at", sa.DateTime(timezone=True)))
+        if rows:
+            conn.execute(sa.insert(link), [{"id": uuid.uuid4(), owner_col: r[0], "source_id": r[1],
+                                            "created_at": stamp, "updated_at": stamp} for r in rows])
 
 
 def downgrade() -> None:

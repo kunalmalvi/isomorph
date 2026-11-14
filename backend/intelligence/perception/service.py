@@ -51,17 +51,17 @@ for _role, _terms in ROLE_LEXICON.items():
 SYNONYMS: Dict[str, str] = {
     "boiler": "furnace", "kiln": "furnace", "heating element": "heater", "radiator": "cooler", "refrigerator": "cooler",
     "air conditioner": "cooler", "thermocouple": "thermometer", "thermistor": "thermometer", "radar": "detector",
-    "lidar": "detector", "accelerometer": "sensor", "pipeline": "pipe", "hose": "pipe", "tube": "pipe", "artery": "pipe",
-    "vein": "pipe", "highway": "road", "street": "road", "motorway": "road", "lane": "road", "power line": "wire",
-    "river": "channel", "canal": "channel", "grid": "network", "internet": "network", "vendor": "supplier",
+    "lidar": "detector", "accelerometer": "sensor", "pipeline": "pipe", "hose": "pipe", "artery": "pipe",
+    "vein": "pipe", "highway": "road", "street": "road", "motorway": "road", "power line": "wire",
+    "river": "channel", "canal": "channel", "internet": "network", "vendor": "supplier",
     "shopper": "customer", "buyer": "customer", "subscriber": "customer", "patron": "customer", "cistern": "tank",
-    "silo": "tank", "pool": "reservoir", "lake": "reservoir", "dam": "gate", "faucet": "valve", "tap": "valve",
+    "silo": "tank", "lake": "reservoir", "faucet": "valve",
     "microcontroller": "controller", "supervisor": "manager", "coordinator": "manager", "switchboard": "switch",
-    "fuse": "breaker", "dynamo": "generator", "grinder": "mill", "crusher": "mill", "blower": "fan", "propeller": "turbine",
-    "router": "hub", "crossroad": "intersection", "roundabout": "intersection", "pile": "stockpile", "stockroom": "warehouse",
+    "dynamo": "generator", "grinder": "mill", "crusher": "mill", "blower": "fan", "propeller": "turbine",
+    "crossroad": "intersection", "roundabout": "intersection", "stockroom": "warehouse",
     "depot": "warehouse", "pantry": "warehouse", "sunlight": "sun", "gasoline": "fuel", "petrol": "fuel", "diesel": "fuel",
-    "coal": "fuel", "electricity": "energy", "liquid": "fluid", "gas": "fluid", "goods": "product", "cargo": "product",
-    "parcel": "product", "resistance": "friction", "viscosity": "drag",
+    "electricity": "energy", "liquid": "fluid", "goods": "product", "cargo": "product",
+    "parcel": "product", "viscosity": "drag",
 }
 
 # cue stem -> (relation, reverse). reverse=True means object -> subject.

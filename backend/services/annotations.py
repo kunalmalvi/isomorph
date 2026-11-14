@@ -77,6 +77,17 @@ class AnnotationStore:
                 self._remove(r)
             return gone
 
+    def safe_cleanup_orphans(self, live_run_ids) -> list:
+        """`cleanup_orphans` that refuses to run when the live set is empty.
+
+        An empty set usually means a fresh, restored or wrong database, and deleting every note then is not reversible.
+        Notes of a project that was really deleted are removed by `purge_run` at delete time instead.
+        """
+        live = set(live_run_ids)
+        if not live:
+            return []
+        return self.cleanup_orphans(live)
+
     def delete(self, run_id: str, hypothesis_id: str) -> bool:
         with self._lock:
             data = self._load(run_id)

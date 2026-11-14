@@ -10,6 +10,7 @@ import io
 import json
 import os
 import re
+import shutil
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -86,6 +87,39 @@ def interpretation(kind: str) -> dict:
     return {"interpreted": ok, "note": None if ok else NOT_INTERPRETED_NOTE.format(kind=kind.upper())}
 
 
+MAX_FILES_PER_SCOPE = 20
+MAX_BYTES_PER_SCOPE = 50 * 1024 * 1024
+
+
+def _scope_usage(folder: str):
+    names = [n for n in os.listdir(folder) if not n.endswith(".tmp")] if os.path.isdir(folder) else []
+    return names, sum(os.path.getsize(os.path.join(folder, n)) for n in names)
+
+
+def purge_uploads(directory: str, scope: str) -> bool:
+    """Delete everything stored for one scope (problem id). True if a folder existed."""
+    if not scope or _SAFE_SCOPE.search(scope):
+        raise ValidationFailed("invalid upload scope")
+    folder = os.path.join(directory, scope)
+    if not os.path.isdir(folder):
+        return False
+    shutil.rmtree(folder, ignore_errors=True)
+    return True
+
+
+def cleanup_uploads(directory: str, live_scopes) -> list:
+    """Remove stored uploads whose problem no longer exists. Does nothing when `live_scopes` is empty (a fresh or wrong
+    database would otherwise wipe every file). Returns the removed scopes, sorted."""
+    live = set(live_scopes)
+    if not live or not os.path.isdir(directory):
+        return []
+    gone = sorted(n for n in os.listdir(directory) if n not in live and not _SAFE_SCOPE.search(n)
+                  and os.path.isdir(os.path.join(directory, n)))
+    for n in gone:
+        shutil.rmtree(os.path.join(directory, n), ignore_errors=True)
+    return gone
+
+
 def store_upload(directory: str, scope: str, up: ValidatedUpload) -> dict:
     """Write the bytes under `directory/scope/<sha256><ext>` (content addressed, so a repeat upload is a no-op).
 
@@ -98,6 +132,10 @@ def store_upload(directory: str, scope: str, up: ValidatedUpload) -> dict:
     os.makedirs(folder, exist_ok=True)
     path = os.path.join(folder, digest + up.extension)
     if not os.path.exists(path):
+        names, used = _scope_usage(folder)
+        if len(names) >= MAX_FILES_PER_SCOPE or used + up.size > MAX_BYTES_PER_SCOPE:
+            raise PayloadTooLarge(f"upload storage for this problem is full ({MAX_FILES_PER_SCOPE} files or "
+                                  f"{MAX_BYTES_PER_SCOPE // (1024 * 1024)} MB)")
         tmp = path + ".tmp"
         with open(tmp, "wb") as f:
             f.write(up.data)

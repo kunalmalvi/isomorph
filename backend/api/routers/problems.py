@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import os
 import uuid
 from datetime import datetime, timezone
@@ -10,7 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from core.errors import NotFound, ValidationFailed
-from core.uploads import interpretation, store_upload, validate_upload
+from core.uploads import interpretation, purge_uploads, store_upload, validate_upload
 from database.models import (Assumption, Constraint, Evidence, Problem, ProblemEntity, ProblemRelationship, Source, User, Variable)
 from intelligence.perception import perceive_csv, perceive_text
 from intelligence.schemas import RELATIONS
@@ -65,10 +66,16 @@ def update_problem(problem_id: uuid.UUID, body: ProblemPatch, db: Session = Depe
 
 
 @router.delete("/{problem_id}", status_code=204)
-def delete_problem(problem_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def delete_problem(problem_id: uuid.UUID, request: Request, db: Session = Depends(get_db), user: User = Depends(current_user)):
     pr = load_problem(db, user, problem_id, "editor")
     pr.deleted_at = datetime.now(timezone.utc)
     db.commit()
+    state_dir = request.app.state.settings.state_dir
+    if state_dir:
+        try:  # already committed; startup cleanup is the backstop
+            purge_uploads(os.path.join(state_dir, "uploads"), str(problem_id))
+        except OSError:
+            logging.getLogger(__name__).warning("upload purge failed", exc_info=True)
     return Response(status_code=204)
 
 

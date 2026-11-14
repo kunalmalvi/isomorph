@@ -97,3 +97,53 @@ def test_plurals_and_case_are_normalised():
 
 def test_unknown_word_still_has_no_role():
     assert _roles("The frobnicator feeds the tank.").get("frobnicator") in (None,)
+
+
+# ------------------------------------------------------------------ review round 1
+def test_safe_cleanup_skips_empty_live_set(tmp_path):
+    st = JsonFileAnnotationStore(str(tmp_path))
+    st.set("r1", "H1", "saved", "keep me")
+    assert st.safe_cleanup_orphans([]) == []
+    assert st.list("r1")["H1"]["note"] == "keep me"
+    assert st.safe_cleanup_orphans(["other"]) == ["r1"]
+
+
+def _pdf(n=0):
+    return validate_upload("a.pdf", b"%PDF-1.4 " + str(n).encode(), 1000)
+
+
+def test_purge_and_cleanup_uploads(tmp_path):
+    from core.uploads import cleanup_uploads, purge_uploads
+    d = str(tmp_path)
+    for scope in ("p1", "p2", "p3"):
+        store_upload(d, scope, _pdf())
+    assert purge_uploads(d, "p1") and not purge_uploads(d, "p1")
+    assert cleanup_uploads(d, []) == []  # empty live set is refused
+    assert cleanup_uploads(d, ["p2"]) == ["p3"]
+    assert (tmp_path / "p2").is_dir() and not (tmp_path / "p3").exists()
+    with pytest.raises(ValidationFailed):
+        purge_uploads(d, "../x")
+
+
+def test_upload_quota_per_scope(tmp_path, monkeypatch):
+    from core import uploads
+    from core.errors import PayloadTooLarge
+    monkeypatch.setattr(uploads, "MAX_FILES_PER_SCOPE", 2)
+    store_upload(str(tmp_path), "p1", _pdf(1))
+    store_upload(str(tmp_path), "p1", _pdf(2))
+    store_upload(str(tmp_path), "p1", _pdf(2))  # same content, no new file
+    with pytest.raises(PayloadTooLarge):
+        store_upload(str(tmp_path), "p1", _pdf(3))
+    store_upload(str(tmp_path), "p2", _pdf(3))  # other scope unaffected
+    monkeypatch.setattr(uploads, "MAX_BYTES_PER_SCOPE", 5)
+    with pytest.raises(PayloadTooLarge):
+        store_upload(str(tmp_path), "p3", _pdf(1))
+
+
+def test_ordinary_prose_with_ambiguous_words_makes_no_entities():
+    text = "We tap into the pool of talent. Work will pile up in the fast lane. The grid of ideas on the gas of hope and a dam of coal."
+    roles = _roles(text)  # the unknown noun fallback may list a word, but it must not be given a role
+    for label, role in roles.items():
+        for w in ("tap", "pool", "pile", "lane", "grid", "gas", "dam", "coal", "router", "tube"):
+            if w in label.split():
+                assert role is None, (label, role)

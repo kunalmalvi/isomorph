@@ -117,3 +117,17 @@ Reruns at the end of phase 3: `python3 -m compileall -q backend scripts` passes.
 | Frontend (all of it) | Nothing new this phase | No npm, tsc, vitest or Playwright. Docker is broken, no image was built. |
 
 Known open after phase 3: the SSE design still holds one thread per open stream. The rate limiter is per process. The OpenAI, Gemini and Anthropic adapters have never called a real endpoint. PDF and image uploads are stored but not read.
+
+## Phase 3 review round 1
+
+Result: `cd backend && python3 -m pytest tests -q` gives 181 passed, 2 skipped (4 new tests in `tests/platform/test_phase3_followups.py`). `run_demo.py`, `evaluate_benchmarks.py` and `validate_seed_data.py` exit 0, `compileall` passes. The API, SQL and migration changes below could not run (no FastAPI, SQLAlchemy, Alembic, PostgreSQL) and are UNVERIFIED.
+
+| Review issue | Resolution | Executed | UNVERIFIED |
+|---|---|---|---|
+| 1. Startup sweep deletes on an empty or mismatched database | Fixed in part. `safe_cleanup_orphans` and `cleanup_uploads` do nothing when the live set is empty. Not fixed: a non-empty but wrong database (for example an older backup) still removes files for runs it does not know. Accepted because a grace period or quarantine adds state for a case that operators control; back up `STATE_DIR` before restoring a database. | `test_safe_cleanup_skips_empty_live_set` | Startup wiring in `api/main.py` |
+| 2. Soft-deleted runs lose notes | Fixed. The sweep treats every existing session row as live, soft-deleted or not. Notes of a deleted project are purged at delete time by `delete_project`. | None (needs SQL) | Query in `api/main.py` |
+| 3. Uploads never cleaned up | Fixed. `purge_uploads` runs on problem delete and project delete, and the startup sweep removes upload folders of problems whose row is gone. | `test_purge_and_cleanup_uploads` | Router wiring |
+| 4. No upload quota | Fixed. At most 20 files and 50 MB per problem (`MAX_FILES_PER_SCOPE`, `MAX_BYTES_PER_SCOPE` in `core/uploads.py`), 413 when exceeded. Repeat content does not count twice. Limits are module constants, not settings. | `test_upload_quota_per_scope` | Response mapping to 413 |
+| 5. Ambiguous synonyms | Fixed. Removed tap, pool, pile, lane, grid, router, gas, coal, dam, tube, fuse, resistance. Ordinary prose containing them gets no role. The unknown noun fallback may still list such a word with role None. | `test_ordinary_prose_with_ambiguous_words_makes_no_entities`, benchmark MRR unchanged | None |
+| 6. Purge after commit can fail the request | Fixed. Purges are wrapped in try/except OSError with a log warning. Startup cleanup is the backstop. The global handler would otherwise map OSError to 500. | None | `api/routers/projects.py`, `problems.py` |
+| 7. Migration 0002 does not backfill links | Fixed. The migration inserts a link row from each parent `source_id`. Other citations still need `python -m database.seed` after upgrade. | None | Migration up and down, backfill SQL |
