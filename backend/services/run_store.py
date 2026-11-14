@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 STAGE_STATUSES = ("pending", "running", "done", "failed", "stale", "skipped")
+ACTIVE_STATUSES = ("queued", "running")
 RUN_STATUSES = ("queued", "running", "done", "failed", "cancelled")
 
 
@@ -77,6 +78,10 @@ class RunStore:
     def save(self, run: RunRecord) -> None:
         raise NotImplementedError
 
+    def active_run_ids(self) -> List[str]:
+        """Ids of runs whose status is queued or running. Used for restart recovery."""
+        raise NotImplementedError
+
 
 class InMemoryRunStore(RunStore):
     """Stores deep copies so callers cannot mutate persisted state by accident."""
@@ -93,6 +98,10 @@ class InMemoryRunStore(RunStore):
     def save(self, run):
         with self._lock:
             self._runs[run.id] = copy.deepcopy(run.to_dict())
+
+    def active_run_ids(self):
+        with self._lock:
+            return sorted(i for i, d in self._runs.items() if d.get("status") in ACTIVE_STATUSES)
 
 
 class JsonFileRunStore(RunStore):
@@ -123,3 +132,18 @@ class JsonFileRunStore(RunStore):
             with os.fdopen(fd, "w") as f:
                 json.dump(run.to_dict(), f, sort_keys=True)
             os.replace(tmp, p)
+
+    def active_run_ids(self):
+        out = []
+        with self._lock:
+            for name in sorted(os.listdir(self.dir)):
+                if not name.endswith(".json") or name.endswith(".annotations.json"):
+                    continue
+                try:
+                    with open(os.path.join(self.dir, name)) as f:
+                        d = json.load(f)
+                except (OSError, ValueError):
+                    continue
+                if d.get("status") in ACTIVE_STATUSES:
+                    out.append(d["id"])
+        return out

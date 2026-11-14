@@ -1,6 +1,7 @@
 """FastAPI application factory. UNVERIFIED in the authoring sandbox (FastAPI is not installable there)."""
 from __future__ import annotations
 
+import os
 from typing import Optional
 
 from fastapi import Depends, FastAPI, Request
@@ -14,9 +15,11 @@ from core.config import Settings, load_settings
 from core.errors import AppError, TooManyRequests, error_envelope
 from core.rate_limit import RateLimiter
 from database.session import make_engine, make_session_factory
+from services.annotations import InMemoryAnnotationStore, JsonFileAnnotationStore
 from services.knowledge import default_knowledge
 from services.orchestrator import Orchestrator
 from workers.job_runner import JobRunner
+from workers.recovery import recover_interrupted_runs
 
 from .db_store import SqlRunStore
 from .deps import api_rate_limit
@@ -38,6 +41,9 @@ def create_app(settings: Optional[Settings] = None, session_factory=None, synchr
         Base.metadata.create_all(session_factory.kw["bind"])
     kb = default_knowledge(settings.data_dir)
     orch = Orchestrator(SqlRunStore(session_factory), kb, provider_factory=lambda name: get_provider(settings, name))
+    recover_interrupted_runs(orch.store)  # runs left queued or running by a previous process can never finish
+    app.state.annotations = (JsonFileAnnotationStore(os.path.join(settings.state_dir, "annotations")) if settings.state_dir
+                             else InMemoryAnnotationStore())
     app.state.settings = settings
     app.state.session_factory = session_factory
     app.state.kb = kb

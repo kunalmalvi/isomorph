@@ -40,14 +40,20 @@ export function parseSseBuffer(buffer: string): { messages: SseMessage[]; rest: 
   return { messages, rest };
 }
 
+/** Reads one connection. Returns the last event id seen and whether a terminal `end` or `error` event arrived. */
 export async function streamEvents(
   url: string,
   token: string | null,
   onMessage: (m: SseMessage) => void,
   signal: AbortSignal,
-): Promise<void> {
+  lastEventId?: string,
+): Promise<{ lastEventId?: string; finished: boolean }> {
   const res = await fetch(url, {
-    headers: { Accept: "text/event-stream", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    headers: {
+      Accept: "text/event-stream",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(lastEventId ? { "Last-Event-ID": lastEventId } : {}),
+    },
     signal,
     cache: "no-store",
   });
@@ -55,12 +61,39 @@ export async function streamEvents(
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
+  let last = lastEventId;
+  let finished = false;
   for (;;) {
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
     const parsed = parseSseBuffer(buffer);
     buffer = parsed.rest;
-    parsed.messages.forEach(onMessage);
+    for (const m of parsed.messages) {
+      if (m.id !== undefined) last = m.id;
+      if (m.event === "end" || m.event === "error") finished = true;
+      onMessage(m);
+    }
+  }
+  return { lastEventId: last, finished };
+}
+
+export const RECONNECT_DELAY_MS = 2000;
+export const MAX_RECONNECTS = 40;
+
+/** The server closes each connection after a short time (event `timeout`). Reconnect with Last-Event-ID until `end`. */
+export async function streamWithReconnect(
+  url: string,
+  token: string | null,
+  onMessage: (m: SseMessage) => void,
+  signal: AbortSignal,
+  delayMs: number = RECONNECT_DELAY_MS,
+): Promise<void> {
+  let last: string | undefined;
+  for (let attempt = 0; attempt <= MAX_RECONNECTS && !signal.aborted; attempt++) {
+    const r = await streamEvents(url, token, onMessage, signal, last);
+    last = r.lastEventId;
+    if (r.finished) return;
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
 }

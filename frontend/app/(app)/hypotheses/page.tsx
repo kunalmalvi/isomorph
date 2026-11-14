@@ -9,14 +9,29 @@ import { Button } from "@/components/ui/button";
 import { Badge, ProvenanceBadge, StatusBadge } from "@/components/ui/badge";
 import { Textarea, Label } from "@/components/ui/input";
 import { EmptyState, ErrorState, LoadingState, errorMessage } from "@/components/ui/states";
-import { MAX_COMPARE, hypothesesToMarkdown, toggleCompare, type Annotations, type Decision } from "@/lib/arena";
+import { MAX_COMPARE, hypothesesToMarkdown, mergeAnnotations, toggleCompare, type Annotations, type Decision } from "@/lib/arena";
 import type { HypothesisRecord, PersistedHypothesis } from "@/services/types";
 
 function ArenaBody({ runId, hypotheses }: { runId: string; hypotheses: HypothesisRecord[] }) {
   const [compare, setCompare] = React.useState<string[]>([]);
   const [annotations, setAnnotations] = useLocalState<Annotations>(`isomorph.arena.${runId}`, {});
-  const decide = (id: string, decision: Decision) => setAnnotations({ ...annotations, [id]: { note: annotations[id]?.note ?? "", decision } });
-  const note = (id: string, text: string) => setAnnotations({ ...annotations, [id]: { decision: annotations[id]?.decision ?? "none", note: text } });
+  const [serverState, setServerState] = React.useState<"loading" | "saved" | "offline">("loading");
+  // Load what the server has stored. When the API is unreachable the browser copy is used and the page says so.
+  React.useEffect(() => {
+    let cancelled = false;
+    api.discoveries.annotations(runId).then(
+      (r) => { if (!cancelled) { setAnnotations(mergeAnnotations(annotations, r.items)); setServerState("saved"); } },
+      () => { if (!cancelled) setServerState("offline"); },
+    );
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runId]);
+  const update = (id: string, next: { decision: Decision; note: string }) => {
+    setAnnotations({ ...annotations, [id]: next });
+    api.discoveries.putAnnotation(runId, id, next).then(() => setServerState("saved"), () => setServerState("offline"));
+  };
+  const decide = (id: string, decision: Decision) => update(id, { note: annotations[id]?.note ?? "", decision });
+  const note = (id: string, text: string) => update(id, { decision: annotations[id]?.decision ?? "none", note: text });
   const chosen = hypotheses.filter((h) => compare.includes(h.id));
   const withNotes = (list: HypothesisRecord[]) => list.map((h) => ({ ...h, annotation: annotations[h.id] }));
 
@@ -24,7 +39,9 @@ function ArenaBody({ runId, hypotheses }: { runId: string; hypotheses: Hypothesi
   return (
     <div className="space-y-4">
       <p className="text-xs text-muted-foreground">
-        Decisions and notes below are stored in this browser only. To keep a hypothesis on the server, use Save as hypothesis in the Transformation Studio.
+        {serverState === "saved" && "Decisions and notes are saved on the server and cached in this browser."}
+        {serverState === "loading" && "Loading saved decisions."}
+        {serverState === "offline" && "The server could not store decisions, so they are kept in this browser only and may be lost. Edit again once the API is reachable to sync them."}
       </p>
       <div className="flex flex-wrap gap-2">
         <Button size="sm" variant="secondary" disabled={chosen.length === 0} onClick={() => downloadText("hypotheses.json", JSON.stringify(withNotes(chosen), null, 2), "application/json")}>

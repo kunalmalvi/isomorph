@@ -254,3 +254,12 @@ export interface ValidationRecordOut {
   created_at: string;
   evidence?: Record<string, unknown>;
 }
+
+/** Reviewer decision and note stored by the server for one generated hypothesis. */
+export interface ServerAnnotation {
+  hypothesis_id: string;
+  decision: "none" | "saved" | "rejected" | "promoted";
+  note: string;
+  provenance: "user";
+  updated_at: number;
+}

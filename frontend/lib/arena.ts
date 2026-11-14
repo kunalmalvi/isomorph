@@ -1,4 +1,4 @@
-import type { HypothesisRecord } from "@/services/types";
+import type { HypothesisRecord, ServerAnnotation } from "@/services/types";
 
 export type Decision = "none" | "saved" | "rejected" | "promoted";
 export interface Annotation {
@@ -6,6 +6,13 @@ export interface Annotation {
   note: string;
 }
 export type Annotations = Record<string, Annotation>;
+
+/** Server decisions win over the browser copy for the same hypothesis. Hypotheses only in the browser copy are kept. */
+export function mergeAnnotations(local: Annotations, server: Record<string, Pick<ServerAnnotation, "decision" | "note">>): Annotations {
+  const out: Annotations = { ...local };
+  for (const [id, a] of Object.entries(server)) out[id] = { decision: a.decision, note: a.note };
+  return out;
+}
 
 export const MAX_COMPARE = 3;
 

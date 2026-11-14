@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, tokenStore } from "@/services/api";
-import { streamEvents } from "@/services/sse";
+import { streamWithReconnect } from "@/services/sse";
 import type { Progress } from "@/services/types";
 
 export interface AsyncState<T> {
@@ -54,7 +54,7 @@ export function useDiscoveryProgress(id: string | null, restartKey = 0): { progr
     if (!id) return;
     const ctrl = new AbortController();
     setStreamError(null);
-    streamEvents(
+    streamWithReconnect(
       api.discoveries.eventsUrl(id),
       tokenStore.get(),
       (m) => {

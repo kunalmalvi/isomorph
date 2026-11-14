@@ -9,14 +9,14 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from core.errors import Conflict, NotFound, ValidationFailed
-from core.sse import progress_stream
+from core.sse import parse_last_event_id, progress_stream
 from database.models import (CandidateMatch, Constraint, DiscoverySession, ProblemEntity, ProblemRelationship, User, Variable)
 from intelligence.schemas import SchemaError
 from services.orchestrator import STAGES, validate_config
 from services.problem_builder import build_problem
 from ..db_store import persist_results
 from ..deps import current_user, get_db, load_owned, load_problem, page, pagination, row_dict, visible_project_ids
-from ..schemas import DiscoveryIn, StageEditIn
+from ..schemas import AnnotationIn, DiscoveryIn, StageEditIn
 
 router = APIRouter(prefix="/discoveries", tags=["discoveries"])
 
@@ -154,5 +154,34 @@ def events(session_id: uuid.UUID, request: Request, db: Session = Depends(get_db
     def snapshot():
         run = store.get(run_id)
         return run.progress() if run else None
-    return StreamingResponse(progress_stream(snapshot), media_type="text/event-stream",
+    settings = request.app.state.settings
+    last_id = parse_last_event_id(request.headers.get("last-event-id"))
+    stream = progress_stream(snapshot, max_seconds=settings.sse_max_seconds, last_event_id=last_id)
+    return StreamingResponse(stream, media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+# ------------------------------------------------------------------ hypothesis decisions and notes
+@router.get("/{session_id}/annotations")
+def list_annotations(session_id: uuid.UUID, request: Request, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    """Reviewer decisions and notes for the generated hypotheses of this run, keyed by hypothesis id."""
+    s = load_owned(db, user, DiscoverySession, session_id, "viewer", "discovery")
+    return {"items": request.app.state.annotations.list(str(s.id))}
+
+
+@router.put("/{session_id}/annotations/{hypothesis_id}")
+def put_annotation(session_id: uuid.UUID, hypothesis_id: str, body: AnnotationIn, request: Request, db: Session = Depends(get_db),
+                   user: User = Depends(current_user)):
+    s = load_owned(db, user, DiscoverySession, session_id, "editor", "discovery")
+    run = request.app.state.orchestrator.store.get(str(s.id))
+    hyp = run.stages["hypothesis_generation"].output if run else None
+    if not hyp or hypothesis_id not in {h.get("id") for h in hyp.get("hypotheses", [])}:
+        raise NotFound("hypothesis not found in this discovery")
+    return request.app.state.annotations.set(str(s.id), hypothesis_id, body.decision, body.note)
+
+
+@router.delete("/{session_id}/annotations/{hypothesis_id}", status_code=204)
+def delete_annotation(session_id: uuid.UUID, hypothesis_id: str, request: Request, db: Session = Depends(get_db),
+                      user: User = Depends(current_user)):
+    s = load_owned(db, user, DiscoverySession, session_id, "editor", "discovery")
+    request.app.state.annotations.delete(str(s.id), hypothesis_id)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_COMPARE, hypothesesToMarkdown, toggleCompare } from "@/lib/arena";
+import { MAX_COMPARE, hypothesesToMarkdown, mergeAnnotations, toggleCompare } from "@/lib/arena";
 import type { HypothesisRecord } from "@/services/types";
 
 describe("toggleCompare", () => {
@@ -27,5 +27,15 @@ describe("hypothesesToMarkdown", () => {
   });
   it("omits decision when none was made", () => {
     expect(hypothesesToMarkdown([h])).not.toContain("Your decision");
+  });
+});
+
+describe("mergeAnnotations", () => {
+  it("lets the server win and keeps browser only entries", () => {
+    const merged = mergeAnnotations(
+      { a: { decision: "saved", note: "local" }, b: { decision: "none", note: "only here" } },
+      { a: { decision: "rejected", note: "server" } },
+    );
+    expect(merged).toEqual({ a: { decision: "rejected", note: "server" }, b: { decision: "none", note: "only here" } });
   });
 });

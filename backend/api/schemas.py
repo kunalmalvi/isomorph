@@ -219,6 +219,11 @@ class StageEditIn(BaseModel):
     output: Dict[str, Any]
 
 
+class AnnotationIn(BaseModel):
+    decision: Literal["none", "saved", "rejected", "promoted"] = "none"
+    note: str = Field("", max_length=5000)
+
+
 class MatchComponentOut(BaseModel):
     score: float = Field(ge=0, le=1)
     weight: float

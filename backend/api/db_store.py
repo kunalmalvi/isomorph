@@ -9,7 +9,7 @@ from sqlalchemy import delete, select
 
 from database.models import (CandidateMatch, DiscoverySession, PipelineStage, StructuralFingerprint, StructuralModel)
 from services.orchestrator import STAGES
-from services.run_store import RunRecord, RunStore, StageRecord
+from services.run_store import ACTIVE_STATUSES, RunRecord, RunStore, StageRecord
 
 
 def _dt(ts: Optional[float]):
@@ -48,6 +48,11 @@ class SqlRunStore(RunStore):
             stages = {n: stages[n] for n in STAGES}
             return RunRecord(run_id, s.input or {}, s.config or {}, s.status, s.error, stages, _ts(s.created_at) or 0.0,
                              _ts(s.updated_at) or 0.0)
+
+    def active_run_ids(self):
+        with self.sf() as db:
+            rows = db.execute(select(DiscoverySession.id).where(DiscoverySession.status.in_(ACTIVE_STATUSES))).scalars().all()
+            return sorted(str(r) for r in rows)
 
     def save(self, run: RunRecord) -> None:
         sid = uuid.UUID(run.id)
