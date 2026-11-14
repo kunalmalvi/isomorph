@@ -4,7 +4,7 @@ This file states what was executed in the authoring sandbox and what was only wr
 
 Command run: `cd backend && python3 -m pytest tests -q -rs`
 
-Result after phase 2: 167 passed, 2 skipped (baseline before phase 2 was 148 passed, 2 skipped). `python3 -m compileall -q backend scripts` passes.
+Result after phase 2: 169 passed, 2 skipped (baseline before phase 2 was 148 passed, 2 skipped). `python3 -m compileall -q backend scripts` passes.
 
 ## Executed and passing (stdlib only)
 | Area | Test files | What is covered |
@@ -92,3 +92,6 @@ In `-rs` output the skips read `could not import 'fastapi'` and `could not impor
 | End to end test: run, edit hypothesis, rerun downstream, validate | Executed, stale flags and validation output asserted | Same flow through HTTP |
 | 3D Discovery Universe | `frontend/lib/universe-layout.ts` executed under Node (`node frontend/tests/universe-check.mts`, passes) | `universe-3d.tsx` rendering, `frontend/tests/unit/universe.test.ts` (vitest never run) |
 | Kiro specs, steering, hook schema note | Documentation only | Hook JSON schema is a guess |
+
+## Phase 2 review follow-ups (UNVERIFIED frontend)
+After two review rounds the following frontend changes were written but not run (no vitest, tsc or npm): debounced and ordered note saves in the hypotheses page, newer-edit merge in `lib/arena.ts`, unbounded SSE reconnect with a 10 consecutive failure limit in `services/sse.ts`. Backend parts (X-Forwarded-For line joining, seed source logging) are covered by stdlib tests. The annotation orphan filter in `discoveries.py` and the compose volume are UNVERIFIED. Known open: SSE holds one threadpool thread per stream (max 30 s), SQL seed sink has no unique constraints, orphan annotation files stay on disk.

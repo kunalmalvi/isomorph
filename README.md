@@ -93,7 +93,7 @@ See [docs/deployment.md](docs/deployment.md) for configuration, security notes a
 
 **Written to specification, never executed (UNVERIFIED)**
 - `backend/api`, `backend/database`, `backend/migrations`: need FastAPI, SQLAlchemy and PostgreSQL to run. The 13 API tests exist and are skipped here.
-- Frontend: all 11 sections, command palette, API client, SSE client, vitest and Playwright specs. `npm install` was blocked, so nothing was built, type checked against real React and Next types, linted or rendered. A partial TypeScript pass without the React and Next type packages showed only errors caused by those missing packages. Phase 2 backend result: 167 passed, 2 skipped. Pure logic modules (universe layout, formatting, CSV, SSE parsing, graph layout, comparison limit) were executed under Node and behaved as expected.
+- Frontend: all 11 sections, command palette, API client, SSE client, vitest and Playwright specs. `npm install` was blocked, so nothing was built, type checked against real React and Next types, linted or rendered. A partial TypeScript pass without the React and Next type packages showed only errors caused by those missing packages. Phase 2 backend result: 169 passed, 2 skipped. Pure logic modules (universe layout, formatting, CSV, SSE parsing, graph layout, comparison limit) were executed under Node and behaved as expected.
 - `docker-compose.yml`, `frontend/Dockerfile`, `backend/Dockerfile`: never built.
 
 **Known gaps (by design in this version)**
