@@ -1,0 +1,15 @@
+{
+  "name": "broken-imports",
+  "version": "1.0.0",
+  "description": "Run `python3 -m compileall -q backend scripts` and check that no module imports from a layer it must not depend on (engine must not import api or database)",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "backend/**/*.py"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run `python3 -m compileall -q backend scripts` and check that no module imports from a layer it must not depend on (engine must not import api or database)."
+  }
+}

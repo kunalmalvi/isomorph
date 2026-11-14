@@ -1,0 +1,16 @@
+{
+  "name": "migration-check",
+  "version": "1.0.0",
+  "description": "Check that every model change has a reversible Alembic migration and that docs/database-design",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "backend/database/**/*.py",
+      "docs/database-design.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Check that every model change has a reversible Alembic migration and that docs/database-design.md lists the table."
+  }
+}

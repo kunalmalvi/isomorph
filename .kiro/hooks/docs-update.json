@@ -1,0 +1,16 @@
+{
+  "name": "docs-update",
+  "version": "1.0.0",
+  "description": "If behavior changed, update the relevant docs and spec files",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "backend/**/*.py",
+      "frontend/**/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "If behavior changed, update the relevant docs and spec files. Do not use em dashes. State verification status honestly."
+  }
+}

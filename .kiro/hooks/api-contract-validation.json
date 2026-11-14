@@ -1,0 +1,16 @@
+{
+  "name": "api-contract-validation",
+  "version": "1.0.0",
+  "description": "Compare routers under backend/api with docs/api-contracts",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "backend/api/**/*.py",
+      "docs/api-contracts.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Compare routers under backend/api with docs/api-contracts.md. Report endpoints present in one and missing in the other."
+  }
+}

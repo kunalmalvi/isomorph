@@ -1,0 +1,17 @@
+{
+  "name": "format-and-typecheck",
+  "version": "1.0.0",
+  "description": "Run ruff format and ruff check for Python, and tsc --noEmit for TypeScript when available",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "backend/**/*.py",
+      "frontend/**/*.ts",
+      "frontend/**/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run ruff format and ruff check for Python, and tsc --noEmit for TypeScript when available. Report tools that are not installed."
+  }
+}
