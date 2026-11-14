@@ -111,6 +111,15 @@ Base path: `/api/v1`. JSON only. Status: DESIGN, to be implemented with FastAPI.
 - `GET /settings/providers`
 - `PATCH /settings/weights`
 
+## Additional endpoints (implemented beyond the 66 listed)
+- `GET /health` liveness.
+- `POST /auth/register`, `POST /auth/login` return `{access_token, token_type, expires_in}` (both are rate limited per client address). `GET /auth/me`.
+- `POST /problems/{id}/uploads` multipart. Validates size (413), extension and content signature (422). Text and CSV files return a proposed structure and store nothing.
+- Stage inspection for a discovery: `GET /discoveries/{id}/stages`, `GET /discoveries/{id}/stages/{stage}`, `PUT /discoveries/{id}/stages/{stage}` (replace output, later stages become `stale`), `POST /discoveries/{id}/stages/{stage}/rerun?mode=downstream|from` (202).
+- `GET /discoveries/{id}/events` Server-Sent Events. Event `progress` carries `{run_id, status, completed, total, stages:[{name,status,version,source}]}` on every change. Event `end` carries the final status.
+- Stage names: perception, structural_extraction, structural_dna, cross_domain_search, structural_matching, mechanism_mapping, transformation, hypothesis_generation, validation.
+- Resources of another user's project answer 404. A project member with too low a role gets 403 (viewer reads, editor writes, owner manages members, archive and delete).
+
 ## Key request and response shapes
 - `POST /discoveries` body: `{"problem_id": uuid, "weights": {...} | null, "threshold": float | null, "top_k": int}`. Returns 202 with a session `{id, status}`.
 - `GET /matches/{id}/breakdown` returns `{"total": float, "components": {"functional": {"score": 0..1, "weight": 25, "explanation": str}, ...}, "domain_distance": float}`.

@@ -1,0 +1,10 @@
+# Runtime dependencies. Versions are pinned to a mutually compatible set but were NOT installed or tested in the
+# authoring sandbox (no package index access). Run the full test suite after installing.
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+sqlalchemy==2.0.36
+alembic==1.14.0
+psycopg[binary]==3.2.3
+pgvector==0.3.6
+python-multipart==0.0.20

@@ -115,6 +115,18 @@ Columns: id uuid pk, user_id fk null, project_id fk null, action, target_type, t
 ### `version_history`
 Columns: id uuid pk, entity_type, entity_id, version int, diff jsonb, changed_by fk users null, created_at timestamptz, updated_at timestamptz.
 
+## Additions made during implementation
+The implemented schema (backend/database/models.py, backend/migrations/versions/0001_initial.py) adds the following to the 35 tables above.
+- New tables: `pipeline_stages` (persisted, inspectable output of each orchestrator stage per discovery session), `reports` (generated report documents), `user_settings` (per user weights and preferences).
+- `discovery_sessions`: added `project_id`, `created_by`, `input jsonb`, `config jsonb`; status also allows `cancelled`.
+- `problems`: added `created_by`. `variables`: added `value`.
+- Denormalised ownership: `project_id` (fk projects, indexed) on `structural_models`, `candidate_matches`, `structural_mappings`, `transformations`, `hypotheses`, `experiments`, `validation_records`. It is copied from the parent on insert so every authorization check is a single lookup.
+- `candidate_matches`: added `system_key` (seed knowledge system id). `domain_system_id` is nullable because seed knowledge is served from `data/` in local mode.
+- `transformations`: added `concept jsonb`. `hypotheses`: added `experiment jsonb`.
+- Soft delete: `deleted_at timestamptz` (indexed) on projects, problems, discovery_sessions, structural_models, hypotheses, experiments and reports. Soft deleted rows are hidden by the API.
+- Enums are stored as VARCHAR with a CHECK constraint (not native PostgreSQL enums) so migrations are reversible and SQLite works for tests.
+- `embeddings.vector` is `vector(384)` with an HNSW cosine index when the pgvector extension and Python package are available. Otherwise it is a JSON float array without an ANN index (set `USE_PGVECTOR=false`).
+
 ## Indexes
 - Foreign key columns are indexed.
 - `embeddings`: HNSW index on vector with cosine ops; btree on (owner_type, owner_id).
