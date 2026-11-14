@@ -79,27 +79,35 @@ export async function streamEvents(
 }
 
 export const RECONNECT_DELAY_MS = 2000;
-export const MAX_RECONNECTS = 40;
+/** Consecutive failed connection attempts tolerated. A connection that opens and later ends normally resets the count. */
+export const MAX_CONSECUTIVE_FAILURES = 10;
 
-/** The server closes each connection after a short time (event `timeout`). Reconnect with Last-Event-ID until `end`. */
+/**
+ * The server closes each connection after a short time (event `timeout`). Reconnect with Last-Event-ID until `end`.
+ * Planned reconnects are unlimited, so a run of any length is followed. Only consecutive errors (network failure or
+ * non-2xx) are bounded.
+ */
 export async function streamWithReconnect(
   url: string,
   token: string | null,
   onMessage: (m: SseMessage) => void,
   signal: AbortSignal,
   delayMs: number = RECONNECT_DELAY_MS,
+  connect: typeof streamEvents = streamEvents,
 ): Promise<void> {
   let last: string | undefined;
-  for (let attempt = 0; attempt <= MAX_RECONNECTS && !signal.aborted; attempt++) {
+  let failures = 0;
+  while (!signal.aborted) {
     try {
-      const r = await streamEvents(url, token, onMessage, signal, last);
+      const r = await connect(url, token, onMessage, signal, last);
+      failures = 0;
       last = r.lastEventId ?? last;
       if (r.finished) return;
     } catch (err) {
       if (signal.aborted) return;
-      if (attempt === MAX_RECONNECTS) throw err; // network error or non-2xx: retry, then surface it
+      failures++;
+      if (failures > MAX_CONSECUTIVE_FAILURES) throw err;
     }
     await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
-  if (!signal.aborted) throw new Error("live progress stopped: too many reconnects");
 }

@@ -31,11 +31,20 @@ describe("hypothesesToMarkdown", () => {
 });
 
 describe("mergeAnnotations", () => {
-  it("lets the server win and keeps browser only entries", () => {
-    const merged = mergeAnnotations(
-      { a: { decision: "saved", note: "local" }, b: { decision: "none", note: "only here" } },
-      { a: { decision: "rejected", note: "server" } },
-    );
-    expect(merged).toEqual({ a: { decision: "rejected", note: "server" }, b: { decision: "none", note: "only here" } });
+  const local = { a: { decision: "saved" as const, note: "local" }, b: { decision: "none" as const, note: "only here" } };
+  it("lets the server win without browser edit times and keeps browser only entries", () => {
+    const r = mergeAnnotations(local, { a: { decision: "rejected", note: "server", updated_at: 100 } });
+    expect(r.merged).toEqual({ a: { decision: "rejected", note: "server" }, b: { decision: "none", note: "only here" } });
+    expect(r.push).toEqual([]);
+  });
+  it("keeps a browser edit that is newer than the server copy and reports it for upload", () => {
+    const r = mergeAnnotations(local, { a: { decision: "rejected", note: "server", updated_at: 100 } }, { a: 200 });
+    expect(r.merged.a).toEqual({ decision: "saved", note: "local" });
+    expect(r.push).toEqual(["a"]);
+  });
+  it("takes the server copy when it is newer than the browser edit", () => {
+    const r = mergeAnnotations(local, { a: { decision: "rejected", note: "server", updated_at: 300 } }, { a: 200 });
+    expect(r.merged.a.note).toBe("server");
+    expect(r.push).toEqual([]);
   });
 });

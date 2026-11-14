@@ -215,3 +215,25 @@ def test_end_to_end_edit_hypothesis_stage_rerun_downstream_validate():
     assert "not real world evidence" in val.output["note"]
     for h in val.output["hypotheses"]:  # edited hypotheses are never presented as source facts
         assert h["provenance"] in ("computation", "user", "ai_hypothesis")
+
+
+def test_joined_forwarded_for_lines_cannot_hide_the_proxy_hop():
+    # Two header lines: the client sent "6.6.6.6", the proxy appended "198.51.100.7". Joined with a comma they walk like one line.
+    assert client_key("10.0.0.5", ",".join(["6.6.6.6", "198.51.100.7"]), ("10.0.0.0/8",)) == "198.51.100.7"
+
+
+def test_seed_keeps_every_source_and_links_the_first(caplog, tmp_path):
+    import shutil
+    from database.seed import DEFAULT_DATA_DIR
+    data = tmp_path / "data"
+    shutil.copytree(DEFAULT_DATA_DIR, data)
+    for fp in (data / "seed_knowledge").glob("*.json"):
+        doc = json.loads(fp.read_text())
+        doc["systems"][0]["sources"] = [{"citation": "First 2001", "kind": "paper"}, {"citation": "Second 2002", "kind": "book"}]
+        fp.write_text(json.dumps(doc))
+        break
+    with caplog.at_level("INFO", logger="database.seed"):
+        plan = plan_seed(str(data))
+    cites = {s["citation"] for s in plan["sources"]}
+    assert {"First 2001", "Second 2002"} <= cites
+    assert any("linking the first only" in r.message for r in caplog.records)

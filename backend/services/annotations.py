@@ -76,7 +76,12 @@ class InMemoryAnnotationStore(AnnotationStore):
 
 
 class JsonFileAnnotationStore(AnnotationStore):
-    """One JSON file per run, written atomically. Survives restarts."""
+    """One JSON file per run, written atomically. Survives restarts.
+
+    Single process only. The lock is in process and each update reads and rewrites the whole file, so two API
+    processes sharing the directory can lose each other's updates. Move to a database table before scaling out.
+    Files are kept when a discovery is soft deleted; the API hides notes for hypotheses that no longer exist.
+    """
 
     def __init__(self, directory: str, clock: Callable[[], float] = time.time):
         super().__init__(clock)

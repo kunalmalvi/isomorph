@@ -68,7 +68,8 @@ def client_key(peer: Optional[str], forwarded_for: Optional[str] = None, trusted
 
     X-Forwarded-For is client controlled, so it is honored only when the direct peer is a trusted proxy
     (entries are IPs or CIDR networks). The header is walked from the right: trusted proxies are skipped and the
-    first address that is not trusted is the client. A malformed entry stops the walk and the peer is used.
+    first address that is not trusted is the client. Callers must join repeated header lines with a comma, so a
+    line the client sent first cannot hide the one a proxy appended. A malformed entry stops the walk and the peer is used.
     """
     trusted = tuple(trusted_proxies)
     peer_ip = _parse_ip(peer) if peer else None

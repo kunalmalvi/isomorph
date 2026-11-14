@@ -7,11 +7,26 @@ export interface Annotation {
 }
 export type Annotations = Record<string, Annotation>;
 
-/** Server decisions win over the browser copy for the same hypothesis. Hypotheses only in the browser copy are kept. */
-export function mergeAnnotations(local: Annotations, server: Record<string, Pick<ServerAnnotation, "decision" | "note">>): Annotations {
-  const out: Annotations = { ...local };
-  for (const [id, a] of Object.entries(server)) out[id] = { decision: a.decision, note: a.note };
-  return out;
+export type AnnotationTimes = Record<string, number>;
+
+/**
+ * Merge server annotations over the browser copy. The newer edit wins per hypothesis: a browser edit made after the
+ * server's `updated_at` (seconds) is kept. `localTimes` holds browser edit times in seconds. Returns the merged
+ * annotations and the ids whose browser edits were newer and should be pushed to the server.
+ */
+export function mergeAnnotations(
+  local: Annotations,
+  server: Record<string, Pick<ServerAnnotation, "decision" | "note"> & { updated_at?: number }>,
+  localTimes: AnnotationTimes = {},
+): { merged: Annotations; push: string[] } {
+  const merged: Annotations = { ...local };
+  const push: string[] = [];
+  for (const [id, a] of Object.entries(server)) {
+    const localT = localTimes[id];
+    if (local[id] && localT !== undefined && localT > (a.updated_at ?? 0)) push.push(id);
+    else merged[id] = { decision: a.decision, note: a.note };
+  }
+  return { merged, push };
 }
 
 export const MAX_COMPARE = 3;

@@ -12,9 +12,11 @@ from __future__ import annotations
 import argparse
 import glob
 import json
+import logging
 import os
 from typing import Dict, Iterable, List, Optional, Protocol, Tuple
 
+log = logging.getLogger(__name__)
 DEFAULT_DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "data")
 SOURCE_TYPES = {"textbook": "book", "paper": "paper", "standard": "standard", "dataset": "dataset"}
 
@@ -41,6 +43,9 @@ def plan_seed(data_dir: Optional[str] = None) -> dict:
                     sources.setdefault(src["citation"], {"citation": src["citation"], "title": src["citation"][:200],
                                                          "source_type": _source_type(src.get("kind", ""))})
                     refs.append(src["citation"])
+                if len(refs) > 1:
+                    # The schema links one source per system and mechanism. Extra citations are still loaded as sources.
+                    log.info("seed: %s has %d sources, linking the first only (%s)", s["id"], len(refs), refs[0])
                 if not refs:
                     sources.setdefault("ISOMORPH seed data", {"citation": "ISOMORPH seed data", "title": "ISOMORPH seed data", "source_type": "internal"})
                     refs = ["ISOMORPH seed data"]

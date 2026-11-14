@@ -9,29 +9,66 @@ import { Button } from "@/components/ui/button";
 import { Badge, ProvenanceBadge, StatusBadge } from "@/components/ui/badge";
 import { Textarea, Label } from "@/components/ui/input";
 import { EmptyState, ErrorState, LoadingState, errorMessage } from "@/components/ui/states";
-import { MAX_COMPARE, hypothesesToMarkdown, mergeAnnotations, toggleCompare, type Annotations, type Decision } from "@/lib/arena";
+import { MAX_COMPARE, hypothesesToMarkdown, mergeAnnotations, toggleCompare, type AnnotationTimes, type Annotations, type Decision } from "@/lib/arena";
 import type { HypothesisRecord, PersistedHypothesis } from "@/services/types";
 
 function ArenaBody({ runId, hypotheses }: { runId: string; hypotheses: HypothesisRecord[] }) {
   const [compare, setCompare] = React.useState<string[]>([]);
   const [annotations, setAnnotations] = useLocalState<Annotations>(`isomorph.arena.${runId}`, {});
+  const [times, setTimes] = useLocalState<AnnotationTimes>(`isomorph.arena.times.${runId}`, {});
   const [serverState, setServerState] = React.useState<"loading" | "saved" | "offline">("loading");
-  // Load what the server has stored. When the API is unreachable the browser copy is used and the page says so.
+  const [kept, setKept] = React.useState(0);
+  // Latest value per hypothesis, and the saves in flight. Saves for one hypothesis are sent one at a time and always
+  // carry the newest value, so an older write can never land after a newer one.
+  const latest = React.useRef<Record<string, { decision: Decision; note: string }>>({});
+  const dirty = React.useRef<Set<string>>(new Set());
+  const inFlight = React.useRef<Set<string>>(new Set());
+  const timers = React.useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const flush = React.useCallback((id: string) => {
+    if (inFlight.current.has(id) || !dirty.current.has(id)) return;
+    dirty.current.delete(id);
+    inFlight.current.add(id);
+    api.discoveries.putAnnotation(runId, id, latest.current[id]).then(
+      () => setServerState("saved"),
+      () => { setServerState("offline"); dirty.current.add(id); },
+    ).finally(() => {
+      inFlight.current.delete(id);
+      if (dirty.current.has(id) && serverStateOk.current) flush(id);
+    });
+  }, [runId]);
+  const serverStateOk = React.useRef(true);
+  React.useEffect(() => { serverStateOk.current = serverState !== "offline"; }, [serverState]);
+  React.useEffect(() => () => { Object.values(timers.current).forEach(clearTimeout); }, []);
+  const schedule = (id: string, delay: number) => {
+    clearTimeout(timers.current[id]);
+    timers.current[id] = setTimeout(() => flush(id), delay);
+  };
+  // Load what the server has stored. The newer edit wins per hypothesis, and newer browser edits are pushed up.
   React.useEffect(() => {
     let cancelled = false;
     api.discoveries.annotations(runId).then(
-      (r) => { if (!cancelled) { setAnnotations(mergeAnnotations(annotations, r.items)); setServerState("saved"); } },
+      (r) => {
+        if (cancelled) return;
+        const { merged, push } = mergeAnnotations(annotations, r.items, times);
+        setAnnotations(merged);
+        setKept(push.length);
+        for (const id of push) { latest.current[id] = annotations[id]; dirty.current.add(id); schedule(id, 0); }
+        setServerState("saved");
+      },
       () => { if (!cancelled) setServerState("offline"); },
     );
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runId]);
-  const update = (id: string, next: { decision: Decision; note: string }) => {
+  const update = (id: string, next: { decision: Decision; note: string }, delay: number) => {
     setAnnotations({ ...annotations, [id]: next });
-    api.discoveries.putAnnotation(runId, id, next).then(() => setServerState("saved"), () => setServerState("offline"));
+    setTimes({ ...times, [id]: Date.now() / 1000 });
+    latest.current[id] = next;
+    dirty.current.add(id);
+    schedule(id, delay);
   };
-  const decide = (id: string, decision: Decision) => update(id, { note: annotations[id]?.note ?? "", decision });
-  const note = (id: string, text: string) => update(id, { decision: annotations[id]?.decision ?? "none", note: text });
+  const decide = (id: string, decision: Decision) => update(id, { note: annotations[id]?.note ?? "", decision }, 0);
+  const note = (id: string, text: string) => update(id, { decision: annotations[id]?.decision ?? "none", note: text }, 600);
   const chosen = hypotheses.filter((h) => compare.includes(h.id));
   const withNotes = (list: HypothesisRecord[]) => list.map((h) => ({ ...h, annotation: annotations[h.id] }));
 
@@ -41,6 +78,7 @@ function ArenaBody({ runId, hypotheses }: { runId: string; hypotheses: Hypothesi
       <p className="text-xs text-muted-foreground">
         {serverState === "saved" && "Decisions and notes are saved on the server and cached in this browser."}
         {serverState === "loading" && "Loading saved decisions."}
+        {serverState === "saved" && kept > 0 && ` ${kept} edit${kept === 1 ? "" : "s"} made while offline were newer than the server copy and were sent to it.`}
         {serverState === "offline" && "The server could not store decisions, so they are kept in this browser only and may be lost. Edit again once the API is reachable to sync them."}
       </p>
       <div className="flex flex-wrap gap-2">

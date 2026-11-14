@@ -166,7 +166,15 @@ def events(session_id: uuid.UUID, request: Request, db: Session = Depends(get_db
 def list_annotations(session_id: uuid.UUID, request: Request, db: Session = Depends(get_db), user: User = Depends(current_user)):
     """Reviewer decisions and notes for the generated hypotheses of this run, keyed by hypothesis id."""
     s = load_owned(db, user, DiscoverySession, session_id, "viewer", "discovery")
-    return {"items": request.app.state.annotations.list(str(s.id))}
+    items = request.app.state.annotations.list(str(s.id))
+    # Hypothesis ids are positional (H<i>-<concept type>), so a rerun of the hypothesis stage can change them.
+    # Hide notes whose hypothesis no longer exists instead of showing them against the wrong statement.
+    run = request.app.state.orchestrator.store.get(str(s.id))
+    hyp = run.stages["hypothesis_generation"].output if run else None
+    if hyp:
+        current = {h.get("id") for h in hyp.get("hypotheses", [])}
+        items = {k: v for k, v in items.items() if k in current}
+    return {"items": items}
 
 
 @router.put("/{session_id}/annotations/{hypothesis_id}")

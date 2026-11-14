@@ -102,7 +102,7 @@ See [docs/deployment.md](docs/deployment.md) for configuration, security notes a
 - Hypothesis decisions and notes are saved server side through phase 2 endpoints (UNVERIFIED, API not runnable here), with browser storage as fallback.
 - Saved default weights are used by the Advanced form and are not applied by the server on its own.
 - The auth token is kept in `localStorage`, so an XSS bug would expose it. Content Security Policy and cookie based sessions are not done.
-- The job runner is in process. Startup recovery marks interrupted runs failed (single process assumed). The rate limiter is in memory.
+- The job runner is in process. Startup recovery marks interrupted runs failed (single process assumed, also for the JSON annotation store). The rate limiter is in memory.
 - Seed data is served from `data/` JSON. An idempotent seeding function exists but is not run automatically and is UNVERIFIED against a database.
 - No `package-lock.json` (npm install blocked here).
 - Seed knowledge is a curated starting set, not a complete reference. Domain distance and scores are heuristics.
