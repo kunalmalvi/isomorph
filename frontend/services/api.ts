@@ -1,6 +1,6 @@
 import type {
   DbMatch, Discovery, Domain, Page, PersistedHypothesis, Problem, Project, ProviderStatus, Report, SettingsOut,
-  StageRecord, SystemSummary, TokenOut, UploadResult, User, ValidationRecordOut, Graph,
+  ServerAnnotation, StageRecord, SystemSummary, TokenOut, UploadResult, User, ValidationRecordOut, Graph,
 } from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1").replace(/\/$/, "");
@@ -117,6 +117,9 @@ export const api = {
     editStage: (id: string, stage: string, output: Record<string, unknown>) => put(`/discoveries/${id}/stages/${stage}`, { output }),
     rerun: (id: string, stage: string, mode: "downstream" | "from") =>
       post<{ id: string; status: string }>(`/discoveries/${id}/stages/${stage}/rerun${buildQuery({ mode })}`),
+    annotations: (id: string) => get<{ items: Record<string, ServerAnnotation> }>(`/discoveries/${id}/annotations`),
+    putAnnotation: (id: string, hypothesisId: string, b: { decision: string; note: string }) =>
+      put<ServerAnnotation>(`/discoveries/${id}/annotations/${encodeURIComponent(hypothesisId)}`, b),
     eventsUrl: (id: string) => `${API_URL}/discoveries/${id}/events`,
   },
   structural: {

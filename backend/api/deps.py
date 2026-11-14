@@ -13,6 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from core.errors import Forbidden, NotFound, TooManyRequests, Unauthorized
+from core.rate_limit import client_key
 from core.security import TokenError, decode_token, role_allows
 from database.models import Project, ProjectMember, User
 
@@ -29,7 +30,8 @@ def get_db(request: Request) -> Iterator[Session]:
 
 
 def _client_key(request: Request) -> str:
-    return request.client.host if request.client else "unknown"
+    peer = request.client.host if request.client else None
+    return client_key(peer, ",".join(request.headers.getlist("x-forwarded-for")) or None, request.app.state.settings.trusted_proxies)
 
 
 def api_rate_limit(request: Request) -> None:

@@ -4,6 +4,7 @@ Local deterministic mode is the default: AI_PROVIDER=local needs no API key and 
 """
 from __future__ import annotations
 
+import ipaddress
 import os
 from dataclasses import dataclass, field
 from typing import Mapping, Optional
@@ -35,6 +36,10 @@ class Settings:
     data_dir: Optional[str] = None
     cors_origins: tuple = ("http://localhost:3000",)
     worker_threads: int = 2
+    trusted_proxies: tuple = ()
+    state_dir: Optional[str] = None
+    sse_max_seconds: float = 30.0
+    recover_interrupted_runs: bool = True
 
     def validate(self) -> "Settings":
         if self.ai_provider not in PROVIDERS:
@@ -43,6 +48,13 @@ class Settings:
             raise ConfigError("ISOMORPH_SECRET_KEY must be at least 32 characters")
         if self.environment == "production" and self.secret_key == DEV_SECRET:
             raise ConfigError("ISOMORPH_SECRET_KEY must be set explicitly in production")
+        for entry in self.trusted_proxies:
+            try:
+                ipaddress.ip_network(entry, strict=False)
+            except ValueError:
+                raise ConfigError(f"TRUSTED_PROXIES entry is not an IP or CIDR network: {entry!r}")
+        if not 1 <= self.sse_max_seconds <= 600:
+            raise ConfigError("SSE_MAX_SECONDS must be between 1 and 600")
         return self
 
     def api_key_for(self, provider: str) -> Optional[str]:
@@ -71,4 +83,8 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         data_dir=g("ISOMORPH_DATA_DIR") or None,
         cors_origins=tuple(x.strip() for x in g("CORS_ORIGINS", "http://localhost:3000").split(",") if x.strip()),
         worker_threads=int(g("WORKER_THREADS", "2")),
+        trusted_proxies=tuple(x.strip() for x in g("TRUSTED_PROXIES", "").split(",") if x.strip()),
+        state_dir=g("ISOMORPH_STATE_DIR") or None,
+        sse_max_seconds=float(g("SSE_MAX_SECONDS", "30")),
+        recover_interrupted_runs=g("RECOVER_INTERRUPTED_RUNS", "true").strip().lower() not in ("0", "false", "no", "off"),
     ).validate()

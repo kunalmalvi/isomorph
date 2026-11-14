@@ -8,7 +8,7 @@ RUN pip install -r /app/backend/requirements.txt
 
 COPY backend /app/backend
 COPY data /app/data
-RUN useradd --create-home --uid 10001 isomorph && chown -R isomorph /app
+RUN useradd --create-home --uid 10001 isomorph && mkdir -p /var/lib/isomorph && chown -R isomorph /app /var/lib/isomorph
 USER isomorph
 
 ENV ISOMORPH_DATA_DIR=/app/data PYTHONPATH=/app/backend

@@ -70,8 +70,8 @@ def test_sse_format_and_stream():
     assert format_sse("progress", {"a": 1}, 3) == 'id: 3\nevent: progress\ndata: {"a":1}\n\n'
     snaps = iter([{"status": "running", "n": 1}, {"status": "running", "n": 1}, {"status": "done", "n": 2}])
     out = list(progress_stream(lambda: next(snaps), sleep=lambda s: None))
-    assert [o.split("\n")[1] for o in out] == ["event: progress", "event: progress", "event: end"]
-    assert list(progress_stream(lambda: None))[0].split("\n")[1] == "event: error"
+    assert [o.split("\n")[1] for o in out[1:]] == ["event: progress", "event: progress", "event: end"]
+    assert list(progress_stream(lambda: None))[1].split("\n")[1] == "event: error"
     t = iter(range(0, 1000, 100))
     out = list(progress_stream(lambda: {"status": "running"}, sleep=lambda s: None, max_seconds=250, clock=lambda: next(t)))
     assert "event: timeout" in out[-1]

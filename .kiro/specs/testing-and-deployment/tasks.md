@@ -10,3 +10,8 @@
 - [ ] T8. Test: Compose config lint (not runnable in sandbox)
 - [ ] T9. Handle edge cases listed in design.md
 - [ ] T10. Update docs and record verification status
+
+## Status (phase 2)
+- T1, T2, T5, T6, T7 done. T3 and T4 written.
+- Backend suite: 167 passed, 2 skipped after phase 2. UNVERIFIED: vitest, Playwright, docker-compose and Dockerfiles never ran. T8 (compose lint) not done. No package-lock.json exists.
+- Checkboxes above are the original plan. Treat this section as the current state.

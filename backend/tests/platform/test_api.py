@@ -258,3 +258,30 @@ def test_lists_hide_deleted_projects_and_non_members_get_404_before_validation(c
     assert client.get("/api/v1/problems", headers=a).json()["total"] == 1
     assert client.delete(f"/api/v1/projects/{pid}", headers=a).status_code in (200, 204)
     assert client.get("/api/v1/problems", headers=a).json()["total"] == 0
+
+
+# ---- phase 2 (UNVERIFIED: skipped where FastAPI is not installed)
+def test_annotations_endpoints(client):
+    a, b = signup(client, "a"), signup(client, "b")
+    prob = mkproblem(client, a, mkproject(client, a))
+    did = client.post("/api/v1/discoveries", json={"problem_id": prob}, headers=a).json()["id"]
+    hid = client.get(f"/api/v1/discoveries/{did}/stages/hypothesis_generation", headers=a).json()["output"]["hypotheses"][0]["id"]
+    url = f"/api/v1/discoveries/{did}/annotations"
+    assert client.get(url, headers=a).json() == {"items": {}}
+    r = client.put(f"{url}/{hid}", json={"decision": "promoted", "note": "n"}, headers=a)
+    assert r.status_code == 200 and r.json()["provenance"] == "user"
+    assert client.get(url, headers=a).json()["items"][hid]["decision"] == "promoted"
+    assert client.put(f"{url}/{hid}", json={"decision": "bogus"}, headers=a).status_code == 422
+    assert client.put(f"{url}/nope", json={"decision": "saved"}, headers=a).status_code == 404
+    assert client.get(url, headers=b).status_code == 404
+    assert client.delete(f"{url}/{hid}", headers=a).status_code == 204
+    assert client.get(url, headers=a).json()["items"] == {}
+
+
+def test_sse_reconnect_header_continues_ids(client):
+    a = signup(client, "a")
+    prob = mkproblem(client, a, mkproject(client, a))
+    did = client.post("/api/v1/discoveries", json={"problem_id": prob}, headers=a).json()["id"]
+    with client.stream("GET", f"/api/v1/discoveries/{did}/events", headers={**a, "Last-Event-ID": "5"}) as r:
+        body = "".join(r.iter_text())
+    assert "retry: 2000" in body and "id: 6\n" in body

@@ -93,17 +93,18 @@ See [docs/deployment.md](docs/deployment.md) for configuration, security notes a
 
 **Written to specification, never executed (UNVERIFIED)**
 - `backend/api`, `backend/database`, `backend/migrations`: need FastAPI, SQLAlchemy and PostgreSQL to run. The 13 API tests exist and are skipped here.
-- Frontend: all 11 sections, command palette, API client, SSE client, vitest and Playwright specs. `npm install` was blocked, so nothing was built, type checked against real React and Next types, linted or rendered. A partial TypeScript pass without the React and Next type packages showed only errors caused by those missing packages. Pure logic modules (formatting, CSV, SSE parsing, graph layout, comparison limit) were executed under Node and behaved as expected.
+- Frontend: all 11 sections, command palette, API client, SSE client, vitest and Playwright specs. `npm install` was blocked, so nothing was built, type checked against real React and Next types, linted or rendered. A partial TypeScript pass without the React and Next type packages showed only errors caused by those missing packages. Phase 2 backend result: 169 passed, 2 skipped. Pure logic modules (universe layout, formatting, CSV, SSE parsing, graph layout, comparison limit) were executed under Node and behaved as expected.
 - `docker-compose.yml`, `frontend/Dockerfile`, `backend/Dockerfile`: never built.
 
 **Known gaps (by design in this version)**
 - PDF and image uploads are validated but not interpreted (no OCR or vision dependency). The UI says so.
-- No 3D universe view. The Discovery Universe page uses a chart and tables.
-- Hypothesis decisions (shortlist, promote, reject) and notes in the Hypothesis Arena are stored in the browser only. The server API has no endpoint for them. Server side editing of a saved hypothesis statement works.
+- The 3D Discovery Universe view is a dependency free SVG projection and is UNVERIFIED (never rendered). Its layout math ran under Node.
+- Hypothesis decisions and notes are saved server side through phase 2 endpoints (UNVERIFIED, API not runnable here), with browser storage as fallback.
 - Saved default weights are used by the Advanced form and are not applied by the server on its own.
 - The auth token is kept in `localStorage`, so an XSS bug would expose it. Content Security Policy and cookie based sessions are not done.
-- The job runner is in process. A crashed process leaves runs `queued` or `running`. The rate limiter is in memory.
-- Seed data is served from `data/` JSON. The database seed tables are migrated but not populated.
+- The job runner is in process. Startup recovery marks interrupted runs failed (single process assumed, also for the JSON annotation store). The rate limiter is in memory.
+- Seed data is served from `data/` JSON. An idempotent seeding function exists but is not run automatically and is UNVERIFIED against a database.
+- No `package-lock.json` (npm install blocked here).
 - Seed knowledge is a curated starting set, not a complete reference. Domain distance and scores are heuristics.
 
 More detail: [docs/verification-status.md](docs/verification-status.md).

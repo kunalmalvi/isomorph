@@ -5,3 +5,4 @@
 - Determinism tests: same seed and input give identical output.
 - No time or network dependent tests.
 - Report honestly which tests ran and which were skipped. Do not claim verification that did not run.
+- Label anything that did not run as UNVERIFIED in docs/verification-status.md. Phase 2 items that could not run: API tests, vitest, Playwright, Docker builds, PostgreSQL migration.

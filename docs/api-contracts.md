@@ -117,6 +117,15 @@ Base path: `/api/v1`. JSON only. Status: DESIGN, to be implemented with FastAPI.
 - `POST /problems/{id}/uploads` multipart. Validates size (413), extension and content signature (422). Text and CSV files return a proposed structure and store nothing.
 - Stage inspection for a discovery: `GET /discoveries/{id}/stages`, `GET /discoveries/{id}/stages/{stage}`, `PUT /discoveries/{id}/stages/{stage}` (replace output, later stages become `stale`), `POST /discoveries/{id}/stages/{stage}/rerun?mode=downstream|from` (202).
 - `GET /discoveries/{id}/events` Server-Sent Events. Event `progress` carries `{run_id, status, completed, total, stages:[{name,status,version,source}]}` on every change. Event `end` carries the final status.
+  A connection lasts at most `SSE_MAX_SECONDS` (default 30) and polls the run about once per second. The stream starts with `retry: 2000`. When the limit is reached the server sends event `timeout` (`{reconnect: true}`) and closes. The client reconnects with the `Last-Event-ID` header, ids continue from that value, and the first event of the new connection is the current snapshot. Event `error` is sent when the run no longer exists.
+- Hypothesis decisions and notes, scoped to a discovery and keyed by the generated hypothesis id (for example `H1-close_feedback_loop`):
+  - `GET /discoveries/{id}/annotations` returns `{items: {<hypothesis_id>: {hypothesis_id, decision, note, provenance: "user", updated_at}}}` (viewer).
+  - `PUT /discoveries/{id}/annotations/{hypothesis_id}` with `{decision: none|saved|rejected|promoted, note: string up to 5000}` (editor). 404 when the id is not a hypothesis of this run, 422 on an invalid decision.
+  - `DELETE /discoveries/{id}/annotations/{hypothesis_id}` returns 204 (editor).
+  - Annotations never change the hypothesis text or its validation outcome. They are stored as JSON files under `ISOMORPH_STATE_DIR/annotations`, or in memory (lost on restart) when that variable is empty. There is no SQL table for them because `docs/database-design.md` has none that fits.
+- Rate limit client key: the direct peer address. `X-Forwarded-For` is used only when the peer matches an entry of `TRUSTED_PROXIES` (comma separated IPs or CIDR networks). The header is read from the right, skipping trusted proxies, so values a client prepends are ignored.
+- Restart recovery: at API startup every run left `queued` or `running` is set to `failed` with error `interrupted by restart`, and its running stage is failed with the same reason. Completed stage outputs are kept, so `rerun` resumes. This assumes a single API process owns the database.
+- Seeding: `python -m database.seed [--dry-run]` loads `data/` into domains, sources, domain_systems, system_entities, system_relationships and mechanisms. It is idempotent and is never run at startup.
 - Stage names: perception, structural_extraction, structural_dna, cross_domain_search, structural_matching, mechanism_mapping, transformation, hypothesis_generation, validation.
 - Resources of another user's project answer 404. A project member with too low a role gets 403 (viewer reads, editor writes, owner manages members, archive and delete).
 
