@@ -18,7 +18,7 @@ def format_sse(event: str, data: dict, event_id: Optional[int] = None) -> str:
 
 
 MIN_INTERVAL, MAX_INTERVAL = 0.25, 5.0
-DEFAULT_MAX_SECONDS = 30.0
+DEFAULT_MAX_SECONDS = 15.0
 RETRY_MS = 2000
 
 

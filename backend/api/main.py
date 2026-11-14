@@ -1,6 +1,7 @@
 """FastAPI application factory. UNVERIFIED in the authoring sandbox (FastAPI is not installable there)."""
 from __future__ import annotations
 
+import logging
 import os
 from typing import Optional
 
@@ -29,6 +30,21 @@ from .routers import (archive, auth, discoveries, knowledge, matches, pipeline, 
 API_PREFIX = "/api/v1"
 
 
+def _cleanup_orphan_annotations(store, session_factory) -> None:
+    """Remove annotation files whose discovery is gone or whose project was deleted. Never blocks startup."""
+    try:
+        from sqlalchemy import select
+        from database.models import DiscoverySession, Project
+        with session_factory() as db:
+            live = db.execute(select(DiscoverySession.id).join(Project, Project.id == DiscoverySession.project_id)
+                              .where(DiscoverySession.deleted_at.is_(None), Project.deleted_at.is_(None))).scalars().all()
+        removed = store.cleanup_orphans(str(i) for i in live)
+        if removed:
+            logging.getLogger(__name__).info("removed annotations of %d orphaned runs", len(removed))
+    except Exception:  # tables may not exist yet (create_tables or migrations pending)
+        logging.getLogger(__name__).warning("annotation cleanup skipped", exc_info=True)
+
+
 def create_app(settings: Optional[Settings] = None, session_factory=None, synchronous_jobs: bool = False,
                create_tables: bool = False) -> FastAPI:
     settings = settings or load_settings()
@@ -45,6 +61,7 @@ def create_app(settings: Optional[Settings] = None, session_factory=None, synchr
         recover_interrupted_runs(orch.store)  # runs left queued or running by a previous process can never finish
     app.state.annotations = (JsonFileAnnotationStore(os.path.join(settings.state_dir, "annotations")) if settings.state_dir
                              else InMemoryAnnotationStore())
+    _cleanup_orphan_annotations(app.state.annotations, session_factory)
     app.state.settings = settings
     app.state.session_factory = session_factory
     app.state.kb = kb

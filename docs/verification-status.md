@@ -6,6 +6,8 @@ Command run: `cd backend && python3 -m pytest tests -q -rs`
 
 Result after phase 2: 169 passed, 2 skipped (baseline before phase 2 was 148 passed, 2 skipped). `python3 -m compileall -q backend scripts` passes.
 
+Phase 3 FEAT-001 follow-ups: 177 passed, 2 skipped. Executed (stdlib): annotation purge and orphan cleanup in `services/annotations.py`, seed links for every citation (`database/seed.py` plan and `MemorySink`), upload `interpreted` flag and `store_upload` in `core/uploads.py`, perception synonyms and plural normalisation, SSE default of 15 seconds. UNVERIFIED (no FastAPI or SQLAlchemy): the calls in `api/main.py` (startup cleanup), `api/routers/projects.py` (purge on delete), `api/routers/problems.py` (upload response), `SqlSink` savepoint conflict handling, the new models and `migrations/versions/0002_seed_constraints.py`. `npm install --package-lock-only` in `frontend/` still fails with 403, so no lock file exists (UNVERIFIED).
+
 ## Executed and passing (stdlib only)
 | Area | Test files | What is covered |
 |---|---|---|
