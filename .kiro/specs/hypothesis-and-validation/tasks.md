@@ -10,3 +10,8 @@
 - [ ] T8. Test: Result state transitions
 - [ ] T9. Handle edge cases listed in design.md
 - [ ] T10. Update docs and record verification status
+
+## Status (phase 2)
+- T1-T8 done (hypothesis_engine, validation_engine, experiments/), plus server side decisions and notes in phase 2.
+- Executed: tests/intelligence/test_reasoning.py, test_review_fixes.py and the end to end test in test_phase2_platform.py. Template experiments are labelled illustrative and capped at inconclusive.
+- Checkboxes above are the original plan. Treat this section as the current state.

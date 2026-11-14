@@ -6,3 +6,4 @@
 - Accessibility: WCAG AA contrast, visible focus, labels on inputs, keyboard operable.
 - Layout: left navigation by workflow stage, content area, optional detail panel.
 - Large graphs: cap rendered nodes and show a notice.
+- Visual views such as the 3D Discovery Universe must keep a table or chart with the same data, and carry an UNVERIFIED label until rendered in a browser.

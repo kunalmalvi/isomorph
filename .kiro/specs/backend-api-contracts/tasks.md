@@ -11,3 +11,8 @@
 - [ ] T9. Test: Pagination bounds test
 - [ ] T10. Handle edge cases listed in design.md
 - [ ] T11. Update docs and record verification status
+
+## Status (phase 2)
+- T1-T5, T10 written (backend/api); phase 2 added annotations, trusted proxy rate limit key, bounded SSE and restart recovery. T6-T9 tests exist in tests/platform/test_api.py.
+- UNVERIFIED: FastAPI and Pydantic are not installable here, so the API never ran. Stdlib parts (rate limiter, error envelope helper, SSE framing, recovery, annotation store) are tested in tests/platform.
+- Checkboxes above are the original plan. Treat this section as the current state.

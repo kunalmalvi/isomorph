@@ -18,6 +18,8 @@ Always-on rules: product vision (hypotheses not proofs, provenance on every clai
 | migration-check | Model changes need a reversible migration and a docs entry |
 | docs-update | Keep docs aligned with behavior |
 
+Hook JSON schema: the files in `.kiro/hooks` use `name`, `version`, `description`, `when` and `then` keys. This shape is a guess from memory of Kiro's hook format. It was not validated against Kiro itself, so field names or event types may need adjusting when imported.
+
 ## Agent roles
 See [kiro-agents.md](kiro-agents.md). Each handoff recorded findings in the feature file under `.agents/tasks/task-isomorph-platform/features`.
 

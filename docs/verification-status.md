@@ -4,7 +4,7 @@ This file states what was executed in the authoring sandbox and what was only wr
 
 Command run: `cd backend && python3 -m pytest tests -q -rs`
 
-Result when this was written (re-run after the frontend feature): 138 passed, 2 skipped. `python3 -m compileall -q backend scripts` passes.
+Result after phase 2: 167 passed, 2 skipped (baseline before phase 2 was 148 passed, 2 skipped). `python3 -m compileall -q backend scripts` passes.
 
 ## Executed and passing (stdlib only)
 | Area | Test files | What is covered |
@@ -37,8 +37,8 @@ What was actually run for the frontend:
 
 Frontend behavior that is intentionally limited, and visible as such in the UI:
 - PDF and image uploads are accepted and validated by the API but not interpreted. The New Discovery page says so.
-- The Discovery Universe has no 3D view.
-- Hypothesis Arena decisions and notes live in `localStorage` only, because the API has no endpoint for them. Only editing a saved hypothesis statement and saving from the Transformation Studio go to the server.
+- The Discovery Universe 3D view is a dependency free SVG projection added in phase 2 (UNVERIFIED, never rendered). The chart and table remain.
+- Hypothesis Arena decisions and notes are saved through new API endpoints in phase 2 (UNVERIFIED), with `localStorage` as fallback.
 - Stage progress and status badges come from the SSE endpoint (`fetch` based reader with an Authorization header). Counts on the Overview come from the `total` field of list endpoints. No metric is computed or invented in the browser.
 
 Backend change made while writing the frontend: `backend/api/main.py` CORS `allow_methods` now includes `PUT`, which the stage edit endpoint needs from a browser on another origin.
@@ -60,10 +60,11 @@ In `-rs` output the skips read `could not import 'fastapi'` and `could not impor
 6. From the repository root: `docker build -f backend/Dockerfile -t isomorph-backend .`
 
 ## Known limitations
-- Seed knowledge (domains, systems, mechanisms) is served from `data/` JSON. The `domains`, `domain_systems`, `mechanisms` and `sources` tables exist and are migrated, but no seeding script populates them yet.
+- Seed knowledge is served from `data/` JSON. A phase 2 idempotent seeding function can load it into the knowledge tables, but it is not run automatically and was never run against a database (UNVERIFIED).
+- `frontend/package-lock.json` does not exist (see docs/benchmark-notes.md).
 - The OpenAI, Gemini and Anthropic adapters follow the public API shapes and were tested only against a mocked transport. They have never called a real endpoint.
-- The job runner is in process (thread pool). Runs in a process that dies stay `queued` or `running`. There is no restart recovery and no external queue.
-- The rate limiter is in memory and per process.
+- The job runner is in process (thread pool). On startup runs left `queued` or `running` are marked failed with reason `interrupted by restart` (single API process assumed). There is no external queue.
+- The rate limiter is in memory and per process. `X-Forwarded-For` is honored only when the peer is listed in `TRUSTED_PROXIES`.
 - Only the perception stage can use a remote provider. Other stages are deterministic engine code.
 
 ## Review fixes (2026-01-01-000001-review)
@@ -78,3 +79,16 @@ In `-rs` output the skips read `could not import 'fastapi'` and `could not impor
 | SSE holds a thread per client | Not fixed. Needs a load test and an async rewrite that cannot be validated without FastAPI. Deployment docs should size the threadpool until then. | Open |
 | Committed `tsbuildinfo` | Already untracked in HEAD and ignored by `frontend/.gitignore`; nothing to change. | `git ls-files` |
 | Rate limiter keyed on client host | Not changed (reviewer marked possible; depends on proxy setup). | Open |
+
+## Phase 2 additions
+
+| Item | Executed | UNVERIFIED |
+|---|---|---|
+| Server side hypothesis decisions and notes (JSON file store, service layer) | Store and service tests in `tests/platform/test_phase2_platform.py` | API endpoints, API tests in `test_api.py`, frontend arena fallback, vitest for `mergeAnnotations` |
+| Restart recovery of queued and running runs | Stdlib tests | SQL backed run store path in `api/db_store.py` |
+| Trusted proxy rate limit client key | Stdlib tests | `api/deps.py` wiring |
+| Bounded SSE polling with reconnect | Stdlib tests of the generator and framing | Router streaming, `frontend/services/sse.ts` reconnect |
+| Idempotent knowledge seeding | Logic tests with a fake store | Run against SQLAlchemy and PostgreSQL |
+| End to end test: run, edit hypothesis, rerun downstream, validate | Executed, stale flags and validation output asserted | Same flow through HTTP |
+| 3D Discovery Universe | `frontend/lib/universe-layout.ts` executed under Node (`node frontend/tests/universe-check.mts`, passes) | `universe-3d.tsx` rendering, `frontend/tests/unit/universe.test.ts` (vitest never run) |
+| Kiro specs, steering, hook schema note | Documentation only | Hook JSON schema is a guess |

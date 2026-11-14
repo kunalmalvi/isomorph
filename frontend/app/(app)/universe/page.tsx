@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, Label } from "@/components/ui/input";
 import { Table, Td, Th } from "@/components/ui/table";
-import { EmptyState, Unavailable } from "@/components/ui/states";
+import { EmptyState } from "@/components/ui/states";
+import { Universe3D } from "@/components/graph/universe-3d";
 import { formatScore, titleCase } from "@/lib/format";
 import type { StageMatch } from "@/services/types";
 
@@ -31,6 +32,15 @@ function UniverseBody({ search }: { search: { matches: StageMatch[]; excluded?: 
           {domains.map((d) => <option key={d}>{d}</option>)}
         </Select>
       </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>3D view (UNVERIFIED)</CardTitle>
+          <CardDescription>Distance from the centre is domain distance and height is score. Colour marks the domain. Drag to rotate. This view has not been rendered in a browser by the authors.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Universe3D data={shown.map((m) => ({ id: m.id, system_name: m.system_name, domain: m.domain, score: m.score, domain_distance: m.domain_distance }))} selectedId={openId} onSelect={setOpenId} />
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>Score against domain distance</CardTitle>
@@ -86,7 +96,6 @@ function UniverseBody({ search }: { search: { matches: StageMatch[]; excluded?: 
         </Card>
       )}
       {search.excluded && search.excluded.length > 0 && <p className="text-xs text-muted-foreground">{search.excluded.length} systems were excluded (for example same domain, or outside the retrieval cutoff).</p>}
-      <Unavailable>The 3D universe view is not included in this version. The chart and tables above show the same data.</Unavailable>
     </div>
   );
 }

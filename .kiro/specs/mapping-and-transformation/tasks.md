@@ -10,3 +10,8 @@
 - [ ] T8. Test: Deterministic tie-breaking
 - [ ] T9. Handle edge cases listed in design.md
 - [ ] T10. Update docs and record verification status
+
+## Status (phase 2)
+- T1-T8 done (mapping_engine, transformation_engine, constraint_engine).
+- Executed: tests/intelligence/test_reasoning.py. Material parameters in the roller model are placeholders.
+- Checkboxes above are the original plan. Treat this section as the current state.

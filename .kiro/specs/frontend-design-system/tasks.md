@@ -9,3 +9,8 @@
 - [ ] T7. Test: Accessibility audit checklist
 - [ ] T8. Handle edge cases listed in design.md
 - [ ] T9. Update docs and record verification status
+
+## Status (phase 2)
+- T1-T4 written under frontend/, including the phase 2 3D Discovery Universe view (frontend/components/graph/universe-3d.tsx, pure layout in frontend/lib/universe-layout.ts).
+- UNVERIFIED: npm install is blocked. Only pure lib modules ran under Node type stripping. T5 and T6 are written, never run. T7 not done.
+- Checkboxes above are the original plan. Treat this section as the current state.

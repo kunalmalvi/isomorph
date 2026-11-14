@@ -10,3 +10,8 @@
 - [ ] T8. Test: Roller scenario retrieves a cross-domain candidate
 - [ ] T9. Handle edge cases listed in design.md
 - [ ] T10. Update docs and record verification status
+
+## Status (phase 2)
+- T1-T8 done in backend/intelligence/analogy_engine and tests/intelligence/test_matching.py.
+- Executed: stdlib tests pass. The roller demo top score is about 36.5 out of 100, see docs/benchmark-notes.md for why.
+- Checkboxes above are the original plan. Treat this section as the current state.

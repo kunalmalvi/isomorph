@@ -10,3 +10,8 @@
 - [ ] T8. Test: Foreign key integrity tests
 - [ ] T9. Handle edge cases listed in design.md
 - [ ] T10. Update docs and record verification status
+
+## Status (phase 2)
+- T1, T2, T3, T5 written as models and migration 0001. T4: scripts/validate_seed_data.py runs, and the phase 2 seeding function loads data/ JSON idempotently (not run automatically).
+- UNVERIFIED: T7 and T8 need PostgreSQL. The migration is checked against docs/database-design.md by test_migration_schema.py (executed); the ORM comparison test is skipped without SQLAlchemy.
+- Checkboxes above are the original plan. Treat this section as the current state.

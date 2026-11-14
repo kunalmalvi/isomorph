@@ -10,3 +10,8 @@
 - [ ] T8. Test: Unclassified relation handling
 - [ ] T9. Handle edge cases listed in design.md
 - [ ] T10. Update docs and record verification status
+
+## Status (phase 2)
+- T1-T8 done (perception, structural_model, graph_engine, fingerprint).
+- Executed: tests/intelligence/test_perception_fingerprint.py and test_schemas_graph.py.
+- Checkboxes above are the original plan. Treat this section as the current state.
