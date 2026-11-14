@@ -86,6 +86,7 @@ def add_entity(problem_id: uuid.UUID, body: EntityIn, db: Session = Depends(get_
 
 @router.post("/{problem_id}/relationships", status_code=201)
 def add_relationship(problem_id: uuid.UUID, body: RelationshipIn, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    load_problem(db, user, problem_id, "editor")  # authorize first so non-members always get 404
     if body.relation_type not in RELATIONS:
         raise ValidationFailed(f"unknown relation_type '{body.relation_type}'", [sorted(RELATIONS)])
     for eid in (body.source_entity_id, body.target_entity_id):  # both entities must belong to this problem
@@ -112,6 +113,7 @@ def add_assumption(problem_id: uuid.UUID, body: AssumptionIn, db: Session = Depe
 
 @router.post("/{problem_id}/evidence", status_code=201)
 def add_evidence(problem_id: uuid.UUID, body: EvidenceIn, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    load_problem(db, user, problem_id, "editor")  # authorize before looking up the source
     if body.source_id is not None and db.get(Source, body.source_id) is None:
         raise ValidationFailed("source_id does not exist")
     return _add(db, user, problem_id, Evidence, **body.model_dump())

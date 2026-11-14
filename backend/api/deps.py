@@ -100,7 +100,9 @@ def load_problem(db: Session, user: User, problem_id: uuid.UUID, minimum: str = 
 
 
 def visible_project_ids(user: User):
-    return select(ProjectMember.project_id).where(ProjectMember.user_id == user.id)
+    """Projects the user belongs to, excluding soft deleted and archived ones (archived projects are listed under /archive)."""
+    return (select(ProjectMember.project_id).join(Project, Project.id == ProjectMember.project_id)
+            .where(ProjectMember.user_id == user.id, Project.deleted_at.is_(None), Project.archived_at.is_(None)))
 
 
 def row_dict(row: Any, exclude: tuple = ()) -> dict:

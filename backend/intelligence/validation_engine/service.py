@@ -62,6 +62,10 @@ def validate(h: Hypothesis, seeds: Sequence[int] = tuple(range(20)), min_win_rat
         outcome = "refuted"
     else:
         outcome = "inconclusive"
+    illustrative_cap = False
+    if spec.get("illustrative") and outcome != "inconclusive":
+        # template parameters are not derived from the problem, so the result cannot support or refute anything
+        outcome, illustrative_cap = "inconclusive", True
     other_changes = []  # other metrics that moved by more than 5% in either direction
     for k in sorted(all_b):
         mb, mp = sum(all_b[k]) / n, sum(all_p[k]) / n
@@ -70,6 +74,9 @@ def validate(h: Hypothesis, seeds: Sequence[int] = tuple(range(20)), min_win_rat
     caveats = [MODEL_DISCLAIMER, LIMITATIONS[kind]]
     if outcome == "supported":
         caveats.insert(0, "SUPPORTED IN SIMULATION ONLY under the stated model assumptions; not confirmed by real-world evidence.")
+    if illustrative_cap:
+        caveats.insert(0, "CAPPED AT INCONCLUSIVE: this experiment uses illustrative template parameters that are not fitted to the problem, "
+                          "so its result does not depend on the problem and is not evidence for or against the hypothesis.")
     if spec.get("deterministic"):
         caveats.append("Experiment is deterministic, so a single run is reported; win rate is not a statistical measure here.")
     caveats += list(spec.get("notes", []))
@@ -77,5 +84,5 @@ def validate(h: Hypothesis, seeds: Sequence[int] = tuple(range(20)), min_win_rat
                 "config_hashes": list(hashes) if hashes else [], "code_version": CODE_VERSION,
                 "baseline_mean": sum(bvals) / n, "proposed_mean": sum(pvals) / n,
                 "mean_relative_improvement": mean_imp, "ci95_half_width": ci, "win_rate": win_rate,
-                "min_effect": min_effect, "min_win_rate": min_win_rate, "other_metric_changes": other_changes}
+                "illustrative": bool(spec.get("illustrative")), "min_effect": min_effect, "min_win_rate": min_win_rate, "other_metric_changes": other_changes}
     return Validation(h.id, outcome, " ".join(caveats), f"seeded simulation: {kind}", evidence)

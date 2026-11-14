@@ -17,8 +17,9 @@ DEFAULT_MIN_EFFECT = 0.05
 
 
 def is_rolling_context(problem: Problem) -> bool:
-    names = {v.name for v in problem.variables}
-    return {"reduction", "thickness", "width"} <= names
+    vals = {v.name: v.value for v in problem.variables}
+    # all three variables must exist and carry a numeric value, otherwise rolling_params cannot be built
+    return all(isinstance(vals.get(n), (int, float)) for n in ("reduction", "thickness", "width"))
 
 
 def rolling_params(problem: Problem, context: Optional[dict] = None) -> dict:
@@ -72,7 +73,7 @@ def experiment_for(concept_type: str, problem: Problem, context: Optional[dict] 
     spec = table.get(concept_type)
     if spec is None:
         return None
-    spec = dict(spec, min_effect=DEFAULT_MIN_EFFECT, notes=notes)
+    spec = dict(spec, min_effect=DEFAULT_MIN_EFFECT, notes=notes, illustrative=True)
     return spec
 
 

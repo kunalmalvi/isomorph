@@ -65,3 +65,16 @@ In `-rs` output the skips read `could not import 'fastapi'` and `could not impor
 - The job runner is in process (thread pool). Runs in a process that dies stay `queued` or `running`. There is no restart recovery and no external queue.
 - The rate limiter is in memory and per process.
 - Only the perception stage can use a remote provider. Other stages are deterministic engine code.
+
+## Review fixes (2026-01-01-000001-review)
+
+| Finding | Resolution | Verified |
+|---|---|---|
+| Template experiments always `supported` | Template specs carry `illustrative: true`; `validate` caps them at `inconclusive` with a caveat. Rolling models are unchanged. | `tests/intelligence/test_review_fixes.py` (run) |
+| Edited hypothesis keeps old experiment | `PATCH /hypotheses/{id}` clears `experiment` when statement, prediction or falsifier change, so validation returns `untested`. | Code only, API not runnable here. No executed test. |
+| Lists leak deleted and archived projects | `visible_project_ids` joins `Project` and filters `deleted_at` and `archived_at`. | Test added in `test_api.py` (skipped without FastAPI) |
+| Authorization after lookup | `load_problem` now runs first in `add_relationship` and `add_evidence`. | Test added in `test_api.py` (skipped without FastAPI) |
+| Rolling `None` crash | `is_rolling_context` requires numeric values for all three variables, else the problem uses (capped) templates. | `test_review_fixes.py` (run) |
+| SSE holds a thread per client | Not fixed. Needs a load test and an async rewrite that cannot be validated without FastAPI. Deployment docs should size the threadpool until then. | Open |
+| Committed `tsbuildinfo` | Already untracked in HEAD and ignored by `frontend/.gitignore`; nothing to change. | `git ls-files` |
+| Rate limiter keyed on client host | Not changed (reviewer marked possible; depends on proxy setup). | Open |

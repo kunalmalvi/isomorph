@@ -123,6 +123,8 @@ def update_hypothesis(hypothesis_id: uuid.UUID, body: HypothesisPatch, db: Sessi
         setattr(h, k, v)
     if changes:
         h.provenance, h.status = "user", "untested"
+        if changes.keys() & {"statement", "prediction", "falsifier"}:
+            h.experiment = None  # the stored experiment modelled the old claim; a new one must be defined
     db.commit()
     return row_dict(h, ("deleted_at",))
 

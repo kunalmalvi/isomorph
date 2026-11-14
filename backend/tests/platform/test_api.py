@@ -245,3 +245,16 @@ def test_rate_limit_on_auth(tmp_path):
     with TestClient(create_app(s, synchronous_jobs=True, create_tables=True)) as c:
         codes = [c.post("/api/v1/auth/login", json={"email": "x@example.com", "password": PW}).status_code for _ in range(5)]
     assert codes[:3] == [401, 401, 401] and codes[3:] == [429, 429]
+
+
+def test_lists_hide_deleted_projects_and_non_members_get_404_before_validation(client):
+    a, b = signup(client, "a"), signup(client, "b")
+    pid = mkproject(client, a)
+    prob = mkproblem(client, a, pid)
+    bogus = "00000000-0000-0000-0000-000000000001"
+    rel = {"source_entity_id": bogus, "target_entity_id": bogus, "relation_type": "flows_to"}
+    assert client.post(f"/api/v1/problems/{prob}/relationships", json=rel, headers=b).status_code == 404
+    assert client.post(f"/api/v1/problems/{prob}/evidence", json={"statement": "c", "source_id": bogus}, headers=b).status_code == 404
+    assert client.get("/api/v1/problems", headers=a).json()["total"] == 1
+    assert client.delete(f"/api/v1/projects/{pid}", headers=a).status_code in (200, 204)
+    assert client.get("/api/v1/problems", headers=a).json()["total"] == 0
