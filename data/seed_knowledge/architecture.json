@@ -1,0 +1,928 @@
+{
+ "domain": "architecture",
+ "kind": "system",
+ "systems": [
+  {
+   "id": "arch_truss_load_path",
+   "name": "Roof truss load path",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "Roof load enters at joints, travels through chords and web members in tension or compression, and exits to supports.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "load",
+      "label": "Roof load",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "joint1",
+      "label": "Upper joint",
+      "kind": "entity",
+      "role": "junction",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "chord",
+      "label": "Top chord",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "web",
+      "label": "Web members",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "bottom",
+      "label": "Bottom chord",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "support",
+      "label": "Bearing supports",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "load",
+      "target": "joint1",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "joint1",
+      "target": "chord",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "joint1",
+      "target": "web",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "web",
+      "target": "bottom",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "chord",
+      "target": "support",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "bottom",
+      "target": "support",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "transport",
+    "protect"
+   ],
+   "dynamics": [
+    "load_sharing",
+    "cascade",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Member forces must stay below buckling and yield capacity",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "safety_bound",
+      "hard_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Joint equilibrium holds",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "equilibrium_condition",
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Hibbeler, R.C., Structural Analysis, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Salvadori, M., Why Buildings Stand Up, W.W. Norton, 1980",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "arch_stack_ventilation",
+   "name": "Stack effect natural ventilation",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "Warm indoor air is buoyant and rises out of a high opening, drawing cool air in below, which in turn removes heat from the room.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "gain",
+      "label": "Occupant and equipment heat",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "room",
+      "label": "Room air",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "buoyancy",
+      "label": "Buoyancy driving pressure",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "stack",
+      "label": "Ventilation stack",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "damper",
+      "label": "Louvre damper",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "inlet",
+      "label": "Low inlet",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "outlet",
+      "label": "High outlet",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "gain",
+      "target": "room",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "room",
+      "target": "buoyancy",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "buoyancy",
+      "target": "stack",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "stack",
+      "target": "room",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "inlet",
+      "target": "room",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "stack",
+      "target": "outlet",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e7",
+      "source": "damper",
+      "target": "stack",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "transport",
+    "dissipate"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "equilibrium",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Driving pressure vanishes when indoor and outdoor temperatures match",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Air mass is conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "ASHRAE Handbook: Fundamentals, ASHRAE",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Stein, B. et al., Mechanical and Electrical Equipment for Buildings, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "arch_building_egress",
+   "name": "Building egress flow",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "Occupants leave rooms into corridors, queue at stairs, and exit; stair width is typically the bottleneck.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "rooms",
+      "label": "Occupied rooms",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "corridor",
+      "label": "Corridor",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "stair",
+      "label": "Stairway",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "assembly",
+      "label": "Exit discharge area",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "queue",
+      "label": "Waiting queue",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "rooms",
+      "target": "corridor",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "corridor",
+      "target": "stair",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "stair",
+      "target": "assembly",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "corridor",
+      "target": "queue",
+      "relation": "stores_in",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "queue",
+      "target": "stair",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "transport",
+    "protect",
+    "distribute"
+   ],
+   "dynamics": [
+    "queueing",
+    "saturation",
+    "accumulation",
+    "threshold"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Exit capacity must meet required egress capacity",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "safety_bound"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Egress time must stay below a limit",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "delay_bound",
+      "safety_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "NFPA 101: Life Safety Code, National Fire Protection Association",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "SFPE Handbook of Fire Protection Engineering, Springer",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "arch_roof_drainage",
+   "name": "Roof rainwater drainage with overflow",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "Rain runs off the roof into a gutter, down a pipe to the drain; an overflow weir releases excess when the gutter fills.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "rain",
+      "label": "Rainfall",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "roof",
+      "label": "Roof surface",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "gutter",
+      "label": "Gutter",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "downpipe",
+      "label": "Downpipe",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "overflow",
+      "label": "Overflow weir",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "drain",
+      "label": "Storm drain",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "rain",
+      "target": "roof",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "roof",
+      "target": "gutter",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "gutter",
+      "target": "downpipe",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "downpipe",
+      "target": "drain",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "gutter",
+      "target": "overflow",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "overflow",
+      "target": "drain",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "transport",
+    "buffer",
+    "protect"
+   ],
+   "dynamics": [
+    "accumulation",
+    "saturation",
+    "threshold"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Drain capacity must exceed design storm inflow",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "safety_bound"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Water volume is conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "International Plumbing Code, International Code Council",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Stein, B. et al., Mechanical and Electrical Equipment for Buildings, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "arch_passive_solar_mass",
+   "name": "Passive solar gain with thermal mass",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "Sun enters through glazing and is stored in a thermal mass slab, which releases heat to the room later and damps temperature swings; shading limits overheating.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "sun",
+      "label": "Solar radiation",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "glazing",
+      "label": "South glazing",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "shade",
+      "label": "Shading device",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "slab",
+      "label": "Thermal mass slab",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "room",
+      "label": "Room air",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "loss",
+      "label": "Night heat loss",
+      "kind": "entity",
+      "role": "dissipater",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "sun",
+      "target": "glazing",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "shade",
+      "target": "glazing",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "glazing",
+      "target": "slab",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "slab",
+      "target": "room",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "room",
+      "target": "loss",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "store",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "delay",
+    "damping",
+    "accumulation",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Room temperature should stay in a comfort range",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Energy is conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Stein, B. et al., Mechanical and Electrical Equipment for Buildings, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "ASHRAE Handbook: Fundamentals, ASHRAE",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

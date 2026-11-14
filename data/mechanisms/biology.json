@@ -1,0 +1,288 @@
+{
+ "domain": "biology",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "bio_lac_operon",
+   "name": "Lac operon induction",
+   "domain": "biology",
+   "kind": "mechanism",
+   "summary": "Lactose inactivates the repressor, which releases the operon; the enzymes made then consume lactose.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "lactose",
+      "label": "Lactose",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "repressor",
+      "label": "Lac repressor",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "operon",
+      "label": "lac operon promoter",
+      "kind": "entity",
+      "role": "switch",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "enzymes",
+      "label": "Lactose metabolising enzymes",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "lactose",
+      "target": "repressor",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "repressor",
+      "target": "operon",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "operon",
+      "target": "enzymes",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "enzymes",
+      "target": "lactose",
+      "relation": "consumes",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "convert"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "threshold",
+    "delay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Enzyme synthesis is limited by cell resources",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "resource_scarcity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Jacob, F. and Monod, J., Genetic regulatory mechanisms in the synthesis of proteins, Journal of Molecular Biology 3:318-356, 1961",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Alberts, B. et al., Molecular Biology of the Cell, Garland Science",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "bio_end_product_inhibition",
+   "name": "Feedback inhibition of a biosynthetic pathway",
+   "domain": "biology",
+   "kind": "mechanism",
+   "summary": "The end product of a pathway binds the first enzyme allosterically and slows its own production.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "substrate",
+      "label": "Pathway substrate",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "enzyme1",
+      "label": "First committed enzyme",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "pathway",
+      "label": "Intermediate steps",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "product",
+      "label": "End product",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "demand",
+      "label": "Cellular use of product",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "substrate",
+      "target": "enzyme1",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "enzyme1",
+      "target": "pathway",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "pathway",
+      "target": "product",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "product",
+      "target": "enzyme1",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "product",
+      "target": "demand",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "buffer",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "saturation",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Substrate supply bounds the maximum product rate",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "resource_scarcity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Nelson, D.L. and Cox, M.M., Lehninger Principles of Biochemistry, W.H. Freeman",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

@@ -1,0 +1,230 @@
+{
+ "domains": [
+  {
+   "id": "biology",
+   "name": "Biology",
+   "family": "natural",
+   "description": "Living systems, physiology, cells and genes",
+   "vocabulary": [
+    "cell",
+    "organism",
+    "gene",
+    "enzyme",
+    "blood",
+    "neuron",
+    "hormone",
+    "tissue",
+    "protein",
+    "physiology"
+   ]
+  },
+  {
+   "id": "physics",
+   "name": "Physics",
+   "family": "natural",
+   "description": "Classical physics, circuits, waves and thermal transport",
+   "vocabulary": [
+    "force",
+    "energy",
+    "mass",
+    "spring",
+    "circuit",
+    "voltage",
+    "current",
+    "wave",
+    "heat",
+    "momentum"
+   ]
+  },
+  {
+   "id": "mechanical_engineering",
+   "name": "Mechanical engineering",
+   "family": "engineered",
+   "description": "Machines, control, fluids, forming and manufacturing",
+   "vocabulary": [
+    "roller",
+    "strip",
+    "rolling",
+    "gear",
+    "shaft",
+    "pump",
+    "valve",
+    "press",
+    "load",
+    "stress",
+    "thickness",
+    "mill",
+    "motor",
+    "torque",
+    "actuator"
+   ]
+  },
+  {
+   "id": "mathematics",
+   "name": "Mathematics",
+   "family": "formal",
+   "description": "Graph theory, optimisation, dynamical systems and probability",
+   "vocabulary": [
+    "graph",
+    "network",
+    "flow",
+    "optimisation",
+    "matrix",
+    "equation",
+    "probability",
+    "markov",
+    "linear"
+   ]
+  },
+  {
+   "id": "chemistry",
+   "name": "Chemistry",
+   "family": "natural",
+   "description": "Reactions, kinetics, equilibria and separation processes",
+   "vocabulary": [
+    "reaction",
+    "catalyst",
+    "concentration",
+    "reactor",
+    "acid",
+    "base",
+    "kinetics",
+    "distillation"
+   ]
+  },
+  {
+   "id": "architecture",
+   "name": "Architecture",
+   "family": "engineered",
+   "description": "Buildings, structures, environmental design and circulation",
+   "vocabulary": [
+    "building",
+    "truss",
+    "beam",
+    "roof",
+    "ventilation",
+    "egress",
+    "facade",
+    "slab",
+    "wall"
+   ]
+  },
+  {
+   "id": "economics",
+   "name": "Economics",
+   "family": "social",
+   "description": "Markets, policy, finance and incentives",
+   "vocabulary": [
+    "price",
+    "market",
+    "demand",
+    "supply",
+    "inflation",
+    "bank",
+    "income",
+    "investment",
+    "tax"
+   ]
+  },
+  {
+   "id": "ecology",
+   "name": "Ecology",
+   "family": "natural",
+   "description": "Populations, food webs and ecosystems",
+   "vocabulary": [
+    "predator",
+    "prey",
+    "species",
+    "population",
+    "habitat",
+    "food",
+    "web",
+    "nutrient",
+    "forest",
+    "lake"
+   ]
+  },
+  {
+   "id": "transportation",
+   "name": "Transportation",
+   "family": "engineered",
+   "description": "Road, rail, air and transit systems",
+   "vocabulary": [
+    "traffic",
+    "road",
+    "vehicle",
+    "train",
+    "bus",
+    "runway",
+    "queue",
+    "signal",
+    "highway"
+   ]
+  },
+  {
+   "id": "energy_systems",
+   "name": "Energy systems",
+   "family": "engineered",
+   "description": "Generation, storage, grids and thermal cycles",
+   "vocabulary": [
+    "grid",
+    "generator",
+    "battery",
+    "turbine",
+    "solar",
+    "power",
+    "frequency",
+    "storage",
+    "reactor"
+   ]
+  },
+  {
+   "id": "computer_science",
+   "name": "Computer science",
+   "family": "formal",
+   "description": "Software, networks, operating systems and architecture",
+   "vocabulary": [
+    "server",
+    "packet",
+    "network",
+    "cache",
+    "scheduler",
+    "request",
+    "latency",
+    "thread",
+    "protocol"
+   ]
+  },
+  {
+   "id": "logistics",
+   "name": "Logistics and supply chains",
+   "family": "social",
+   "description": "Inventory, distribution and production flow",
+   "vocabulary": [
+    "inventory",
+    "warehouse",
+    "supplier",
+    "shipment",
+    "order",
+    "stock",
+    "kanban",
+    "hub",
+    "supply",
+    "chain"
+   ]
+  }
+ ],
+ "family_distance": {
+  "natural-natural": 0.3,
+  "engineered-engineered": 0.3,
+  "formal-formal": 0.3,
+  "social-social": 0.3,
+  "engineered-natural": 0.6,
+  "engineered-formal": 0.6,
+  "formal-natural": 0.7,
+  "engineered-social": 0.6,
+  "natural-social": 0.9,
+  "formal-social": 0.8
+ },
+ "same_domain_distance": 0.0
+}

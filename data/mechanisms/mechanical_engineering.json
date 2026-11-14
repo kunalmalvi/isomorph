@@ -1,0 +1,639 @@
+{
+ "domain": "mechanical_engineering",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "me_centrifugal_governor",
+   "name": "Centrifugal (Watt) governor",
+   "domain": "mechanical_engineering",
+   "kind": "mechanism",
+   "summary": "Flyballs rise with engine speed and, through linkage, close the throttle, which slows the engine.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "engine",
+      "label": "Engine",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "speed",
+      "label": "Shaft speed",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "flyballs",
+      "label": "Flyball mechanism",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "linkage",
+      "label": "Linkage",
+      "kind": "entity",
+      "role": "controller",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "throttle",
+      "label": "Throttle valve",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "load",
+      "label": "Mechanical load",
+      "kind": "entity",
+      "role": "load",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "engine",
+      "target": "speed",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "speed",
+      "target": "flyballs",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "flyballs",
+      "target": "linkage",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "linkage",
+      "target": "throttle",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "throttle",
+      "target": "engine",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "load",
+      "target": "speed",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "sense",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "oscillation",
+    "delay",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Gain must keep the loop stable",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "stability_margin"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Ogata, K., Modern Control Engineering, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Astrom, K.J. and Murray, R.M., Feedback Systems: An Introduction for Scientists and Engineers, Princeton University Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "me_flywheel",
+   "name": "Flywheel energy buffer",
+   "domain": "mechanical_engineering",
+   "kind": "mechanism",
+   "summary": "A flywheel stores rotational energy between an intermittent drive and a load and smooths speed fluctuations.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "engine",
+      "label": "Pulsed drive",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "shaft",
+      "label": "Shaft",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "flywheel",
+      "label": "Flywheel",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "load",
+      "label": "Load",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "bearing",
+      "label": "Bearing friction",
+      "kind": "entity",
+      "role": "dissipater",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "engine",
+      "target": "shaft",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "shaft",
+      "target": "flywheel",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "flywheel",
+      "target": "load",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "flywheel",
+      "target": "bearing",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "store",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "accumulation",
+    "damping",
+    "delay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Rim speed limited by material stress",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "safety_bound"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Energy is conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Budynas, R.G. and Nisbett, J.K., Shigley's Mechanical Engineering Design, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "me_pressure_relief_valve",
+   "name": "Spring-loaded pressure relief valve",
+   "domain": "mechanical_engineering",
+   "kind": "mechanism",
+   "summary": "A spring holds the valve shut until vessel pressure exceeds the set pressure, then the valve vents fluid to relieve pressure.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "process",
+      "label": "Pressure vessel contents",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "pressure",
+      "label": "Vessel pressure",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "valve",
+      "label": "Relief valve disc",
+      "kind": "entity",
+      "role": "switch",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "spring",
+      "label": "Set spring",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "vent",
+      "label": "Vent line",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "process",
+      "target": "pressure",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "pressure",
+      "target": "valve",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "spring",
+      "target": "valve",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "valve",
+      "target": "vent",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "valve",
+      "target": "pressure",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "protect",
+    "regulate"
+   ],
+   "dynamics": [
+    "threshold",
+    "negative_feedback",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Relief capacity must exceed worst-case inflow",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "safety_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "White, F.M., Fluid Mechanics, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Budynas, R.G. and Nisbett, J.K., Shigley's Mechanical Engineering Design, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "me_float_valve_cistern",
+   "name": "Float valve tank level control",
+   "domain": "mechanical_engineering",
+   "kind": "mechanism",
+   "summary": "A float rises with water level and closes the inlet valve, holding the tank level without electronics.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "mains",
+      "label": "Water supply",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "inlet",
+      "label": "Inlet valve",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "tank",
+      "label": "Tank level",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "float",
+      "label": "Float arm",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "outlet",
+      "label": "Outflow demand",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "mains",
+      "target": "inlet",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "inlet",
+      "target": "tank",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "tank",
+      "target": "outlet",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "tank",
+      "target": "float",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "float",
+      "target": "inlet",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "buffer",
+    "sense"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "accumulation",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Tank volume is finite",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "White, F.M., Fluid Mechanics, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Ogata, K., Modern Control Engineering, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

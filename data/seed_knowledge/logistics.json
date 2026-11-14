@@ -1,0 +1,691 @@
+{
+ "domain": "logistics",
+ "kind": "system",
+ "systems": [
+  {
+   "id": "log_reorder_point_inventory",
+   "name": "Reorder point inventory control",
+   "domain": "logistics",
+   "kind": "system",
+   "summary": "Stock is monitored; when it falls below a reorder point an order enters a lead-time pipeline from the supplier, so low stock raises orders.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "supplier",
+      "label": "Supplier",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "pipeline",
+      "label": "Order pipeline",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "stock",
+      "label": "Warehouse stock",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "customers",
+      "label": "Customer demand",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "counter",
+      "label": "Stock counter",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "policy",
+      "label": "Reorder policy",
+      "kind": "entity",
+      "role": "controller",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "supplier",
+      "target": "pipeline",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "pipeline",
+      "target": "stock",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "stock",
+      "target": "customers",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "stock",
+      "target": "counter",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "counter",
+      "target": "policy",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "policy",
+      "target": "pipeline",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "buffer",
+    "allocate"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "delay",
+    "accumulation",
+    "oscillation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Stock cannot go below zero (backorders aside)",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "non_negativity"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Warehouse capacity",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Silver, E.A., Pyke, D.F. and Peterson, R., Inventory Management and Production Planning and Scheduling, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Chopra, S. and Meindl, P., Supply Chain Management: Strategy, Planning, and Operation, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "log_supply_chain_bullwhip",
+   "name": "Multi-echelon supply chain (bullwhip)",
+   "domain": "logistics",
+   "kind": "system",
+   "summary": "Demand variation is amplified moving upstream as each echelon orders on forecasts with lead times.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "demand",
+      "label": "Customer demand",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "retailer",
+      "label": "Retailer stock",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "wholesaler",
+      "label": "Wholesaler stock",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "factory",
+      "label": "Manufacturer stock",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "demand",
+      "target": "retailer",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "retailer",
+      "target": "wholesaler",
+      "relation": "transmits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "wholesaler",
+      "target": "factory",
+      "relation": "transmits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "factory",
+      "target": "wholesaler",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "wholesaler",
+      "target": "retailer",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "distribute",
+    "amplify"
+   ],
+   "dynamics": [
+    "delay",
+    "oscillation",
+    "cascade",
+    "accumulation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Order batching and lead times drive amplification",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "delay_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Lee, H.L., Padmanabhan, V. and Whang, S., The bullwhip effect in supply chains, Sloan Management Review 38(3):93-102, 1997",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Forrester, J.W., Industrial Dynamics, MIT Press, 1961",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Sterman, J.D., Business Dynamics: Systems Thinking and Modeling for a Complex World, McGraw-Hill, 2000",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "log_hub_and_spoke",
+   "name": "Hub-and-spoke distribution network",
+   "domain": "logistics",
+   "kind": "system",
+   "summary": "Shipments from many origins are consolidated at a hub and redistributed to destinations, trading longer paths for fewer links.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "origin1",
+      "label": "Origin 1",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "origin2",
+      "label": "Origin 2",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "hub",
+      "label": "Hub",
+      "kind": "entity",
+      "role": "junction",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "trunk",
+      "label": "Trunk route",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "dest1",
+      "label": "Destination 1",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "dest2",
+      "label": "Destination 2",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "origin1",
+      "target": "hub",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "origin2",
+      "target": "hub",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "hub",
+      "target": "trunk",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "trunk",
+      "target": "dest1",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "trunk",
+      "target": "dest2",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "transport"
+   ],
+   "dynamics": [
+    "load_sharing",
+    "saturation",
+    "cascade"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Hub throughput is a bottleneck",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Shipments are conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "O'Kelly, M.E., The location of interacting hub facilities, Transportation Science 20(2):92-106, 1986",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Chopra, S. and Meindl, P., Supply Chain Management: Strategy, Planning, and Operation, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "log_kanban_pull",
+   "name": "Kanban pull production line",
+   "domain": "logistics",
+   "kind": "system",
+   "summary": "A full downstream buffer sends a card upstream that stops the upstream station, so work in process stays bounded.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "raw",
+      "label": "Raw material",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "station1",
+      "label": "Station 1",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "buffer",
+      "label": "Kanban buffer",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "station2",
+      "label": "Station 2",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "kanban",
+      "label": "Kanban signal",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "customer",
+      "label": "Customer",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "raw",
+      "target": "station1",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "station1",
+      "target": "buffer",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "buffer",
+      "target": "station2",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "station2",
+      "target": "customer",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "buffer",
+      "target": "kanban",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "kanban",
+      "target": "station1",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "buffer",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "accumulation",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Work in process bounded by number of cards",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "hard_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Ohno, T., Toyota Production System: Beyond Large-Scale Production, Productivity Press, 1988",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Hopp, W.J. and Spearman, M.L., Factory Physics, Waveland Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

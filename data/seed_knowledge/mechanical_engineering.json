@@ -1,0 +1,639 @@
+{
+ "domain": "mechanical_engineering",
+ "kind": "system",
+ "systems": [
+  {
+   "id": "me_room_thermostat",
+   "name": "Room heating with on/off thermostat",
+   "domain": "mechanical_engineering",
+   "kind": "system",
+   "summary": "A thermostat reads room temperature and switches the heater off when above the set point; heat leaks to the outdoors.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "supply",
+      "label": "Energy supply",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "heater",
+      "label": "Heater",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "room",
+      "label": "Room air temperature",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "sensor",
+      "label": "Temperature sensor",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "thermostat",
+      "label": "Thermostat",
+      "kind": "entity",
+      "role": "controller",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "loss",
+      "label": "Heat loss to outdoors",
+      "kind": "entity",
+      "role": "dissipater",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "supply",
+      "target": "heater",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "heater",
+      "target": "room",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "room",
+      "target": "sensor",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "sensor",
+      "target": "thermostat",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "thermostat",
+      "target": "heater",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "room",
+      "target": "loss",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "sense",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "threshold",
+    "delay",
+    "oscillation",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Heater output is bounded by its rating",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Temperature stays within a comfort band",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Ogata, K., Modern Control Engineering, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Astrom, K.J. and Murray, R.M., Feedback Systems: An Introduction for Scientists and Engineers, Princeton University Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "me_hydraulic_press",
+   "name": "Hydraulic press with relief valve",
+   "domain": "mechanical_engineering",
+   "kind": "system",
+   "summary": "A pump pressurises fluid that pushes a ram against the load; a relief valve returns fluid to a reservoir when pressure exceeds a limit.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "motor",
+      "label": "Electric motor",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "pump",
+      "label": "Pump",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "fluid",
+      "label": "Hydraulic fluid",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "ram",
+      "label": "Ram",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "load",
+      "label": "Workpiece load",
+      "kind": "entity",
+      "role": "load",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "relief",
+      "label": "Relief valve",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "reservoir",
+      "label": "Fluid reservoir",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "motor",
+      "target": "pump",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "pump",
+      "target": "fluid",
+      "relation": "transmits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "fluid",
+      "target": "ram",
+      "relation": "transmits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "load",
+      "target": "ram",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "fluid",
+      "target": "relief",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "relief",
+      "target": "reservoir",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e7",
+      "source": "reservoir",
+      "target": "pump",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "amplify",
+    "transport",
+    "protect"
+   ],
+   "dynamics": [
+    "saturation",
+    "threshold"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "System pressure must not exceed the relief setting",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "safety_bound"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Fluid volume is conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "White, F.M., Fluid Mechanics, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Budynas, R.G. and Nisbett, J.K., Shigley's Mechanical Engineering Design, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "me_rolling_mill_agc",
+   "name": "Strip rolling mill with automatic gauge control",
+   "domain": "mechanical_engineering",
+   "kind": "system",
+   "summary": "Work rolls reduce strip thickness; a gauge measures exit thickness and the controller adjusts the screwdown to hold the target, against mill stretch and friction.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "entry",
+      "label": "Entry strip",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "rolls",
+      "label": "Work rolls",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "exit",
+      "label": "Exit strip thickness",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "gauge",
+      "label": "Thickness gauge",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "agc",
+      "label": "Gauge controller",
+      "kind": "entity",
+      "role": "controller",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "screwdown",
+      "label": "Screwdown actuator",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "stretch",
+      "label": "Mill stand elasticity",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "friction",
+      "label": "Roll bite friction",
+      "kind": "entity",
+      "role": "dissipater",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "entry",
+      "target": "rolls",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "rolls",
+      "target": "exit",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "exit",
+      "target": "gauge",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "gauge",
+      "target": "agc",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "agc",
+      "target": "screwdown",
+      "relation": "controls",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "screwdown",
+      "target": "rolls",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e7",
+      "source": "rolls",
+      "target": "stretch",
+      "relation": "stores_in",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e8",
+      "source": "rolls",
+      "target": "friction",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "convert",
+    "reduce_variation",
+    "regulate",
+    "sense"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "delay",
+    "saturation",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Volume (mass) is conserved: thickness times width times length is constant",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Roll force must stay below mill rating",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "capacity_limit"
+     ]
+    },
+    {
+     "id": "c3",
+     "description": "Draft per pass limited by roll bite friction",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Hosford, W.F. and Caddell, R.M., Metal Forming: Mechanics and Metallurgy, Cambridge University Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Dieter, G.E., Mechanical Metallurgy, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "medium",
+   "limitations": "Abstraction of cold rolling; real mills also have tension, lubrication, temperature and roll flattening effects."
+  }
+ ]
+}

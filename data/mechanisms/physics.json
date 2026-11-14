@@ -1,0 +1,161 @@
+{
+ "domain": "physics",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "phys_clock_escapement",
+   "name": "Pendulum clock escapement",
+   "domain": "physics",
+   "kind": "mechanism",
+   "summary": "A weight or spring drives a gear train; the escapement releases it in small impulses timed by the pendulum, which also sustains the pendulum swing against friction.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "drive",
+      "label": "Weight or mainspring",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "gears",
+      "label": "Gear train",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "escapement",
+      "label": "Escapement",
+      "kind": "entity",
+      "role": "switch",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "pendulum",
+      "label": "Pendulum",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "friction",
+      "label": "Friction and air drag",
+      "kind": "entity",
+      "role": "dissipater",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "drive",
+      "target": "gears",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "gears",
+      "target": "escapement",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "escapement",
+      "target": "pendulum",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "pendulum",
+      "target": "escapement",
+      "relation": "controls",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "pendulum",
+      "target": "friction",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "oscillate",
+    "regulate",
+    "synchronize"
+   ],
+   "dynamics": [
+    "oscillation",
+    "threshold",
+    "damping"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Drive energy per cycle must exceed the friction loss per cycle",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "resource_scarcity",
+      "equilibrium_condition"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Strogatz, S.H., Nonlinear Dynamics and Chaos, Westview Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Halliday, D., Resnick, R. and Walker, J., Fundamentals of Physics, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

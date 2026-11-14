@@ -1,0 +1,748 @@
+{
+ "domain": "ecology",
+ "kind": "system",
+ "systems": [
+  {
+   "id": "eco_predator_prey",
+   "name": "Lotka-Volterra predator-prey system",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "Prey grow and are eaten by predators; predator numbers rise with prey then fall from starvation, producing coupled oscillation.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "prey",
+      "label": "Prey population",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "predator",
+      "label": "Predator population",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "mortality",
+      "label": "Predator mortality",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "prey",
+      "target": "prey",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "prey",
+      "target": "predator",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "predator",
+      "target": "prey",
+      "relation": "consumes",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "predator",
+      "target": "mortality",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "oscillate",
+    "compete"
+   ],
+   "dynamics": [
+    "oscillation",
+    "positive_feedback",
+    "negative_feedback",
+    "delay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Populations are non-negative",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "non_negativity"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Prey carrying capacity bounds growth",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Lotka, A.J., Elements of Physical Biology, Williams and Wilkins, 1925",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Begon, M., Townsend, C.R. and Harper, J.L., Ecology: From Individuals to Ecosystems, Blackwell",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "eco_nitrogen_cycle",
+   "name": "Terrestrial nitrogen cycle",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "Atmospheric nitrogen is fixed to ammonium, taken up by plants, returned by decomposers, and lost by denitrification.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "atmosphere",
+      "label": "Atmospheric N2",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "fixation",
+      "label": "Nitrogen fixers",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "soil",
+      "label": "Soil ammonium and nitrate",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "plants",
+      "label": "Plant uptake",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "decomposers",
+      "label": "Decomposers",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "denitrifiers",
+      "label": "Denitrifiers",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "atmosphere",
+      "target": "fixation",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "fixation",
+      "target": "soil",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "soil",
+      "target": "plants",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "plants",
+      "target": "decomposers",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "decomposers",
+      "target": "soil",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "soil",
+      "target": "denitrifiers",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e7",
+      "source": "denitrifiers",
+      "target": "atmosphere",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "convert",
+    "store",
+    "transport"
+   ],
+   "dynamics": [
+    "accumulation",
+    "equilibrium",
+    "delay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Nitrogen mass is conserved across pools",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Fixation and uptake are rate limited",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "rate_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Schlesinger, W.H. and Bernhardt, E.S., Biogeochemistry: An Analysis of Global Change, Academic Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Odum, E.P. and Barrett, G.W., Fundamentals of Ecology, Cengage",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "eco_lake_eutrophication",
+   "name": "Shallow lake regime shift",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "Nutrient load feeds algae, which cloud the water and suppress plants that would otherwise hold algae down, creating alternative stable states.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "loading",
+      "label": "Nutrient loading",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "phosphorus",
+      "label": "Phosphorus pool",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "algae",
+      "label": "Algae",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "turbidity",
+      "label": "Water turbidity",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "plants",
+      "label": "Submerged plants",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "loading",
+      "target": "phosphorus",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "phosphorus",
+      "target": "algae",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "algae",
+      "target": "turbidity",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "turbidity",
+      "target": "plants",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "plants",
+      "target": "algae",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "store",
+    "compete"
+   ],
+   "dynamics": [
+    "positive_feedback",
+    "threshold",
+    "accumulation",
+    "delay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Nutrient load above a critical level triggers a shift",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "resource_scarcity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Scheffer, M. et al., Catastrophic shifts in ecosystems, Nature 413:591-596, 2001",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "eco_plant_pollinator",
+   "name": "Plant-pollinator mutualism",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "Plants offer nectar, pollinators feed on it and in return raise plant reproduction, forming a reinforcing loop.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "plants",
+      "label": "Flowering plants",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "nectar",
+      "label": "Nectar supply",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "pollinators",
+      "label": "Pollinators",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "plants",
+      "target": "nectar",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "pollinators",
+      "target": "nectar",
+      "relation": "consumes",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "pollinators",
+      "target": "plants",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "nectar",
+      "target": "pollinators",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "store",
+    "allocate"
+   ],
+   "dynamics": [
+    "positive_feedback",
+    "cascade",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Both partners depend on seasonal overlap",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "delay_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Bascompte, J. and Jordano, P., Plant-animal mutualistic networks: the architecture of biodiversity, Annual Review of Ecology, Evolution, and Systematics 38:567-593, 2007",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Begon, M., Townsend, C.R. and Harper, J.L., Ecology: From Individuals to Ecosystems, Blackwell",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "eco_trophic_cascade",
+   "name": "Kelp-urchin-otter trophic cascade",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "Killer whales eat sea otters, otters control urchins, urchins graze kelp; removing a top predator cascades down the chain.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "sun",
+      "label": "Light and nutrients",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "kelp",
+      "label": "Kelp forest",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "urchin",
+      "label": "Sea urchins",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "otter",
+      "label": "Sea otters",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "orca",
+      "label": "Killer whales",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "sun",
+      "target": "kelp",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "urchin",
+      "target": "kelp",
+      "relation": "consumes",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "otter",
+      "target": "urchin",
+      "relation": "consumes",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "orca",
+      "target": "otter",
+      "relation": "consumes",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "compete",
+    "distribute"
+   ],
+   "dynamics": [
+    "cascade",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Energy transfer between trophic levels is inefficient",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "resource_scarcity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Estes, J.A. et al., Killer whale predation on sea otters linking oceanic and nearshore ecosystems, Science 282:473-476, 1998",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Begon, M., Townsend, C.R. and Harper, J.L., Ecology: From Individuals to Ecosystems, Blackwell",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

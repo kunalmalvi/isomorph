@@ -1,0 +1,128 @@
+{
+ "domain": "logistics",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "log_safety_stock",
+   "name": "Safety stock buffer",
+   "domain": "logistics",
+   "kind": "mechanism",
+   "summary": "Extra inventory absorbs demand and lead time variability so that service level holds.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "supply",
+      "label": "Replenishment",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "safety",
+      "label": "Safety stock",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "demand",
+      "label": "Variable demand",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "variability",
+      "label": "Demand and lead time variability",
+      "kind": "entity",
+      "role": "load",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "supply",
+      "target": "safety",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "safety",
+      "target": "demand",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "variability",
+      "target": "safety",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "protect",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "accumulation",
+    "damping"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Holding cost limits buffer size",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "resource_scarcity",
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Silver, E.A., Pyke, D.F. and Peterson, R., Inventory Management and Production Planning and Scheduling, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Chopra, S. and Meindl, P., Supply Chain Management: Strategy, Planning, and Operation, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

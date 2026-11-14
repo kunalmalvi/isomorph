@@ -1,0 +1,25 @@
+{
+  "id": "roller_strip_demo",
+  "title": "Reduce silver or copper strip thickness",
+  "demo_only": true,
+  "note": "Demonstration scenario for ISOMORPH. The engine is domain independent; see backend/tests/intelligence/test_generality.py for unrelated problems.",
+  "statement": "Strip made of copper or silver must be reduced in thickness. The strip is 50 mm width and 2 mm thickness. The motor drives the rolls. The rolls reduce the strip. The operator sets the screwdown once per coil. The screwdown sets the roll gap. The roll gap constrains the rolls. Friction dissipates energy at the bite. The thickness variation must not exceed 0.02 mm. The goal is to achieve the target reduction with minimal thickness variation.",
+  "parameters": {
+    "materials": ["copper", "silver"],
+    "width_mm": 50.0,
+    "thickness_mm": 2.0,
+    "reduction_percent": 20.0,
+    "roll_radius_mm": 100.0,
+    "friction": 0.12,
+    "mill_modulus_kn_per_mm": 200.0,
+    "tolerance_mm": 0.02,
+    "roll_force_limit_kn": 90.0
+  },
+  "parameter_notes": {
+    "roll_radius_mm": "ASSUMPTION: 200 mm diameter work rolls",
+    "friction": "ASSUMPTION: coefficient of friction for lubricated cold rolling",
+    "mill_modulus_kn_per_mm": "ASSUMPTION: small laboratory mill stiffness",
+    "roll_force_limit_kn": "ASSUMPTION: rating of a small laboratory mill",
+    "reduction_percent": "Configurable. Change with --reduction on scripts/run_demo.py"
+  }
+}

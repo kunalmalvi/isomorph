@@ -1,0 +1,284 @@
+{
+ "domain": "computer_science",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "cs_circuit_breaker",
+   "name": "Circuit breaker pattern for services",
+   "domain": "computer_science",
+   "kind": "mechanism",
+   "summary": "A breaker watches calls to a failing service and stops forwarding requests so the caller does not pile up on timeouts.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "client",
+      "label": "Client requests",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "breaker",
+      "label": "Circuit breaker",
+      "kind": "entity",
+      "role": "switch",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "service",
+      "label": "Remote service",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "monitor",
+      "label": "Failure monitor",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "client",
+      "target": "breaker",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "breaker",
+      "target": "service",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "service",
+      "target": "monitor",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "monitor",
+      "target": "breaker",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "protect",
+    "regulate",
+    "sense"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "threshold",
+    "delay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Recovery probing interval",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "delay_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Nygard, M.T., Release It!, Pragmatic Bookshelf, 2007",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "cs_token_bucket",
+   "name": "Token bucket rate limiter",
+   "domain": "computer_science",
+   "kind": "mechanism",
+   "summary": "Tokens accumulate at a fixed rate up to a bucket size; each request consumes a token and requests without tokens are delayed or dropped.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "refill",
+      "label": "Token refill clock",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "bucket",
+      "label": "Token bucket",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "requests",
+      "label": "Incoming requests",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "limiter",
+      "label": "Rejection gate when bucket is empty",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "output",
+      "label": "Admitted traffic",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "refill",
+      "target": "bucket",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "requests",
+      "target": "bucket",
+      "relation": "consumes",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "bucket",
+      "target": "limiter",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "limiter",
+      "target": "output",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "limiter",
+      "target": "requests",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "buffer",
+    "protect"
+   ],
+   "dynamics": [
+    "saturation",
+    "accumulation",
+    "negative_feedback"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Bucket size bounds burst",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "rate_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Tanenbaum, A.S. and Wetherall, D.J., Computer Networks, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

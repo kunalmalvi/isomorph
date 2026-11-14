@@ -1,0 +1,139 @@
+{
+ "domain": "energy_systems",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "energy_thermal_storage_tank",
+   "name": "Hot water thermal storage tank",
+   "domain": "energy_systems",
+   "kind": "mechanism",
+   "summary": "A tank stores heat when supply exceeds demand and releases it later, damping supply and demand mismatch.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "heater",
+      "label": "Heat source",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "tank",
+      "label": "Stratified tank",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "demand",
+      "label": "Hot water demand",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "loss",
+      "label": "Standing heat loss",
+      "kind": "entity",
+      "role": "dissipater",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "heater",
+      "target": "tank",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "tank",
+      "target": "demand",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "tank",
+      "target": "loss",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "store",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "accumulation",
+    "delay",
+    "damping",
+    "decay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Tank volume and temperature limit stored energy",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Energy conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Cengel, Y.A. and Boles, M.A., Thermodynamics: An Engineering Approach, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    },
+    {
+     "citation": "Incropera, F.P. et al., Fundamentals of Heat and Mass Transfer, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

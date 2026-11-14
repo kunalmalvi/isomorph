@@ -1,0 +1,2160 @@
+{
+ "description": "Positive structural analog pairs and negative lookalikes. See docs/benchmark-notes.md for caveats.",
+ "pairs": [
+  {
+   "query": {
+    "id": "bq_datacenter_cooling",
+    "title": "Data center cooling loop",
+    "domain": "mechanical_engineering",
+    "statement": "Servers produce heat. Temperature sensors report to a controller that drives fans to remove heat to the outside air, keeping temperature regulated near a set point despite changing load. Fans have limited capacity and temperature must not exceed a safe limit.",
+    "goal": "Keep temperature near the set point and avoid overheating",
+    "graph": {
+     "nodes": [
+      {
+       "id": "servers",
+       "label": "Servers",
+       "kind": "entity",
+       "role": "producer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "heat",
+       "label": "Room temperature",
+       "kind": "entity",
+       "role": "medium",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "sensor",
+       "label": "Temperature sensors",
+       "kind": "entity",
+       "role": "sensor",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "ctrl",
+       "label": "Cooling controller",
+       "kind": "entity",
+       "role": "controller",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "fans",
+       "label": "Fans",
+       "kind": "entity",
+       "role": "actuator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "outside",
+       "label": "Outside air",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "servers",
+       "target": "heat",
+       "relation": "produces",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "heat",
+       "target": "sensor",
+       "relation": "observed_by",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "sensor",
+       "target": "ctrl",
+       "relation": "signals",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "ctrl",
+       "target": "fans",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "fans",
+       "target": "heat",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "fans",
+       "target": "outside",
+       "relation": "dissipates_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Temperature must not exceed a safe limit; fan capacity is a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "acceptable": [
+     "bio_thermoregulation",
+     "me_room_thermostat"
+    ],
+    "note": "negative feedback loop with sensor, controller, actuator"
+   },
+   "positive": "bio_thermoregulation",
+   "lookalikes": [
+    {
+     "id": "la_datacenter_open_loop",
+     "name": "Data center cooling with timer fans",
+     "domain": "mechanical_engineering",
+     "kind": "system",
+     "summary": "Servers produce heat. Temperature sensors show readings on a display. A timer controller runs fans to move heat to the outside air on a fixed schedule.",
+     "graph": {
+      "nodes": [
+       {
+        "id": "servers",
+        "label": "Servers",
+        "kind": "entity",
+        "role": "producer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "heat",
+        "label": "Room temperature",
+        "kind": "entity",
+        "role": "medium",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "sensor",
+        "label": "Temperature sensors",
+        "kind": "entity",
+        "role": "sensor",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "display",
+        "label": "Wall display",
+        "kind": "entity",
+        "role": "sink",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "ctrl",
+        "label": "Fan timer controller",
+        "kind": "entity",
+        "role": "controller",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "fans",
+        "label": "Fans",
+        "kind": "entity",
+        "role": "actuator",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "outside",
+        "label": "Outside air",
+        "kind": "entity",
+        "role": "sink",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       }
+      ],
+      "edges": [
+       {
+        "id": "e1",
+        "source": "servers",
+        "target": "heat",
+        "relation": "produces",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e2",
+        "source": "heat",
+        "target": "sensor",
+        "relation": "observed_by",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e3",
+        "source": "sensor",
+        "target": "display",
+        "relation": "signals",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e4",
+        "source": "ctrl",
+        "target": "fans",
+        "relation": "activates",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e5",
+        "source": "fans",
+        "target": "outside",
+        "relation": "dissipates_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       }
+      ]
+     },
+     "behaviours": [
+      "regulate",
+      "sense",
+      "dissipate",
+      "reduce_variation"
+     ],
+     "dynamics": [
+      "negative_feedback",
+      "delay",
+      "saturation",
+      "equilibrium"
+     ],
+     "constraints": [
+      {
+       "id": "c1",
+       "description": "Core temperature must stay within a narrow survivable band",
+       "kind": "hard",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "hard_limit",
+        "safety_bound"
+       ]
+      },
+      {
+       "id": "c2",
+       "description": "Heat loss capacity is limited by ambient conditions",
+       "kind": "soft",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "capacity_limit"
+       ]
+      }
+     ],
+     "sources": [
+      {
+       "citation": "synthetic benchmark control, not a real system",
+       "kind": "synthetic",
+       "note": ""
+      }
+     ],
+     "confidence": "low",
+     "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "bq_router_bottleneck",
+    "title": "Router buffer at a bottleneck link",
+    "domain": "computer_science",
+    "statement": "Senders push packets over an upstream link into a bottleneck link. When demand exceeds capacity a queue builds in a buffer and spills back, reducing upstream throughput. Link capacity is a maximum and the queue grows while demand is high.",
+    "goal": "Understand queue buildup and throughput limits",
+    "graph": {
+     "nodes": [
+      {
+       "id": "senders",
+       "label": "Senders",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "upstream",
+       "label": "Upstream link",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "bottleneck",
+       "label": "Bottleneck link",
+       "kind": "entity",
+       "role": "regulator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "downstream",
+       "label": "Downstream link",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "receiver",
+       "label": "Receiver",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "buffer",
+       "label": "Packet buffer",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "senders",
+       "target": "upstream",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "upstream",
+       "target": "bottleneck",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "bottleneck",
+       "target": "downstream",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "downstream",
+       "target": "receiver",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "upstream",
+       "target": "buffer",
+       "relation": "stores_in",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "buffer",
+       "target": "upstream",
+       "relation": "constrains",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Link capacity is a maximum throughput",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "acceptable": [
+     "trans_highway_bottleneck"
+    ],
+    "note": "queue with spillback at a capacity limited section"
+   },
+   "positive": "trans_highway_bottleneck",
+   "lookalikes": [
+    {
+     "id": "la_router_star",
+     "name": "Router buffers on a star network",
+     "domain": "computer_science",
+     "kind": "system",
+     "summary": "Senders push packets over links through a bottleneck link into a packet buffer. Receivers read the buffer. Queue and buffer sizes are configured per link.",
+     "graph": {
+      "nodes": [
+       {
+        "id": "senders",
+        "label": "Senders",
+        "kind": "entity",
+        "role": "source",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "upstream",
+        "label": "Upstream link",
+        "kind": "entity",
+        "role": "conduit",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "bottleneck",
+        "label": "Bottleneck link",
+        "kind": "entity",
+        "role": "regulator",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "buffer",
+        "label": "Packet buffer",
+        "kind": "entity",
+        "role": "buffer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "receiver",
+        "label": "Receiver",
+        "kind": "entity",
+        "role": "sink",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "monitor",
+        "label": "Link monitor",
+        "kind": "entity",
+        "role": "sensor",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       }
+      ],
+      "edges": [
+       {
+        "id": "e1",
+        "source": "senders",
+        "target": "upstream",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e2",
+        "source": "senders",
+        "target": "bottleneck",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e3",
+        "source": "buffer",
+        "target": "receiver",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e4",
+        "source": "monitor",
+        "target": "buffer",
+        "relation": "observed_by",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e5",
+        "source": "receiver",
+        "target": "upstream",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       }
+      ]
+     },
+     "behaviours": [
+      "transport",
+      "buffer"
+     ],
+     "dynamics": [
+      "queueing",
+      "saturation",
+      "cascade",
+      "threshold",
+      "accumulation"
+     ],
+     "constraints": [
+      {
+       "id": "c1",
+       "description": "Discharge is bounded by bottleneck capacity",
+       "kind": "hard",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "capacity_limit"
+       ]
+      },
+      {
+       "id": "c2",
+       "description": "Vehicle count is conserved",
+       "kind": "hard",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "conservation"
+       ]
+      }
+     ],
+     "sources": [
+      {
+       "citation": "synthetic benchmark control, not a real system",
+       "kind": "synthetic",
+       "note": ""
+      }
+     ],
+     "confidence": "low",
+     "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "bq_autocatalytic_pair",
+    "title": "Autocatalytic species with a consuming partner",
+    "domain": "chemistry",
+    "statement": "Species X reinforces its own production and also drives formation of species Y. Y consumes X and decays, so X and Y rise and fall in coupled cycles. Concentrations are non-negative and the cycle repeats with a delay.",
+    "goal": "Explain sustained oscillation",
+    "graph": {
+     "nodes": [
+      {
+       "id": "x",
+       "label": "Species X",
+       "kind": "entity",
+       "role": "producer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "y",
+       "label": "Species Y",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "decay",
+       "label": "Decay of Y",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "x",
+       "target": "x",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "x",
+       "target": "y",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "y",
+       "target": "x",
+       "relation": "consumes",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "y",
+       "target": "decay",
+       "relation": "dissipates_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Concentrations cannot be negative",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "acceptable": [
+     "eco_predator_prey",
+     "chem_oregonator"
+    ],
+    "note": "coupled self-reinforcing producer and consumer"
+   },
+   "positive": "eco_predator_prey",
+   "lookalikes": [
+    {
+     "id": "la_autocatalytic_chain",
+     "name": "Sequential reaction chain of species X and Y",
+     "domain": "chemistry",
+     "kind": "system",
+     "summary": "Species X is produced, converted to species Y, and Y decays. Concentrations of X and Y are tracked as they rise and fall in a cycle of batches.",
+     "graph": {
+      "nodes": [
+       {
+        "id": "x",
+        "label": "Species X",
+        "kind": "entity",
+        "role": "producer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "y",
+        "label": "Species Y",
+        "kind": "entity",
+        "role": "consumer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "decay",
+        "label": "Decay of Y",
+        "kind": "entity",
+        "role": "sink",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "feed",
+        "label": "Batch feed",
+        "kind": "entity",
+        "role": "source",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       }
+      ],
+      "edges": [
+       {
+        "id": "e1",
+        "source": "feed",
+        "target": "x",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e2",
+        "source": "x",
+        "target": "y",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e3",
+        "source": "y",
+        "target": "decay",
+        "relation": "dissipates_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       }
+      ]
+     },
+     "behaviours": [
+      "oscillate",
+      "compete"
+     ],
+     "dynamics": [
+      "oscillation",
+      "positive_feedback",
+      "negative_feedback",
+      "delay"
+     ],
+     "constraints": [
+      {
+       "id": "c1",
+       "description": "Populations are non-negative",
+       "kind": "hard",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "non_negativity"
+       ]
+      },
+      {
+       "id": "c2",
+       "description": "Prey carrying capacity bounds growth",
+       "kind": "soft",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "capacity_limit"
+       ]
+      }
+     ],
+     "sources": [
+      {
+       "citation": "synthetic benchmark control, not a real system",
+       "kind": "synthetic",
+       "note": ""
+      }
+     ],
+     "confidence": "low",
+     "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "bq_pipe_split",
+    "title": "Parallel water pipes between manifold and header",
+    "domain": "architecture",
+    "statement": "A pump feeds a manifold where flow splits into two parallel pipes and recombines at a header before reaching the drain. Flow into a node equals flow out and each pipe has a capacity limit.",
+    "goal": "Estimate how flow shares between pipes",
+    "graph": {
+     "nodes": [
+      {
+       "id": "pump",
+       "label": "Pump",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "manifold",
+       "label": "Supply manifold",
+       "kind": "entity",
+       "role": "junction",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "pipea",
+       "label": "Pipe A",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "pipeb",
+       "label": "Pipe B",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "header",
+       "label": "Header",
+       "kind": "entity",
+       "role": "junction",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "drain",
+       "label": "Drain",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "pump",
+       "target": "manifold",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "manifold",
+       "target": "pipea",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "manifold",
+       "target": "pipeb",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "pipea",
+       "target": "header",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "pipeb",
+       "target": "header",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "header",
+       "target": "drain",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Flow is conserved at nodes; each pipe has a capacity limit",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "acceptable": [
+     "phys_resistor_network",
+     "math_max_flow_network"
+    ],
+    "note": "series-parallel split and recombination"
+   },
+   "positive": "phys_resistor_network",
+   "lookalikes": [
+    {
+     "id": "la_pipe_series",
+     "name": "Pump, manifold and pipes in series",
+     "domain": "architecture",
+     "kind": "system",
+     "summary": "A pump feeds a manifold, through pipe A then pipe B in series to a header and the drain. Manifold, pipes and header are sized for flow.",
+     "graph": {
+      "nodes": [
+       {
+        "id": "pump",
+        "label": "Pump",
+        "kind": "entity",
+        "role": "source",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "manifold",
+        "label": "Supply manifold",
+        "kind": "entity",
+        "role": "junction",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "pipea",
+        "label": "Pipe A",
+        "kind": "entity",
+        "role": "conduit",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "pipeb",
+        "label": "Pipe B",
+        "kind": "entity",
+        "role": "conduit",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "header",
+        "label": "Header",
+        "kind": "entity",
+        "role": "junction",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "drain",
+        "label": "Drain",
+        "kind": "entity",
+        "role": "sink",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       }
+      ],
+      "edges": [
+       {
+        "id": "e1",
+        "source": "pump",
+        "target": "manifold",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e2",
+        "source": "manifold",
+        "target": "pipea",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e3",
+        "source": "pipea",
+        "target": "pipeb",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e4",
+        "source": "pipeb",
+        "target": "header",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e5",
+        "source": "header",
+        "target": "drain",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       }
+      ]
+     },
+     "behaviours": [
+      "distribute",
+      "transport"
+     ],
+     "dynamics": [
+      "load_sharing",
+      "equilibrium"
+     ],
+     "constraints": [
+      {
+       "id": "c1",
+       "description": "Current into a node equals current out (Kirchhoff current law)",
+       "kind": "hard",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "conservation"
+       ]
+      },
+      {
+       "id": "c2",
+       "description": "Each resistor has a power rating",
+       "kind": "soft",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "capacity_limit"
+       ]
+      }
+     ],
+     "sources": [
+      {
+       "citation": "synthetic benchmark control, not a real system",
+       "kind": "synthetic",
+       "note": ""
+      }
+     ],
+     "confidence": "low",
+     "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "bq_flour_stock",
+    "title": "Bakery flour stock with a full-level counter",
+    "domain": "logistics",
+    "statement": "A supplier delivers flour through an ordering gate into stock. Bakers consume flour. A stock counter signals the gate to stop deliveries when stock is full, keeping the stock level regulated. Storage capacity is a maximum.",
+    "goal": "Keep stock level near full without overflow",
+    "graph": {
+     "nodes": [
+      {
+       "id": "supplier",
+       "label": "Supplier",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "gate",
+       "label": "Ordering gate",
+       "kind": "entity",
+       "role": "regulator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "stock",
+       "label": "Flour stock",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "bakers",
+       "label": "Bakers",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "counter",
+       "label": "Stock counter",
+       "kind": "entity",
+       "role": "sensor",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "supplier",
+       "target": "gate",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "gate",
+       "target": "stock",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "stock",
+       "target": "bakers",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "stock",
+       "target": "counter",
+       "relation": "observed_by",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "counter",
+       "target": "gate",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Storage capacity is a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "acceptable": [
+     "me_float_valve_cistern",
+     "log_reorder_point_inventory"
+    ],
+    "note": "buffer level sensed to close its own inflow"
+   },
+   "positive": "me_float_valve_cistern",
+   "lookalikes": [
+    {
+     "id": "la_flour_counter_report",
+     "name": "Bakery flour stock with a weekly report",
+     "domain": "logistics",
+     "kind": "system",
+     "summary": "A supplier delivers flour through an ordering gate into stock. Bakers consume flour. A stock counter reports the stock level to a weekly report. Storage capacity is a maximum.",
+     "graph": {
+      "nodes": [
+       {
+        "id": "supplier",
+        "label": "Supplier",
+        "kind": "entity",
+        "role": "source",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "gate",
+        "label": "Ordering gate",
+        "kind": "entity",
+        "role": "regulator",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "stock",
+        "label": "Flour stock",
+        "kind": "entity",
+        "role": "buffer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "bakers",
+        "label": "Bakers",
+        "kind": "entity",
+        "role": "consumer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "counter",
+        "label": "Stock counter",
+        "kind": "entity",
+        "role": "sensor",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "report",
+        "label": "Weekly report",
+        "kind": "entity",
+        "role": "sink",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       }
+      ],
+      "edges": [
+       {
+        "id": "e1",
+        "source": "supplier",
+        "target": "gate",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e2",
+        "source": "gate",
+        "target": "stock",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e3",
+        "source": "stock",
+        "target": "bakers",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e4",
+        "source": "stock",
+        "target": "counter",
+        "relation": "observed_by",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e5",
+        "source": "counter",
+        "target": "report",
+        "relation": "signals",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       }
+      ]
+     },
+     "behaviours": [
+      "regulate",
+      "buffer",
+      "sense"
+     ],
+     "dynamics": [
+      "negative_feedback",
+      "accumulation",
+      "equilibrium"
+     ],
+     "constraints": [
+      {
+       "id": "c1",
+       "description": "Tank volume is finite",
+       "kind": "hard",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "capacity_limit"
+       ]
+      }
+     ],
+     "sources": [
+      {
+       "citation": "synthetic benchmark control, not a real system",
+       "kind": "synthetic",
+       "note": ""
+      }
+     ],
+     "confidence": "low",
+     "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "bq_vehicle_suspension",
+    "title": "Vehicle suspension over a bump",
+    "domain": "mechanical_engineering",
+    "statement": "A road bump applies a force to the sprung mass. The spring pushes back and the shock absorber damps the motion, dissipating energy as heat, so the body oscillates and settles. Energy is conserved and spring travel is limited.",
+    "goal": "Choose damping so the motion settles quickly",
+    "graph": {
+     "nodes": [
+      {
+       "id": "bump",
+       "label": "Road bump",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "mass",
+       "label": "Sprung mass",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "spring",
+       "label": "Coil spring",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "shock",
+       "label": "Shock absorber",
+       "kind": "entity",
+       "role": "dissipater",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "heat",
+       "label": "Heat to air",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "bump",
+       "target": "mass",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "mass",
+       "target": "spring",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "spring",
+       "target": "mass",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "mass",
+       "target": "shock",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "shock",
+       "target": "mass",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "shock",
+       "target": "heat",
+       "relation": "dissipates_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Energy is conserved; spring travel is a hard limit",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "acceptable": [
+     "phys_rlc_circuit",
+     "phys_mass_spring_damper"
+    ],
+    "note": "second order oscillator with damping"
+   },
+   "positive": "phys_rlc_circuit",
+   "lookalikes": [
+    {
+     "id": "la_suspension_chain",
+     "name": "Vehicle suspension parts list over a bump",
+     "domain": "mechanical_engineering",
+     "kind": "system",
+     "summary": "A road bump applies a force to the sprung mass. The mass carries a coil spring and a shock absorber that sheds heat to the air. Spring and shock are fixed in series with the frame.",
+     "graph": {
+      "nodes": [
+       {
+        "id": "bump",
+        "label": "Road bump",
+        "kind": "entity",
+        "role": "source",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "mass",
+        "label": "Sprung mass",
+        "kind": "entity",
+        "role": "buffer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "spring",
+        "label": "Coil spring",
+        "kind": "entity",
+        "role": "buffer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "shock",
+        "label": "Shock absorber",
+        "kind": "entity",
+        "role": "dissipater",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "heat",
+        "label": "Heat to air",
+        "kind": "entity",
+        "role": "sink",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       }
+      ],
+      "edges": [
+       {
+        "id": "e1",
+        "source": "bump",
+        "target": "mass",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e2",
+        "source": "mass",
+        "target": "spring",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e3",
+        "source": "spring",
+        "target": "shock",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e4",
+        "source": "shock",
+        "target": "heat",
+        "relation": "dissipates_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       }
+      ]
+     },
+     "behaviours": [
+      "oscillate",
+      "dissipate",
+      "store",
+      "filter"
+     ],
+     "dynamics": [
+      "oscillation",
+      "damping",
+      "negative_feedback",
+      "equilibrium"
+     ],
+     "constraints": [
+      {
+       "id": "c1",
+       "description": "Energy is conserved between magnetic, electric and dissipated heat",
+       "kind": "hard",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "conservation"
+       ]
+      },
+      {
+       "id": "c2",
+       "description": "Component ratings limit voltage and current",
+       "kind": "soft",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "capacity_limit",
+        "safety_bound"
+       ]
+      }
+     ],
+     "sources": [
+      {
+       "citation": "synthetic benchmark control, not a real system",
+       "kind": "synthetic",
+       "note": ""
+      }
+     ],
+     "confidence": "low",
+     "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "bq_gauge_control",
+    "title": "Strip gauge control with a measuring gauge",
+    "domain": "mechanical_engineering",
+    "statement": "A thickness gauge measures the exit strip and signals a controller that adjusts the screwdown, which sets the roll gap that constrains the rolls, so thickness variation is regulated. The roll force must not exceed a limit and the loop has delay.",
+    "goal": "Hold exit thickness within tolerance",
+    "graph": {
+     "nodes": [
+      {
+       "id": "rolls",
+       "label": "Rolls",
+       "kind": "entity",
+       "role": "transformer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "strip",
+       "label": "Exit strip",
+       "kind": "entity",
+       "role": "medium",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "gauge",
+       "label": "Thickness gauge",
+       "kind": "entity",
+       "role": "sensor",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "ctrl",
+       "label": "Gauge controller",
+       "kind": "entity",
+       "role": "controller",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "screwdown",
+       "label": "Screwdown",
+       "kind": "entity",
+       "role": "actuator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "gap",
+       "label": "Roll gap",
+       "kind": "entity",
+       "role": "regulator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "rolls",
+       "target": "strip",
+       "relation": "converts",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "strip",
+       "target": "gauge",
+       "relation": "observed_by",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "gauge",
+       "target": "ctrl",
+       "relation": "signals",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "ctrl",
+       "target": "screwdown",
+       "relation": "controls",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "screwdown",
+       "target": "gap",
+       "relation": "controls",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "gap",
+       "target": "rolls",
+       "relation": "constrains",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Roll force must not exceed a limit; loop delay limits stability",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "acceptable": [
+     "econ_taylor_rule",
+     "trans_ramp_metering"
+    ],
+    "note": "sensor-controller-actuator loop around a process"
+   },
+   "positive": "econ_taylor_rule",
+   "lookalikes": [
+    {
+     "id": "la_gauge_scrambled",
+     "name": "Strip gauge control parts list",
+     "domain": "mechanical_engineering",
+     "kind": "system",
+     "summary": "A thickness gauge, a controller, a screwdown and a roll gap act on the rolls and the exit strip. The controller is wired to the gauge, the gauge to the screwdown, and the roll gap feeds the controller.",
+     "graph": {
+      "nodes": [
+       {
+        "id": "rolls",
+        "label": "Rolls",
+        "kind": "entity",
+        "role": "transformer",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "strip",
+        "label": "Exit strip",
+        "kind": "entity",
+        "role": "medium",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "gauge",
+        "label": "Thickness gauge",
+        "kind": "entity",
+        "role": "sensor",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "ctrl",
+        "label": "Gauge controller",
+        "kind": "entity",
+        "role": "controller",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "screwdown",
+        "label": "Screwdown",
+        "kind": "entity",
+        "role": "actuator",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       },
+       {
+        "id": "gap",
+        "label": "Roll gap",
+        "kind": "entity",
+        "role": "regulator",
+        "attrs": {},
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0
+       }
+      ],
+      "edges": [
+       {
+        "id": "e1",
+        "source": "rolls",
+        "target": "strip",
+        "relation": "converts",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e2",
+        "source": "ctrl",
+        "target": "gauge",
+        "relation": "controls",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e3",
+        "source": "gauge",
+        "target": "screwdown",
+        "relation": "observed_by",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e4",
+        "source": "screwdown",
+        "target": "strip",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       },
+       {
+        "id": "e5",
+        "source": "gap",
+        "target": "ctrl",
+        "relation": "flows_to",
+        "weight": 1.0,
+        "provenance": "source",
+        "span": null,
+        "confidence": 1.0,
+        "flags": []
+       }
+      ]
+     },
+     "behaviours": [
+      "regulate",
+      "sense",
+      "reduce_variation"
+     ],
+     "dynamics": [
+      "negative_feedback",
+      "delay",
+      "oscillation",
+      "equilibrium"
+     ],
+     "constraints": [
+      {
+       "id": "c1",
+       "description": "Policy rate has a lower bound near zero",
+       "kind": "soft",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "hard_limit"
+       ]
+      },
+      {
+       "id": "c2",
+       "description": "Rule must avoid destabilising over-reaction",
+       "kind": "soft",
+       "expression": null,
+       "provenance": "source",
+       "tags": [
+        "stability_margin"
+       ]
+      }
+     ],
+     "sources": [
+      {
+       "citation": "synthetic benchmark control, not a real system",
+       "kind": "synthetic",
+       "note": ""
+      }
+     ],
+     "confidence": "low",
+     "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
+    }
+   ]
+  }
+ ]
+}

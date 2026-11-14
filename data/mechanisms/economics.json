@@ -1,0 +1,133 @@
+{
+ "domain": "economics",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "econ_automatic_stabilizers",
+   "name": "Automatic fiscal stabilizers",
+   "domain": "economics",
+   "kind": "mechanism",
+   "summary": "Progressive taxes and unemployment benefits absorb income swings without new policy decisions, damping the business cycle.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "shocks",
+      "label": "Income shocks",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "income",
+      "label": "Household income",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "taxes",
+      "label": "Taxes and benefits",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "spending",
+      "label": "Consumer spending",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "shocks",
+      "target": "income",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "income",
+      "target": "taxes",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "taxes",
+      "target": "income",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "income",
+      "target": "spending",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "reduce_variation",
+    "regulate"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "damping"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Government budget limits sustained deficits",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "resource_scarcity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Mankiw, N.G., Principles of Economics, Cengage",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+    }
+   ],
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}
