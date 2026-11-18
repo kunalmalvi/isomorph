@@ -16,6 +16,8 @@ import os
 import re
 import sys
 import threading
+from email.parser import BytesParser
+from email import policy as email_policy
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Optional
 from urllib.parse import parse_qs, unquote, urlsplit
@@ -127,6 +129,31 @@ class Handler(BaseHTTPRequestHandler):
         if not isinstance(body, dict):
             raise ValidationFailed("request body must be a JSON object")
         return body
+
+    def _read_upload(self, q: dict):
+        """Raw body with ?filename=, or multipart/form-data with one file part. Returns (filename, bytes)."""
+        if self.headers.get("Transfer-Encoding"):
+            raise AppError("chunked request bodies are not supported", code="bad_request", status=411)
+        try:
+            n = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            raise ValidationFailed("invalid Content-Length")
+        if n <= 0:
+            raise ValidationFailed("upload body is empty")
+        if n > self.app.config.max_body_bytes:
+            self.close_connection = True
+            raise PayloadTooLarge(f"request body exceeds {self.app.config.max_body_bytes} bytes")
+        raw = self.rfile.read(n)
+        ctype = self.headers.get("Content-Type") or ""
+        if ctype.lower().startswith("multipart/form-data"):
+            msg = BytesParser(policy=email_policy.HTTP).parsebytes(
+                b"Content-Type: " + ctype.encode("latin-1", "replace") + b"\r\nMIME-Version: 1.0\r\n\r\n" + raw)
+            for part in msg.iter_parts() if msg.is_multipart() else []:
+                fn = part.get_filename()
+                if fn:
+                    return fn, part.get_payload(decode=True) or b""
+            raise ValidationFailed("multipart body has no file part")
+        return q.get("filename") or "", raw
 
     def _check_origin(self) -> None:
         """Defence against DNS rebinding and cross-site requests to a local server.
@@ -265,6 +292,13 @@ class Handler(BaseHTTPRequestHandler):
                 raise NotFound("knowledge system not found")
             return self._json(200, s.to_dict())
 
+        # uploads
+        if path == "/uploads" and method == "POST":
+            name, data = self._read_upload(q)
+            if not name:
+                raise ValidationFailed("filename is required (?filename= or a multipart file part)")
+            return self._json(201, app.upload(name, data, q.get("interpret") or None))
+
         # discoveries
         if path == "/discoveries" and method == "POST":
             body = self._read_json()
@@ -277,6 +311,13 @@ class Handler(BaseHTTPRequestHandler):
             title = body.get("title") or ""
             if not isinstance(title, str) or len(title) > 200:
                 raise ValidationFailed("title must be a string of at most 200 characters")
+            upload_id = body.get("upload_id")
+            if upload_id is not None:
+                if not isinstance(upload_id, str) or not re.fullmatch(r"[0-9a-f]{64}", upload_id):
+                    raise ValidationFailed("upload_id must be a 64 character sha256 hex digest")
+                if body.get("text") is not None or body.get("problem") is not None:
+                    raise ValidationFailed("provide exactly one of text, problem or upload_id")
+                return self._json(202, app.start_run_from_upload(upload_id, title=title, config=cfg))
             text = body.get("text")
             if text is not None and (not isinstance(text, str) or len(text) > 50000):
                 raise ValidationFailed("text must be a string of at most 50000 characters")

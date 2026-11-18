@@ -850,7 +850,7 @@
     "statement": "Role of 'energy' inferred as medium from keyword lexicon"
    }
   ],
-  "limitations": "Lexicon, synonym table and verb cue based. Passive voice, pronouns, implicit entities and non-English text are not handled reliably. Output needs human review.",
+  "limitations": "Lexicon, synonym table and verb cue based. For words outside the lexicon it also guesses a role from the head noun, hyphen and compound parts, word overlap with the seed knowledge base, and the linking verb; those roles are low-confidence inferences, can be wrong, and are marked in node attrs. Entities without a determiner ('Depositors supply funds'), passive voice, pronouns, implicit entities and non-English text are not handled reliably. Output needs human review.",
   "problem": {
    "constraints": [
     {

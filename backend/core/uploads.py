@@ -81,10 +81,20 @@ NOT_INTERPRETED_NOTE = ("{kind} content is validated and stored but NOT read or 
                         "No text, figures or structure were extracted from it, so nothing in the model is derived from this file.")
 
 
-def interpretation(kind: str) -> dict:
-    """Whether the server reads this kind of upload. Binary kinds (pdf, png, jpeg) and json are never interpreted."""
-    ok = kind in INTERPRETED_KINDS
-    return {"interpreted": ok, "note": None if ok else NOT_INTERPRETED_NOTE.format(kind=kind.upper())}
+def interpretation(kind: str, extraction=None) -> dict:
+    """Whether the server reads this kind of upload.
+
+    Text and CSV are always read. A PDF or image counts as interpreted only when `extraction` (core.extract.Extraction)
+    actually produced text; otherwise the reason is reported. Without an extraction, binary kinds and json are not read.
+    """
+    if kind in INTERPRETED_KINDS:
+        return {"interpreted": True, "note": None}
+    if extraction is not None and extraction.interpreted and extraction.text.strip():
+        return {"interpreted": True, "note": None}
+    if extraction is not None and extraction.reason and kind in ("pdf", "png", "jpeg"):
+        return {"interpreted": False, "note": f"{kind.upper()} content was NOT read or interpreted: {extraction.reason}. "
+                "Nothing in the model is derived from this file."}
+    return {"interpreted": False, "note": NOT_INTERPRETED_NOTE.format(kind=kind.upper())}
 
 
 MAX_FILES_PER_SCOPE = 20
@@ -120,7 +130,7 @@ def cleanup_uploads(directory: str, live_scopes) -> list:
     return gone
 
 
-def store_upload(directory: str, scope: str, up: ValidatedUpload) -> dict:
+def store_upload(directory: str, scope: str, up: ValidatedUpload, extraction=None) -> dict:
     """Write the bytes under `directory/scope/<sha256><ext>` (content addressed, so a repeat upload is a no-op).
 
     `scope` must be a plain id (letters, digits, '-' and '_'). Returns the provenance record for the response.
@@ -140,4 +150,15 @@ def store_upload(directory: str, scope: str, up: ValidatedUpload) -> dict:
         with open(tmp, "wb") as f:
             f.write(up.data)
         os.replace(tmp, path)
-    return {"sha256": digest, "stored": True, "original_filename": up.filename, "size": up.size, **interpretation(up.kind)}
+    return {"sha256": digest, "stored": True, "original_filename": up.filename, "size": up.size, **interpretation(up.kind, extraction)}
+
+
+def find_stored(directory: str, scope: str, digest: str):
+    """Locate a stored upload by sha256. Returns (path, kind) or None. The digest must be 64 hex characters."""
+    if not re.fullmatch(r"[0-9a-f]{64}", digest or "") or _SAFE_SCOPE.search(scope or "!"):
+        return None
+    for ext, kind in ALLOWED_EXTENSIONS.items():
+        path = os.path.join(directory, scope, digest + ext)
+        if os.path.isfile(path):
+            return path, kind
+    return None

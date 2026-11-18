@@ -38,7 +38,7 @@ What was actually run for the frontend:
 - Node 22 with type stripping executed the pure modules `lib/format.ts`, `lib/arena.ts`, `lib/graph-layout.ts`, `lib/commands.ts` and `services/sse.ts` against a small assertion script (weights total, CSV escaping and formula neutralisation, comparison limit of three, layout termination on cycles, SSE buffer parsing). All assertions passed. The vitest files were not run.
 
 Frontend behavior that is intentionally limited, and visible as such in the UI:
-- PDF and image uploads are accepted and validated by the API but not interpreted. The New Discovery page says so.
+- Image and scanned PDF uploads are accepted and validated but not interpreted; text PDFs are read since phase 5. The New Discovery page says so.
 - The Discovery Universe 3D view is a dependency free SVG projection added in phase 2 (UNVERIFIED, never rendered). The chart and table remain.
 - Hypothesis Arena decisions and notes are saved through new API endpoints in phase 2 (UNVERIFIED), with `localStorage` as fallback.
 - Stage progress and status badges come from the SSE endpoint (`fetch` based reader with an Authorization header). Counts on the Overview come from the `total` field of list endpoints. No metric is computed or invented in the browser.
@@ -116,7 +116,7 @@ Reruns at the end of phase 3: `python3 -m compileall -q backend scripts` passes.
 | Kiro specs and steering | Documentation only. Each spec has requirements, user stories, acceptance criteria, edge cases and a test traceability table pointing to real tests. Each steering file has concrete rules taken from the code. | Test names were checked against the files in `backend/tests`; skipped API tests are marked as such in the specs |
 | Frontend (all of it) | Nothing new this phase | No npm, tsc, vitest or Playwright. Docker is broken, no image was built. |
 
-Known open after phase 3: the SSE design still holds one thread per open stream. The rate limiter is per process. The OpenAI, Gemini and Anthropic adapters have never called a real endpoint. PDF and image uploads are stored but not read.
+Known open after phase 3: the SSE design still holds one thread per open stream. The rate limiter is per process. The OpenAI, Gemini and Anthropic adapters have never called a real endpoint. Images and scanned PDFs are stored but not read (text PDFs are read since phase 5).
 
 ## Phase 3 review round 1
 
@@ -169,7 +169,31 @@ Goal: make ISOMORPH easy to run, install and manage. `python3 ./isomorph serve` 
 
 ### Honest limits of the product
 - Perception is keyword and sentence-pattern based, not language understanding.
-- PDF and image uploads are not interpreted. The UI accepts .txt, .md and .json.
+- Text PDFs are read on a best-effort basis (phase 5). Scanned or encrypted PDFs and all images are not interpreted.
 - The roller demo's best match scores about 36.5 out of 100 (a weak match). Its parameters are placeholders, so validation results are capped at inconclusive. Engine scoring was not changed in this phase.
 - Jobs run in an in-process thread pool. A restart fails interrupted runs; the UI offers Resume.
 - Single user, local mode. Projects, members and accounts from the older API are not part of this runtime.
+
+## Phase 5: unfamiliar vocabulary and real upload reading
+
+Goal: reduce missed roles for unfamiliar words, and read uploaded text, CSV and text PDFs instead of only storing them.
+
+### What ran (sandbox: Python 3.11, no browser, no network, no FastAPI or SQLAlchemy)
+| Check | Command | Result |
+|---|---|---|
+| Full test suite | `cd backend && python3 -m pytest tests -q -rs` | 254 passed, 2 skipped (218 before phase 5; 235 after perception; the skips need FastAPI and SQLAlchemy) |
+| Compile | `python3 -m compileall -q backend scripts` | Pass |
+| Benchmarks | `python3 scripts/evaluate_benchmarks.py` | 7 of 7 positives beat all negatives, MRR 0.9286, hit@1 1.0, unchanged |
+| Demo | `python3 scripts/run_demo.py` | Runs. Roller top score about 36.5, unchanged. Only the limitations text in `data/demo/sample_investigation.json` changed |
+| Seed data | `python3 scripts/validate_seed_data.py` | seed data OK (66 systems) |
+| Held-out perception | `python3 scripts/evaluate_perception.py` | Coverage 0.220 to 0.440, accuracy 0.115 to 0.404, precision when assigned 1.000 to 0.857, detection recall 0.788 to 0.846 |
+| Upload over HTTP | `tests/platform/` tests start a live server on a free port | Upload of a stdlib-built PDF (uncompressed and Flate) returns extracted text, then a discovery starts from `upload_id`. Scanned or empty PDF, images, oversized and bad-magic files report not interpreted or are rejected |
+| Fake provider | tests for `classify_unknown_roles` | Raises on provider failure and rejects roles outside the enum |
+
+### UNVERIFIED
+- **Remote AI role classification and vision.** `classify_unknown_roles` and image description were only tested with fake providers. No real OpenAI, Gemini or Anthropic endpoint was called.
+- **Real-world PDFs.** The extractor was only tested on PDFs the tests build with the stdlib. PDFs from real producers (custom encodings, object streams, ToUnicode maps, columns) may fail or give scrambled text. Encrypted and scanned PDFs are reported as not interpreted.
+- **UI in a browser.** The new server-file input in the bundled UI was syntax checked only. It was never rendered or clicked.
+- **FastAPI upload route.** `POST /problems/{id}/uploads` in the older FastAPI stack still uses the old interpretation (PDF and images not read). It was not changed and cannot run here.
+- Held-out numbers come from a set the code author wrote, so they do not estimate performance on other people's text.
+- **PDF extractor limits (phase 5 review fix).** The parser scans linearly, and caps objects (5000), streams (200), inflated bytes (2 MB per stream, 4 MB total) and wall clock (4 s). Reaching any cap reports "not interpreted" instead of partial text. Extraction results are cached in memory per digest (16 entries), so repeated discoveries from one upload do not re-parse. Bounded time is asserted in `test_phase5_uploads.py` with adversarial PDFs. The 4 s budget is checked between objects and every 2048 tokens, not preemptively.

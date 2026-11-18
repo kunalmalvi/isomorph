@@ -10,12 +10,13 @@ from __future__ import annotations
 import csv
 import importlib.util
 import io
+import json
 import math
 import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
-from ..schemas import Problem, Graph, Node, Edge, Constraint, Variable, Provenance
+from ..schemas import Problem, Graph, Node, Edge, Constraint, Variable, Provenance, ROLES
 
 ROLE_LEXICON: Dict[str, List[str]] = {
     "source": ["supply", "source", "feed", "inflow", "inlet", "input", "supplier", "mains", "raw material", "sun", "fuel"],
@@ -108,8 +109,11 @@ HARD_CUES = ("must not", "cannot", "can not", "never", "shall not", "may not", "
              "not exceed", "not vary", "maximum", "minimum", "upper limit", "lower limit", "must stay", "must remain")
 SOFT_CUES = ("should", "prefer", "ideally", "try to", "would like")
 LE_WORDS = {"the", "a", "an", "is", "are", "of", "and", "to", "in", "with", "by", "for", "must", "should", "that"}
-LIMITATIONS = ("Lexicon, synonym table and verb cue based. Passive voice, pronouns, implicit entities and non-English text are "
-               "not handled reliably. Output needs human review.")
+LIMITATIONS = ("Lexicon, synonym table and verb cue based. For words outside the lexicon it also guesses a role from the "
+               "head noun, hyphen and compound parts, word overlap with the seed knowledge base, and the linking verb; those "
+               "roles are low-confidence inferences, can be wrong, and are marked in node attrs. Entities without a determiner "
+               "('Depositors supply funds'), passive voice, pronouns, implicit entities and non-English text are not handled "
+               "reliably. Output needs human review.")
 
 
 @dataclass
@@ -191,6 +195,150 @@ def _verb_stem(tok: str) -> Optional[str]:
     return None
 
 
+# ------------------------------------------------------------------ role resolution beyond the lexicon
+# Each mechanism below is an INFERENCE with its own lower confidence and a recorded source; none is a stated fact.
+ROLE_SOURCE_CONFIDENCE = {"lexicon": 0.7, "head_noun": 0.5, "morphology": 0.45, "knowledge_index": 0.35,
+                          "context": 0.25, "ai_provider": 0.4}
+ROLE_SOURCE_TEXT = {
+    "head_noun": "the last word of the phrase matches a lexicon or synonym term",
+    "morphology": "a hyphenated part or compound tail matches a lexicon or synonym term",
+    "knowledge_index": "word overlap with role-labelled entities in the seed knowledge base",
+    "context": "the verb that links it to other entities",
+    "ai_provider": "classification by the configured AI provider (a hypothesis)",
+}
+INDEX_MIN_SCORE = 1.2
+INDEX_MIN_MARGIN = 0.4
+_INDEX_STOP = NP_STOP | DETERMINERS | LE_WORDS
+_role_index_cache: Optional[Dict[str, Dict[str, int]]] = None
+
+# verb cue stem -> (role of the subject, role of the object). Only unknown (None) entities receive these roles.
+CONTEXT_ROLES: Dict[str, Tuple[Optional[str], Optional[str]]] = {
+    "control": ("controller", None), "adjust": ("controller", None), "regulate": ("controller", None),
+    "manage": ("controller", None), "command": ("controller", None), "decide": ("controller", None),
+    "assign": ("controller", None),
+    "measure": ("sensor", None), "monitor": ("sensor", None), "detect": ("sensor", None), "sense": ("sensor", None),
+    "read": ("sensor", None),
+    "drive": ("actuator", None), "power": ("actuator", None),
+    "produce": ("producer", None), "generate": ("producer", None), "create": ("producer", None),
+    "consume": ("consumer", None), "deplete": ("consumer", None),
+    "store": ("buffer", None), "hold": ("buffer", None), "accumulate": ("buffer", None),
+    "convert": ("transformer", None), "transform": ("transformer", None),
+    "dissipate": ("dissipater", None),
+    "limit": ("regulator", None), "restrict": ("regulator", None), "constrain": ("regulator", None),
+    "carry": ("conduit", None), "deliver": ("conduit", None), "transport": ("conduit", None), "pass": ("conduit", None),
+    "feed": ("source", None), "supply": ("source", None),
+}
+
+
+def _stem_token(tok: str) -> str:
+    t = tok.lower()
+    if t.endswith("ies") and len(t) > 4:
+        return t[:-3] + "y"
+    if t.endswith("s") and not t.endswith(("ss", "us", "is")) and len(t) > 3:
+        return t[:-1]
+    return t
+
+
+def _lex_role(word: str) -> Optional[str]:
+    for f in _singulars(word):
+        if f in LEXICON:
+            return LEXICON[f]
+        if f in SYNONYMS:
+            return LEXICON[SYNONYMS[f]]
+    return None
+
+
+def _morphology_role(word: str) -> Optional[str]:
+    """Hyphenated parts (last first), then the longest compound tail (4+ letters) found in the lexicon."""
+    parts = [p for p in word.lower().split("-") if p]
+    if len(parts) > 1:
+        for part in reversed(parts):
+            r = _lex_role(part)
+            if r:
+                return r
+    w = parts[-1] if parts else word.lower()
+    for k in range(1, len(w) - 3):
+        tail = w[k:]
+        r = _lex_role(tail) if len(tail) >= 4 else None
+        if r:
+            return r
+    return None
+
+
+def _role_index() -> Dict[str, Dict[str, int]]:
+    """token -> role -> count, learned from role-labelled node labels in data/seed_knowledge. Empty if unreadable."""
+    global _role_index_cache
+    if _role_index_cache is not None:
+        return _role_index_cache
+    idx: Dict[str, Dict[str, int]] = {}
+    try:
+        import glob
+        import json
+        import os
+        from knowledge_base.loader import data_dir
+        for path in sorted(glob.glob(os.path.join(data_dir(), "seed_knowledge", "*.json"))):
+            with open(path, encoding="utf-8") as fh:
+                doc = json.load(fh)
+            for sysd in doc.get("systems", []):
+                for n in sysd.get("graph", {}).get("nodes", []):
+                    role = n.get("role")
+                    if role is None or n.get("kind", "entity") != "entity":
+                        continue
+                    for tok in re.findall(r"[a-z]{3,}", str(n.get("label", "")).lower()):
+                        if tok in _INDEX_STOP:
+                            continue
+                        c = idx.setdefault(_stem_token(tok), {})
+                        c[role] = c.get(role, 0) + 1
+    except (OSError, ValueError, ImportError):
+        idx = {}
+    _role_index_cache = idx
+    return idx
+
+
+def _index_role(words: List[str]) -> Optional[str]:
+    idx = _role_index()
+    scores: Dict[str, float] = {}
+    for k, w in enumerate(words):
+        counts = idx.get(_stem_token(w))
+        if not counts:
+            continue
+        total = sum(counts.values())
+        weight = 2.0 if k == len(words) - 1 else 1.0
+        for role, c in counts.items():
+            scores[role] = scores.get(role, 0.0) + weight * (c / total) * (total / (total + 1.0))
+    if not scores:
+        return None
+    ranked = sorted(scores.items(), key=lambda kv: (-kv[1], kv[0]))
+    top = ranked[0]
+    runner = ranked[1][1] if len(ranked) > 1 else 0.0
+    if top[1] >= INDEX_MIN_SCORE and top[1] - runner >= INDEX_MIN_MARGIN:
+        return top[0]
+    return None
+
+
+def resolve_unknown_role(words: List[str]) -> Optional[Tuple[str, str]]:
+    """Role for a phrase the lexicon missed: head noun, then morphology, then the seed knowledge index.
+    Returns (role, source) or None. None means nothing matched; the caller must leave the role unknown."""
+    words = [w.lower() for w in words if w]
+    if not words:
+        return None
+    head = words[-1]
+    r = _lex_role(head)
+    if r:
+        return r, ("head_noun" if len(words) > 1 else "morphology")
+    r = _morphology_role(head)
+    if r:
+        return r, "morphology"
+    r = _index_role([w for part in words for w in part.split("-") if w])
+    if r:
+        return r, "knowledge_index"
+    return None
+
+
+def _apply_role(e: dict, role: str, source: str) -> None:
+    e["role"], e["role_source"], e["conf"] = role, source, ROLE_SOURCE_CONFIDENCE[source]
+
+
 def split_sentences(text: str) -> List[Tuple[str, int]]:
     """Split on . ; ! ? and newlines, but not on decimal points."""
     out = []
@@ -225,7 +373,51 @@ def _entities_in(tokens: List[Tuple[str, int, int]]) -> List[dict]:
             i += n
         else:
             i += 1
+    _extend_compounds(tokens, found)
     return _add_unknown_nouns(tokens, found)
+
+
+def _plain_word(tokens, j, taken) -> bool:
+    if j >= len(tokens) or j in taken:
+        return False
+    w = tokens[j][0].lower()
+    return not (w in NP_STOP or w in DETERMINERS or w in QUANTITIES or _verb_stem(w) is not None or w in LEXICON
+                or w.endswith(("ing", "ly", "ed", "s")) or len(w) < 3)
+
+
+def _extend_compounds(tokens, found) -> None:
+    """'the load shedder': a lexicon word after a determiner followed by a plain word is a compound whose HEAD is the
+    last word. It is merged only when the head resolves to a role; otherwise the old single-word entity is kept."""
+    taken = set()
+    for e in found:
+        taken.update(range(e["start_tok"], e["end_tok"] + 1))
+    for e in list(found):
+        # modifiers before a lexicon head ('the coolant circulation pump'): the head decides the role. The entity keeps
+        # the head's key so later mentions of 'the pump' are the same node; the span covers the whole phrase.
+        k = e["start_tok"]
+        mods = 0
+        while mods < 2 and k - 1 - mods >= 0 and _plain_word(tokens, k - 1 - mods, taken):
+            mods += 1
+        while mods and not (k - mods == 0 or tokens[k - mods - 1][0].lower() in DETERMINERS):
+            mods -= 1
+        is_verb = _verb_stem(tokens[e["end_tok"]][0]) is not None or tokens[e["end_tok"]][0].lower().endswith("s")
+        if mods and e["role"] is not None and not is_verb:
+            e["start_tok"], e["start"] = k - mods, tokens[k - mods][1]
+            e["absorbed"] = True
+            taken.update(range(k - mods, k))
+    for e in list(found):
+        if e["start_tok"] != e["end_tok"] or e["role"] is None or e.get("absorbed"):
+            continue
+        i, j = e["start_tok"], e["end_tok"] + 1
+        if not (i == 0 or tokens[i - 1][0].lower() in DETERMINERS) or not _plain_word(tokens, j, taken):
+            continue
+        words = [tokens[i][0], tokens[j][0]]
+        res = resolve_unknown_role(words)
+        if res is None:
+            continue
+        e.update(key=" ".join(_norm(w) for w in words), end_tok=j, end=tokens[j][2])
+        _apply_role(e, res[0], res[1])
+        taken.add(j)
 
 
 def _add_unknown_nouns(tokens, found):
@@ -238,23 +430,49 @@ def _add_unknown_nouns(tokens, found):
     while i < len(tokens):
         if tokens[i][0].lower() in DETERMINERS:
             j, words = i + 1, []
-            while j < len(tokens) and len(words) < 2:
+            while j < len(tokens) and len(words) < 3:
                 w = tokens[j][0].lower()
                 if j in taken or w in NP_STOP or w in DETERMINERS or w in QUANTITIES or _verb_stem(w) is not None \
                         or w.endswith("ing") or w.endswith("ly"):
                     break
                 words.append(j)
                 j += 1
+            # a trailing plural-looking word after a modifier is usually a verb ('the dough rises')
+            if len(words) >= 2 and tokens[words[-1]][0].lower().endswith("s") \
+                    and not tokens[words[-1]][0].lower().endswith(("ss", "us", "is")):
+                words.pop()
+                j = words[-1] + 1
             if words:
                 label = " ".join(_norm(tokens[k][0]) for k in words)
-                found.append({"key": label, "role": None, "start_tok": words[0], "end_tok": words[-1],
-                              "start": tokens[words[0]][1], "end": tokens[words[-1]][2]})
+                ent = {"key": label, "role": None, "start_tok": words[0], "end_tok": words[-1],
+                       "start": tokens[words[0]][1], "end": tokens[words[-1]][2]}
+                res = resolve_unknown_role([tokens[k][0] for k in words])
+                if res is not None:
+                    _apply_role(ent, res[0], res[1])
+                found.append(ent)
                 taken.update(words)
             i = j
         else:
             i += 1
     found.sort(key=lambda e: e["start_tok"])
     return found
+
+
+def _context_roles(toks, ents, sent) -> None:
+    """Give still-unknown entities a role from the verb that links them (subject of 'controls' -> controller).
+    Weakest evidence, recorded with source 'context'; only entities whose role is None are touched."""
+    for i, t in enumerate(toks):
+        stem = _verb_stem(t[0])
+        if stem not in CONTEXT_ROLES:
+            continue
+        subj = [e for e in ents if e["end_tok"] < i]
+        obj = [e for e in ents if e["start_tok"] > i]
+        if not subj or not obj:
+            continue
+        for e, role in ((subj[-1], CONTEXT_ROLES[stem][0]), (obj[0], CONTEXT_ROLES[stem][1])):
+            if role is not None and e["role"] is None:
+                _apply_role(e, role, "context")
+                e["role_note"] = f"verb '{t[0]}'"
 
 
 def _is_english(text: str) -> bool:
@@ -324,16 +542,26 @@ def perceive_text(text: str, title: str = "") -> PerceptionResult:
                 continue
             keep.append(e)
         ents_all, ents = ents, keep
+        _context_roles(toks, ents, sent)
         for e in ents:
             nid = _slug(e["key"])
             if nid not in nodes:
                 known = e["role"] is not None
-                nodes[nid] = Node(nid, e["key"], "entity", e["role"], {}, Provenance.USER, span=text[e["start"]:e["end"]],
-                                  confidence=0.7 if known else 0.3)
+                src = e.get("role_source", "lexicon") if known else None
+                attrs = {"role_source": src} if src and src != "lexicon" else {}
+                nodes[nid] = Node(nid, e["key"], "entity", e["role"], attrs, Provenance.USER, span=text[e["start"]:e["end"]],
+                                  confidence=ROLE_SOURCE_CONFIDENCE.get(src, 0.7) if known else 0.3)
                 res.facts.append({"statement": f"'{e['key']}' is mentioned", "span": [e["start"], e["end"]], "provenance": "user"})
-                if known:
+                if known and src == "lexicon":
                     res.inferences.append({"statement": f"Role of '{e['key']}' inferred as {e['role']} from keyword lexicon",
                                            "provenance": "computation", "confidence": 0.7})
+                elif known:
+                    note = f" ({e['role_note']})" if e.get("role_note") else ""
+                    res.inferences.append({"statement": f"Role of '{e['key']}' inferred as {e['role']}: {ROLE_SOURCE_TEXT[src]}{note}. "
+                                                        "This is a guess, not a stated fact.",
+                                           "provenance": "computation", "confidence": ROLE_SOURCE_CONFIDENCE[src],
+                                           "source": src, "span": [e["start"], e["end"]]})
+                    res.clarification_questions.append(f"Is '{e['key']}' really a {e['role']} (role guessed by {src.replace('_', ' ')})?")
                 else:
                     res.unknowns.append(f"role of '{e['key']}' is unknown (word not in lexicon)")
                     res.clarification_questions.append(f"What function does '{e['key']}' serve (supply, storage, control, sensing, load, ...)?")
@@ -435,6 +663,54 @@ def perceive_text(text: str, title: str = "") -> PerceptionResult:
     res.unknowns = list(dict.fromkeys(res.unknowns))
     res.clarification_questions = list(dict.fromkeys(res.clarification_questions))
     return res
+
+
+# ------------------------------------------------------------------ optional AI classification (off by default)
+def classify_unknown_roles(result: PerceptionResult, provider) -> PerceptionResult:
+    """Ask `provider` to classify ONLY the entities still without a role into the fixed ROLES set.
+
+    Never called by perceive_text. Any provider failure propagates (no fallback, no invented roles). The reply is
+    validated first: it must match the schema, name only labels that were asked about, and use roles inside
+    ROLES, otherwise ProviderSchemaError is raised and the result is left unchanged. Accepted roles are recorded
+    as inferences with provenance 'ai_hypothesis' and low confidence; they are never facts."""
+    from ai_providers.base import CompletionRequest, ProviderSchemaError, validate_schema
+    nodes = [n for n in result.problem.graph.nodes if n.kind == "entity" and n.role is None]
+    if not nodes:
+        return result
+    statement = result.problem.statement or ""
+    sentences = [x for x, _ in split_sentences(statement)]
+    items = []
+    for n in nodes:
+        ctx = next((x for x in sentences if n.label.lower() in x.lower()), "")
+        items.append({"label": n.label, "sentence": ctx})
+    schema = {"type": "object", "required": ["roles"], "properties": {"roles": {"type": "array", "items": {
+        "type": "object", "required": ["label", "role"],
+        "properties": {"label": {"type": "string"}, "role": {"type": "string", "enum": list(ROLES)}}}}}}
+    prompt = ("Classify each entity into exactly one functional role from this list: " + ", ".join(ROLES) +
+              ". Answer only for the labels given. If unsure, omit the label.\nEntities (JSON): " + json.dumps(items))
+    out = provider.complete(CompletionRequest(prompt=prompt, task="classify_roles", schema=schema, temperature=0.0))
+    errs = validate_schema(out.parsed, schema)
+    if errs:
+        raise ProviderSchemaError("; ".join(errs[:5]))
+    by_label = {n.label: n for n in nodes}
+    seen = set()
+    for item in out.parsed["roles"]:
+        if item["label"] not in by_label:
+            raise ProviderSchemaError(f"provider named an entity that was not asked about: {item['label']!r}")
+        if item["label"] in seen:
+            raise ProviderSchemaError(f"provider returned the label {item['label']!r} twice")
+        seen.add(item["label"])
+    for item in out.parsed["roles"]:
+        n = by_label[item["label"]]
+        n.role = item["role"]
+        n.attrs["role_source"] = "ai_provider"
+        n.confidence = ROLE_SOURCE_CONFIDENCE["ai_provider"]
+        result.inferences.append({"statement": f"Role of '{n.label}' classified as {n.role} by {out.provider} ({out.model}): "
+                                               "an AI hypothesis, not a stated fact.",
+                                  "provenance": "ai_hypothesis", "confidence": n.confidence, "source": "ai_provider",
+                                  "span": n.span})
+        result.unknowns = [u for u in result.unknowns if u != f"role of '{n.label}' is unknown (word not in lexicon)"]
+    return result
 
 
 # ------------------------------------------------------------------ CSV

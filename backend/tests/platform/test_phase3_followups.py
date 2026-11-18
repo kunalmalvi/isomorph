@@ -96,7 +96,8 @@ def test_plurals_and_case_are_normalised():
 
 
 def test_unknown_word_still_has_no_role():
-    assert _roles("The frobnicator feeds the tank.").get("frobnicator") in (None,)
+    # no lexicon, head noun, morphology, index or linking-verb evidence: the role stays unknown
+    assert _roles("The frobnicator touches the tank.").get("frobnicator") is None
 
 
 # ------------------------------------------------------------------ review round 1
