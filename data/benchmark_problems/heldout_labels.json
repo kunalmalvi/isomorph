@@ -1,0 +1,3794 @@
+{
+ "description": "Held-out structural analog set (split: heldout). Labels are author_labelled, independent_review none. Written from docs/labelling-guide.md before any matcher run. The author also wrote the matcher, so this set is less overlapping with the tuning set but is NOT independent.",
+ "split": "heldout",
+ "label_status": "author_labelled",
+ "independent_review": "none",
+ "grades": {
+  "2": "strong analog",
+  "1": "partial analog",
+  "0": "not analog (lookalike if lookalike true)"
+ },
+ "items": [
+  {
+   "query": {
+    "id": "hq_sauna_stove",
+    "title": "Sauna stove with a limit controller",
+    "domain": "mechanical_engineering",
+    "statement": "A wood stove heats the sauna air. A probe measures the air temperature and tells a limit controller, which dampens the stove when the air is too hot. Some heat leaves through the roof vent. The stove has a maximum output.",
+    "goal": "Hold the sauna air near a target temperature",
+    "graph": {
+     "nodes": [
+      {
+       "id": "wood",
+       "label": "Firewood",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "stove",
+       "label": "Stove",
+       "kind": "entity",
+       "role": "actuator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "air",
+       "label": "Sauna air",
+       "kind": "entity",
+       "role": "medium",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "probe",
+       "label": "Temperature probe",
+       "kind": "entity",
+       "role": "sensor",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "ctl",
+       "label": "Limit controller",
+       "kind": "entity",
+       "role": "controller",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "vent",
+       "label": "Roof vent",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "wood",
+       "target": "stove",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "stove",
+       "target": "air",
+       "relation": "produces",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "air",
+       "target": "probe",
+       "relation": "observed_by",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "probe",
+       "target": "ctl",
+       "relation": "signals",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "ctl",
+       "target": "stove",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "air",
+       "target": "vent",
+       "relation": "dissipates_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Stove output has a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "negative feedback with a loss path"
+   },
+   "labels": [
+    {
+     "system_id": "me_room_thermostat",
+     "grade": 2,
+     "rationale": "Fuel to supply, stove to heater, air to room, probe to sensor, limit controller to thermostat, vent to loss. Sensed temperature inhibits the heater in both and heat escapes to a loss node, so the loop and dynamics correspond.",
+     "role_mapping": {
+      "wood": "supply",
+      "stove": "heater",
+      "air": "room",
+      "probe": "sensor",
+      "ctl": "thermostat",
+      "vent": "loss"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "bio_thermoregulation",
+     "grade": 1,
+     "rationale": "The sensor to controller loop on a regulated temperature maps. In the candidate the controller drives a separate cooling actuator, in the query it dampens the heat source itself, so the edge from controller to actuator differs.",
+     "role_mapping": {
+      "stove": "heat_prod",
+      "air": "core_temp",
+      "probe": "thermoreceptor",
+      "ctl": "hypothalamus",
+      "vent": "environment"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "cs_circuit_breaker",
+     "grade": 1,
+     "rationale": "Only the monitor-inhibits-the-protected-element fragment maps. There is no regulated medium and no loss path.",
+     "role_mapping": {
+      "stove": "service",
+      "probe": "monitor"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "arch_stack_ventilation",
+     "grade": 0,
+     "rationale": "The candidate has a room, a vent and a heat gain, but no sensor or controller. Airflow is driven by buoyancy, not by a sensed signal, so check 3 fails.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words room, vent, heat gain with the query but has no sensing loop"
+    },
+    {
+     "system_id": "math_mm1_queue",
+     "grade": 0,
+     "rationale": "Series queue with no feedback. No regulated quantity, check 3 fails.",
+     "role_mapping": {},
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_canal_intake",
+    "title": "Canal intake gate and reservoir gauge",
+    "domain": "architecture",
+    "statement": "A river feeds a reservoir through an intake gate. A gauge reports the reservoir level to an operator who closes the gate when the level is high. The town draws water from the reservoir. The reservoir has a maximum volume.",
+    "goal": "Keep the reservoir below the brim without running dry",
+    "graph": {
+     "nodes": [
+      {
+       "id": "river",
+       "label": "River",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "gate",
+       "label": "Intake gate",
+       "kind": "entity",
+       "role": "actuator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "reservoir",
+       "label": "Reservoir",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "gauge",
+       "label": "Level gauge",
+       "kind": "entity",
+       "role": "sensor",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "operator",
+       "label": "Operator",
+       "kind": "entity",
+       "role": "controller",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "town",
+       "label": "Town",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "river",
+       "target": "gate",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "gate",
+       "target": "reservoir",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "reservoir",
+       "target": "town",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "reservoir",
+       "target": "gauge",
+       "relation": "observed_by",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "gauge",
+       "target": "operator",
+       "relation": "signals",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "operator",
+       "target": "gate",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Reservoir volume has a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "buffer level sensed to close its own inflow"
+   },
+   "labels": [
+    {
+     "system_id": "log_reorder_point_inventory",
+     "grade": 2,
+     "rationale": "Supplier to river, pipeline to gate, stock to reservoir, counter to gauge, policy to operator, customers to town. The sensed level signals a controller that inhibits the inflow, as in the query.",
+     "role_mapping": {
+      "river": "supplier",
+      "gate": "pipeline",
+      "reservoir": "stock",
+      "gauge": "counter",
+      "operator": "policy",
+      "town": "customers"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "me_float_valve_cistern",
+     "grade": 1,
+     "rationale": "Level closes its own inlet and the buffer drains to a consumer. The candidate has no separate controller node, so gauge and operator collapse into the float, which is why this is partial.",
+     "role_mapping": {
+      "river": "mains",
+      "gate": "inlet",
+      "reservoir": "tank",
+      "gauge": "float",
+      "town": "outlet"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "cs_bounded_buffer",
+     "grade": 1,
+     "rationale": "A full buffer signals a regulator that blocks the producer. No separate sensor node and the regulator also blocks the consumer, which the query does not do.",
+     "role_mapping": {
+      "river": "producer",
+      "reservoir": "buffer",
+      "town": "consumer",
+      "operator": "semaphore"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "arch_roof_drainage",
+     "grade": 1,
+     "rationale": "Level in a buffer triggers a relief path. The relief acts on the outflow, not on the inflow, so only part of the loop corresponds.",
+     "role_mapping": {
+      "river": "rain",
+      "reservoir": "gutter",
+      "gate": "overflow",
+      "town": "drain"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_cross_docking",
+     "grade": 0,
+     "rationale": "Straight-through flow with a staging buffer and no sensing loop, check 3 fails.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words buffer, inbound and outbound flows with the query but has no sensing loop"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_greenhouse_irrigation",
+    "title": "Greenhouse soil moisture irrigation",
+    "domain": "ecology",
+    "statement": "Mains water passes an irrigation valve into the soil. A moisture probe tells an irrigation controller which opens or closes the valve. Extra water drains away. Valve flow has a maximum.",
+    "goal": "Hold soil moisture near a target",
+    "graph": {
+     "nodes": [
+      {
+       "id": "mains",
+       "label": "Mains water",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "valve",
+       "label": "Irrigation valve",
+       "kind": "entity",
+       "role": "actuator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "soil",
+       "label": "Soil",
+       "kind": "entity",
+       "role": "medium",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "probe",
+       "label": "Moisture probe",
+       "kind": "entity",
+       "role": "sensor",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "ctl",
+       "label": "Irrigation controller",
+       "kind": "entity",
+       "role": "controller",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "drain",
+       "label": "Drainage",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "mains",
+       "target": "valve",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "valve",
+       "target": "soil",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "soil",
+       "target": "probe",
+       "relation": "observed_by",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "probe",
+       "target": "ctl",
+       "relation": "signals",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "ctl",
+       "target": "valve",
+       "relation": "controls",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "soil",
+       "target": "drain",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Valve flow has a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "sensed medium, controller, valve, drain"
+   },
+   "labels": [
+    {
+     "system_id": "arch_vav_zone_control",
+     "grade": 2,
+     "rationale": "All six nodes and all six edges correspond one to one: supply, actuator, controlled medium, sensor, controller, exhaust.",
+     "role_mapping": {
+      "mains": "supply_duct",
+      "valve": "damper",
+      "soil": "zone",
+      "probe": "thermostat",
+      "ctl": "controller",
+      "drain": "exhaust"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "arch_daylight_shading_control",
+     "grade": 1,
+     "rationale": "The sensed medium, controller and actuator loop maps, but the candidate has no exit path from the medium, so the medium is not drained.",
+     "role_mapping": {
+      "mains": "sun",
+      "valve": "blinds",
+      "soil": "room",
+      "probe": "sensor",
+      "ctl": "controller"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "econ_taylor_rule",
+     "grade": 1,
+     "rationale": "Sensor to controller to actuator acting back on a medium maps. The candidate has no source or sink and the loop closes through a consumer, so only the loop maps.",
+     "role_mapping": {
+      "soil": "inflation",
+      "probe": "statistics",
+      "ctl": "bank",
+      "valve": "rate"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "arch_roof_drainage",
+     "grade": 0,
+     "rationale": "Water enters, is buffered and drains, but there is no sensor or controller. Overflow is passive, check 3 fails.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares water, drain and valve-like words with the query but is passive"
+    },
+    {
+     "system_id": "energy_thermal_storage_tank",
+     "grade": 0,
+     "rationale": "Source to buffer to consumer with a loss and no feedback.",
+     "role_mapping": {},
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_pressure_cooker",
+    "title": "Pressure cooker with weighted lid",
+    "domain": "physics",
+    "statement": "A stove heats water and produces steam pressure. When pressure exceeds what the lid weight holds, the lid lifts and lets steam out to the vent, which lowers the pressure. The weight sets the lifting pressure.",
+    "goal": "Hold pressure at a safe level",
+    "graph": {
+     "nodes": [
+      {
+       "id": "stove",
+       "label": "Stove",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "steam",
+       "label": "Steam pressure",
+       "kind": "entity",
+       "role": "medium",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "lid",
+       "label": "Lid",
+       "kind": "entity",
+       "role": "switch",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "weight",
+       "label": "Lid weight",
+       "kind": "entity",
+       "role": "regulator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "vent",
+       "label": "Vent",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "stove",
+       "target": "steam",
+       "relation": "produces",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "steam",
+       "target": "lid",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "weight",
+       "target": "lid",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "lid",
+       "target": "vent",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "lid",
+       "target": "steam",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Pressure must not exceed a safe limit",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "threshold relief"
+   },
+   "labels": [
+    {
+     "system_id": "me_pressure_relief_valve",
+     "grade": 2,
+     "rationale": "Every node and edge corresponds: pressure activates the valve against a spring-like regulator, the valve vents and lowers the pressure.",
+     "role_mapping": {
+      "stove": "process",
+      "steam": "pressure",
+      "lid": "valve",
+      "weight": "spring",
+      "vent": "vent"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "me_hydraulic_press",
+     "grade": 1,
+     "rationale": "A relief element that passes fluid to a reservoir when pressure is high maps. The candidate also has a pump and a ram, which the query lacks, and the relief does not act back on the fluid edge.",
+     "role_mapping": {
+      "steam": "fluid",
+      "lid": "relief",
+      "vent": "reservoir"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "arch_roof_drainage",
+     "grade": 1,
+     "rationale": "A buffer or medium level triggers a relief path to a sink. No weight or threshold regulator and no inhibition back onto the medium.",
+     "role_mapping": {
+      "steam": "gutter",
+      "lid": "overflow",
+      "vent": "drain"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "chem_distillation_column",
+     "grade": 0,
+     "rationale": "Heat input, vapour, and outlets, but no relief switch and no feedback onto the vapour. Flows only.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words heat, vapour, vent-like outlets with the query"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_emergency_ward",
+    "title": "Emergency ward patient queue",
+    "domain": "logistics",
+    "statement": "Patients arrive at the ward and wait in the waiting room until a doctor is free. Doctors treat one patient at a time and then discharge them. The waiting room grows when arrivals exceed the treatment rate.",
+    "goal": "Estimate waiting room length",
+    "graph": {
+     "nodes": [
+      {
+       "id": "arrivals",
+       "label": "Arriving patients",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "waiting",
+       "label": "Waiting room",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "doctors",
+       "label": "Doctors",
+       "kind": "entity",
+       "role": "transformer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "discharge",
+       "label": "Discharged",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "arrivals",
+       "target": "waiting",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "waiting",
+       "target": "doctors",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "doctors",
+       "target": "discharge",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Treatment rate is a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "single server queue"
+   },
+   "labels": [
+    {
+     "system_id": "math_mm1_queue",
+     "grade": 2,
+     "rationale": "Four nodes and three edges correspond one to one. Both grow a queue when arrivals exceed service.",
+     "role_mapping": {
+      "arrivals": "arrivals",
+      "waiting": "queue",
+      "doctors": "server",
+      "discharge": "departures"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "cs_cpu_scheduler",
+     "grade": 1,
+     "rationale": "The ready queue feeding a single server maps. The candidate adds a dispatcher and a return edge from cpu to the queue that the query does not have.",
+     "role_mapping": {
+      "arrivals": "processes",
+      "waiting": "ready",
+      "doctors": "cpu",
+      "discharge": "done"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "trans_airport_runway",
+     "grade": 1,
+     "rationale": "Arrivals queue then single server then exit maps. The air traffic controller loop has no counterpart in the query.",
+     "role_mapping": {
+      "arrivals": "arrivals",
+      "waiting": "holding",
+      "doctors": "runway",
+      "discharge": "gate"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "trans_signal_cycle_queue",
+     "grade": 1,
+     "rationale": "Queue to a gated server to downstream maps. The signal switch that gates service has no counterpart.",
+     "role_mapping": {
+      "arrivals": "arrivals",
+      "waiting": "queue",
+      "doctors": "stopline",
+      "discharge": "downstream"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "trans_bus_bunching",
+     "grade": 0,
+     "rationale": "Waiting is activated by headway and feeds back to itself. This is a reinforcing loop, not a plain queue, check 3 fails.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words waiting and passengers or arrivals with the query but loops back"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_port_crane_bottleneck",
+    "title": "Container port crane bottleneck",
+    "domain": "logistics",
+    "statement": "Ships arrive through an approach channel to a crane berth. The berth works slower than ships arrive, so ships queue at the anchorage and block the channel. Containers then move over the yard to trucks. Berth capacity is a maximum.",
+    "goal": "Understand why ships queue at the anchorage",
+    "graph": {
+     "nodes": [
+      {
+       "id": "ships",
+       "label": "Arriving ships",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "approach",
+       "label": "Approach channel",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "crane",
+       "label": "Crane berth",
+       "kind": "entity",
+       "role": "regulator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "yard",
+       "label": "Container yard",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "trucks",
+       "label": "Trucks",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "anchorage",
+       "label": "Anchorage",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "ships",
+       "target": "approach",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "approach",
+       "target": "crane",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "crane",
+       "target": "yard",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "yard",
+       "target": "trucks",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "approach",
+       "target": "anchorage",
+       "relation": "stores_in",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "anchorage",
+       "target": "approach",
+       "relation": "constrains",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Berth capacity is a maximum throughput",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "queue with spillback at a capacity limited section"
+   },
+   "labels": [
+    {
+     "system_id": "trans_highway_bottleneck",
+     "grade": 2,
+     "rationale": "All six nodes and six edges correspond. The queue stores overflow from the upstream section and constrains it, as in the query.",
+     "role_mapping": {
+      "ships": "demand",
+      "approach": "upstream",
+      "crane": "bottleneck",
+      "yard": "downstream",
+      "trucks": "exit",
+      "anchorage": "queue"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_theory_of_constraints",
+     "grade": 1,
+     "rationale": "A bottleneck stage with an upstream buffer and a constraint on release maps. The candidate has the constraint on the release rate, not a spillback from the buffer to the upstream conduit.",
+     "role_mapping": {
+      "ships": "release",
+      "crane": "bottleneck",
+      "anchorage": "buffer",
+      "trucks": "market"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "trans_toll_plaza_queue",
+     "grade": 1,
+     "rationale": "A queue ahead of a limited server maps. The queue inhibits the source in the candidate rather than constraining the upstream conduit.",
+     "role_mapping": {
+      "ships": "highway",
+      "crane": "booth",
+      "anchorage": "queue",
+      "trucks": "exit"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_hub_and_spoke",
+     "grade": 0,
+     "rationale": "Merging flows through a trunk, no buffer and no capacity spillback. Check 3 fails.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares conduit, sink and source types and the words channel or trunk with the query but has no buffer"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_playground_swing",
+    "title": "Playground swing with air drag",
+    "domain": "physics",
+    "statement": "A push gives the swing seat energy. The seat swings, the rope tension pulls it back, and air drag dissipates energy as heat, so the swing slowly stops. Rope length limits the swing angle.",
+    "goal": "Predict how quickly the swing stops",
+    "graph": {
+     "nodes": [
+      {
+       "id": "push",
+       "label": "Push",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "seat",
+       "label": "Swing seat",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "rope",
+       "label": "Rope tension",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "drag",
+       "label": "Air drag",
+       "kind": "entity",
+       "role": "dissipater",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "heat",
+       "label": "Warmed air",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "push",
+       "target": "seat",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "seat",
+       "target": "rope",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "rope",
+       "target": "seat",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "seat",
+       "target": "drag",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "drag",
+       "target": "seat",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "drag",
+       "target": "heat",
+       "relation": "dissipates_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Rope length limits the swing angle",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "damped second order oscillator"
+   },
+   "labels": [
+    {
+     "system_id": "phys_mass_spring_damper",
+     "grade": 2,
+     "rationale": "Every node and edge corresponds: exchange between two stores and a dissipater that inhibits the first store.",
+     "role_mapping": {
+      "push": "force",
+      "seat": "mass",
+      "rope": "spring",
+      "drag": "damper",
+      "heat": "heat"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "phys_rlc_circuit",
+     "grade": 2,
+     "rationale": "Same wiring, store to store exchange with a dissipater, giving damped oscillation.",
+     "role_mapping": {
+      "push": "vsource",
+      "seat": "inductor",
+      "rope": "capacitor",
+      "drag": "resistor",
+      "heat": "heat"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "me_tuned_mass_absorber",
+     "grade": 1,
+     "rationale": "A second store coupled to a main mass and a dissipater maps, but the coupling and the source differ.",
+     "role_mapping": {
+      "seat": "main",
+      "rope": "absorber",
+      "drag": "damper"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "phys_clock_escapement",
+     "grade": 1,
+     "rationale": "A pendulum with friction fed by a drive maps. The escapement switch is not in the query and the oscillator has one store only.",
+     "role_mapping": {
+      "push": "drive",
+      "seat": "pendulum",
+      "drag": "friction"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "me_flywheel",
+     "grade": 0,
+     "rationale": "Energy buffer with a loss, no exchange between two stores, no oscillation. Check 3 fails.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words energy, drag-like loss and buffer with the query but has no second store or inhibition loop"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_hog_cycle",
+    "title": "Hog price cycle",
+    "domain": "economics",
+    "statement": "A high pork price makes farmers raise more hogs. The herd takes time to grow, then supplies shoppers. A large herd lowers the price. The delay makes price and herd size rise and fall in cycles.",
+    "goal": "Explain repeating price swings",
+    "graph": {
+     "nodes": [
+      {
+       "id": "price",
+       "label": "Pork price",
+       "kind": "entity",
+       "role": "medium",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "farmers",
+       "label": "Hog farmers",
+       "kind": "entity",
+       "role": "producer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "herd",
+       "label": "Hog herd",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "shoppers",
+       "label": "Shoppers",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "price",
+       "target": "farmers",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "farmers",
+       "target": "herd",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "herd",
+       "target": "shoppers",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "herd",
+       "target": "price",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Herd size cannot be negative",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "delayed price and supply feedback"
+   },
+   "labels": [
+    {
+     "system_id": "econ_market_price_adjustment",
+     "grade": 2,
+     "rationale": "Four nodes and four edges correspond. The delayed supply response and inventory pressure on price give the same cycle.",
+     "role_mapping": {
+      "price": "price",
+      "farmers": "producers",
+      "herd": "inventory",
+      "shoppers": "consumers"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_supply_chain_bullwhip",
+     "grade": 1,
+     "rationale": "Delayed buffers with back edges give oscillation, but the price signal has no counterpart and the loop passes through several buffers.",
+     "role_mapping": {
+      "farmers": "factory",
+      "herd": "wholesaler",
+      "shoppers": "retailer"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "bio_end_product_inhibition",
+     "grade": 1,
+     "rationale": "A buffer that inhibits the upstream regulator while a consumer draws it down. Shared negative feedback, but no delay-driven oscillation is claimed in the candidate.",
+     "role_mapping": {
+      "price": "enzyme1",
+      "farmers": "pathway",
+      "herd": "product",
+      "shoppers": "demand"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "math_mm1_queue",
+     "grade": 0,
+     "rationale": "Series queue with no feedback, check 3 fails.",
+     "role_mapping": {},
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "econ_commons_depletion",
+     "grade": 0,
+     "rationale": "A stock with regeneration and users. The only loop is reinforcing regeneration and competition between users, not price inhibition.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words stock and users or producers and an economic setting with the query"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_viral_posts",
+    "title": "Viral posts and moderators",
+    "domain": "computer_science",
+    "statement": "Popular posts spread by themselves and also draw the attention of moderators. Moderators remove posts and then burn out and leave. As posts fall moderators have less to do and the next wave of posts can grow again.",
+    "goal": "Explain repeated waves of viral content",
+    "graph": {
+     "nodes": [
+      {
+       "id": "posts",
+       "label": "Viral posts",
+       "kind": "entity",
+       "role": "producer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "mods",
+       "label": "Moderators",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "burnout",
+       "label": "Burnout",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "posts",
+       "target": "posts",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "posts",
+       "target": "mods",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "mods",
+       "target": "posts",
+       "relation": "consumes",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "mods",
+       "target": "burnout",
+       "relation": "dissipates_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Counts cannot be negative",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "self-reinforcing producer and consumer"
+   },
+   "labels": [
+    {
+     "system_id": "eco_predator_prey",
+     "grade": 2,
+     "rationale": "Self-reinforcing prey, a predator that grows from prey and consumes it, and a loss for the predator. All four edges correspond.",
+     "role_mapping": {
+      "posts": "prey",
+      "mods": "predator",
+      "burnout": "mortality"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "chem_oregonator",
+     "grade": 1,
+     "rationale": "Self-activation with an inhibitor that suppresses it gives oscillation, but the candidate has an extra catalyst step and a source.",
+     "role_mapping": {
+      "posts": "activator",
+      "mods": "inhibitor",
+      "burnout": "products"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "chem_autocatalysis",
+     "grade": 1,
+     "rationale": "Self-activation maps. No consumer and no limiting partner, so no oscillation.",
+     "role_mapping": {
+      "posts": "product"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "math_markov_chain",
+     "grade": 0,
+     "rationale": "Probability transfer among states, no self-reinforcement. Check 3 fails.",
+     "role_mapping": {},
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "eco_trophic_cascade",
+     "grade": 0,
+     "rationale": "A consumption chain with no self-reinforcement and no feedback on the lowest level.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words consumer, consumes and producer with the query but is a one-way chain"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_wastewater_clarifiers",
+    "title": "Wastewater inflow split over two clarifiers",
+    "domain": "architecture",
+    "statement": "Wastewater enters an inlet works and reaches a distribution chamber, which splits the flow between two clarifiers. Both clarifiers discharge into one effluent channel that runs to the river. Flow into a chamber equals flow out and each clarifier has a capacity limit.",
+    "goal": "Estimate how flow shares between clarifiers",
+    "graph": {
+     "nodes": [
+      {
+       "id": "inlet",
+       "label": "Inlet works",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "split",
+       "label": "Distribution chamber",
+       "kind": "entity",
+       "role": "junction",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "clarifier_a",
+       "label": "Clarifier A",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "clarifier_b",
+       "label": "Clarifier B",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "channel",
+       "label": "Effluent channel",
+       "kind": "entity",
+       "role": "junction",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "river",
+       "label": "River",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "inlet",
+       "target": "split",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "split",
+       "target": "clarifier_a",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "split",
+       "target": "clarifier_b",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "clarifier_a",
+       "target": "channel",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "clarifier_b",
+       "target": "channel",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "channel",
+       "target": "river",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Flow is conserved at chambers; each clarifier has a capacity limit",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "split into parallel branches and recombine"
+   },
+   "labels": [
+    {
+     "system_id": "phys_resistor_network",
+     "grade": 2,
+     "rationale": "Six nodes and six edges correspond. Conservation at a junction is Kirchhoff's current law.",
+     "role_mapping": {
+      "inlet": "battery",
+      "split": "split",
+      "clarifier_a": "r1",
+      "clarifier_b": "r2",
+      "channel": "join",
+      "river": "ground"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "math_max_flow_network",
+     "grade": 1,
+     "rationale": "Two parallel conduits merging into a junction and a sink map. The candidate splits directly at the source and adds a cut regulator.",
+     "role_mapping": {
+      "inlet": "s",
+      "clarifier_a": "a",
+      "clarifier_b": "b",
+      "channel": "m",
+      "river": "t"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "arch_truss_load_path",
+     "grade": 1,
+     "rationale": "Split into two paths that rejoin at a sink maps, but one branch continues through an extra conduit and there is no merging junction.",
+     "role_mapping": {
+      "inlet": "load",
+      "split": "joint1",
+      "clarifier_a": "chord",
+      "clarifier_b": "web",
+      "river": "support"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "trans_wardrop_equilibrium",
+     "grade": 1,
+     "rationale": "Two parallel routes from a source to a sink map. No distribution or merge junctions and a competition edge that the query does not have.",
+     "role_mapping": {
+      "inlet": "demand",
+      "clarifier_a": "route_a",
+      "clarifier_b": "route_b",
+      "river": "destination"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "arch_progressive_collapse",
+     "grade": 0,
+     "rationale": "Loads pass down a chain of columns, with the foundation as sink. Not a two-branch split and recombine.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words conduit-like parts, load and sink with the query but is a chain"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_plankton_food_chain",
+    "title": "Antarctic plankton food chain",
+    "domain": "ecology",
+    "statement": "Sunlight feeds phytoplankton. Krill eat phytoplankton, fish eat krill, and seals eat fish. Each level is limited by what the level below supplies.",
+    "goal": "Predict how removing seals affects plankton",
+    "graph": {
+     "nodes": [
+      {
+       "id": "sun",
+       "label": "Sunlight",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "plankton",
+       "label": "Phytoplankton",
+       "kind": "entity",
+       "role": "producer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "krill",
+       "label": "Krill",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "fish",
+       "label": "Fish",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "seal",
+       "label": "Seals",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "sun",
+       "target": "plankton",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "krill",
+       "target": "plankton",
+       "relation": "consumes",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "fish",
+       "target": "krill",
+       "relation": "consumes",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "seal",
+       "target": "fish",
+       "relation": "consumes",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Populations cannot be negative",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "consumption chain"
+   },
+   "labels": [
+    {
+     "system_id": "eco_trophic_cascade",
+     "grade": 2,
+     "rationale": "Five nodes and four edges correspond one to one: source, producer and a chain of three consumers.",
+     "role_mapping": {
+      "sun": "sun",
+      "plankton": "kelp",
+      "krill": "urchin",
+      "fish": "otter",
+      "seal": "orca"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "chem_series_reaction",
+     "grade": 1,
+     "rationale": "A conversion chain maps the chain shape but replaces consumption by conversion and has no source.",
+     "role_mapping": {
+      "plankton": "a",
+      "krill": "b",
+      "fish": "c"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "phys_decay_chain",
+     "grade": 1,
+     "rationale": "A chain of three stages. Conversion, not consumption, and a decay is spontaneous.",
+     "role_mapping": {
+      "plankton": "parent",
+      "krill": "daughter",
+      "fish": "stable"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "eco_competitive_exclusion",
+     "grade": 0,
+     "rationale": "Two consumers compete for one resource. Parallel competition, no chain, check 2 fails.",
+     "role_mapping": {},
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "eco_nitrogen_cycle",
+     "grade": 0,
+     "rationale": "The flow closes into a cycle through decomposers, whereas the query is an open chain.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words plants, source and consumers with the query but forms a closed cycle"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_reef_algae_shift",
+    "title": "Coral reef shift to algae",
+    "domain": "ecology",
+    "statement": "Nutrient runoff enters the reef water. Nutrients let macroalgae grow, and a dense algal cover smothers coral. Healthy coral keeps algae in check, so once coral is lost the algae are hard to remove.",
+    "goal": "Explain why the reef does not recover after cleanup",
+    "graph": {
+     "nodes": [
+      {
+       "id": "runoff",
+       "label": "Nutrient runoff",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "nutrients",
+       "label": "Reef nutrients",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "algae",
+       "label": "Macroalgae",
+       "kind": "entity",
+       "role": "producer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "cover",
+       "label": "Smothering cover",
+       "kind": "entity",
+       "role": "medium",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "coral",
+       "label": "Coral",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "runoff",
+       "target": "nutrients",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "nutrients",
+       "target": "algae",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "algae",
+       "target": "cover",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "cover",
+       "target": "coral",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "coral",
+       "target": "algae",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Cover cannot exceed the reef area",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "regime shift through mutual inhibition"
+   },
+   "labels": [
+    {
+     "system_id": "eco_lake_eutrophication",
+     "grade": 2,
+     "rationale": "Five nodes and five edges correspond. Mutual suppression between algae and the plants or coral gives a regime shift with hysteresis.",
+     "role_mapping": {
+      "runoff": "loading",
+      "nutrients": "phosphorus",
+      "algae": "algae",
+      "cover": "turbidity",
+      "coral": "plants"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "math_saddle_node_switch",
+     "grade": 1,
+     "rationale": "The shared dynamics, a threshold switch with hysteresis, correspond. The wiring differs and only the driver to state fragment maps.",
+     "role_mapping": {
+      "nutrients": "param",
+      "cover": "state"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "econ_lemons_unraveling",
+     "grade": 1,
+     "rationale": "A reinforcing unravelling loop maps in outline. The edge relations differ.",
+     "role_mapping": {
+      "algae": "good",
+      "cover": "quality",
+      "coral": "buyers"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "eco_nitrogen_cycle",
+     "grade": 0,
+     "rationale": "A nutrient cycle with no mutual inhibition and no regime shift.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words nutrient, soil-like buffer and plants with the query but is a transport cycle"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_cruise_control",
+    "title": "Car cruise control",
+    "domain": "mechanical_engineering",
+    "statement": "The driver sets a speed. The controller compares it with the measured speed, and adjusts the throttle to drive the car toward that speed. A speed sensor reports the car's speed. Throttle opening has a maximum.",
+    "goal": "Hold the set speed on hills",
+    "graph": {
+     "nodes": [
+      {
+       "id": "driver",
+       "label": "Speed setting",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "error",
+       "label": "Speed error",
+       "kind": "entity",
+       "role": "junction",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "ctl",
+       "label": "Cruise controller",
+       "kind": "entity",
+       "role": "controller",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "throttle",
+       "label": "Throttle",
+       "kind": "entity",
+       "role": "actuator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "car",
+       "label": "Car",
+       "kind": "entity",
+       "role": "transformer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "speedo",
+       "label": "Speed sensor",
+       "kind": "entity",
+       "role": "sensor",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "driver",
+       "target": "error",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "error",
+       "target": "ctl",
+       "relation": "signals",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "ctl",
+       "target": "throttle",
+       "relation": "controls",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "throttle",
+       "target": "car",
+       "relation": "controls",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "car",
+       "target": "speedo",
+       "relation": "observed_by",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e6",
+       "source": "speedo",
+       "target": "error",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Throttle opening has a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "set point comparison feedback"
+   },
+   "labels": [
+    {
+     "system_id": "math_pid_control",
+     "grade": 2,
+     "rationale": "Set point to summing junction, controller, plant and a sensor that subtracts at the junction all correspond. The throttle is merged into the controller. The integral term is not needed.",
+     "role_mapping": {
+      "driver": "setpoint",
+      "error": "sum",
+      "ctl": "pid",
+      "throttle": "pid",
+      "car": "plant",
+      "speedo": "sensor"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "phys_opamp_negative_feedback",
+     "grade": 1,
+     "rationale": "A setpoint, a comparison, an amplifier and a feedback path that opposes the input map. The candidate has no explicit controller node.",
+     "role_mapping": {
+      "driver": "input",
+      "error": "sense",
+      "throttle": "amp",
+      "car": "output",
+      "speedo": "network"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "me_centrifugal_governor",
+     "grade": 1,
+     "rationale": "Speed sensed and a linkage moves a throttle. There is no set point and the controller inhibits the throttle directly.",
+     "role_mapping": {
+      "car": "speed",
+      "speedo": "flyballs",
+      "ctl": "linkage",
+      "throttle": "throttle"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "econ_taylor_rule",
+     "grade": 1,
+     "rationale": "Sensor to controller to actuator onto a process maps. No explicit set point comparison.",
+     "role_mapping": {
+      "car": "inflation",
+      "speedo": "statistics",
+      "ctl": "bank",
+      "throttle": "rate"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "math_linear_program",
+     "grade": 0,
+     "rationale": "An optimiser controls activities that compete for a resource. There is no sensed feedback, check 3 fails.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words controller, controls and constraints with the query but has no feedback"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_line_trip_cascade",
+    "title": "Cascading transmission line trips",
+    "domain": "energy_systems",
+    "statement": "A storm trips line 1, so its load moves to line 2. Line 2 then overloads and its load moves to line 3, which overloads and passes load back to line 1. Each line has a capacity limit.",
+    "goal": "Explain how one trip becomes a blackout",
+    "graph": {
+     "nodes": [
+      {
+       "id": "storm",
+       "label": "Storm",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "line1",
+       "label": "Line 1",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "line2",
+       "label": "Line 2",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "line3",
+       "label": "Line 3",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "storm",
+       "target": "line1",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "line1",
+       "target": "line2",
+       "relation": "transmits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "line2",
+       "target": "line3",
+       "relation": "transmits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "line3",
+       "target": "line1",
+       "relation": "transmits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Each line has a capacity limit",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "contagion around a ring"
+   },
+   "labels": [
+    {
+     "system_id": "econ_banking_contagion",
+     "grade": 2,
+     "rationale": "Shock, then a ring of three nodes that pass the load around. All four edges correspond.",
+     "role_mapping": {
+      "storm": "shock",
+      "line1": "banka",
+      "line2": "bankb",
+      "line3": "bankc"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_supply_chain_bullwhip",
+     "grade": 1,
+     "rationale": "A chain of buffers that pass effects on, with a return edge. The candidate's return edge goes to the middle node, not the first.",
+     "role_mapping": {
+      "storm": "demand",
+      "line1": "retailer",
+      "line2": "wholesaler",
+      "line3": "factory"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "math_markov_chain",
+     "grade": 1,
+     "rationale": "A three state loop maps. The candidate has an extra back edge and a regulator.",
+     "role_mapping": {
+      "line1": "sa",
+      "line2": "sb",
+      "line3": "sc"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "arch_progressive_collapse",
+     "grade": 1,
+     "rationale": "Load passes along a chain of members that fail in turn. The candidate does not close into a ring.",
+     "role_mapping": {
+      "storm": "loads",
+      "line1": "col_a",
+      "line2": "col_b",
+      "line3": "col_c"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "eco_carbon_box_model",
+     "grade": 0,
+     "rationale": "Three reservoirs with exchange flows around a hub, not a ring with failure propagation.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words three buffers, source and flows with the query but is a hub exchange"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_vaccine_fridge",
+    "title": "Solar vaccine fridge",
+    "domain": "energy_systems",
+    "statement": "A solar charger cools a cold store. The clinic draws vaccines from the cold store, and heat leaks in through the walls. There is no sensing or control.",
+    "goal": "Estimate how long the store stays cold",
+    "graph": {
+     "nodes": [
+      {
+       "id": "charger",
+       "label": "Solar charger",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "store",
+       "label": "Cold store",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "clinic",
+       "label": "Clinic",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "leak",
+       "label": "Heat gain",
+       "kind": "entity",
+       "role": "dissipater",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "charger",
+       "target": "store",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "store",
+       "target": "clinic",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "store",
+       "target": "leak",
+       "relation": "dissipates_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Store has a limited capacity",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "buffer with draw and loss"
+   },
+   "labels": [
+    {
+     "system_id": "energy_thermal_storage_tank",
+     "grade": 2,
+     "rationale": "Four nodes and three edges correspond. A buffer with a draw and a loss path.",
+     "role_mapping": {
+      "charger": "heater",
+      "store": "tank",
+      "clinic": "demand",
+      "leak": "loss"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "me_flywheel",
+     "grade": 1,
+     "rationale": "A buffer between a source and a load with a loss maps. The shaft conduit has no counterpart.",
+     "role_mapping": {
+      "charger": "engine",
+      "store": "flywheel",
+      "clinic": "load",
+      "leak": "bearing"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_safety_stock",
+     "grade": 1,
+     "rationale": "Source, buffer, consumer maps. No loss path, a variability constraint instead.",
+     "role_mapping": {
+      "charger": "supply",
+      "store": "safety",
+      "clinic": "demand"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "energy_battery_soc",
+     "grade": 1,
+     "rationale": "Charger, storage, load maps but the candidate adds a sensing loop that inhibits the charger and load.",
+     "role_mapping": {
+      "charger": "charger",
+      "store": "cells",
+      "clinic": "load"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "energy_pumped_hydro",
+     "grade": 0,
+     "rationale": "Two buffers exchanging through a transformer, with production to the grid. The query has one buffer and no transformer.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words storage, buffer and consumer with the query but has two buffers and a loop"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_cholesterol_synthesis",
+    "title": "Liver cholesterol synthesis",
+    "domain": "biology",
+    "statement": "A precursor enters a synthesis enzyme that feeds the pathway. The pathway makes cholesterol, which cells use. Cholesterol in the pool blocks the enzyme, so synthesis falls when the pool is full.",
+    "goal": "Explain how the pool is held steady",
+    "graph": {
+     "nodes": [
+      {
+       "id": "precursor",
+       "label": "Precursor",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "hmg",
+       "label": "Synthesis enzyme",
+       "kind": "entity",
+       "role": "regulator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "pathway",
+       "label": "Synthesis pathway",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "chol",
+       "label": "Cholesterol pool",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "cells",
+       "label": "Cells",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "precursor",
+       "target": "hmg",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "hmg",
+       "target": "pathway",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "pathway",
+       "target": "chol",
+       "relation": "produces",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "chol",
+       "target": "hmg",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "chol",
+       "target": "cells",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Enzyme rate has a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "end product inhibition"
+   },
+   "labels": [
+    {
+     "system_id": "bio_end_product_inhibition",
+     "grade": 2,
+     "rationale": "Five nodes and five edges correspond one to one.",
+     "role_mapping": {
+      "precursor": "substrate",
+      "hmg": "enzyme1",
+      "pathway": "pathway",
+      "chol": "product",
+      "cells": "demand"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "me_float_valve_cistern",
+     "grade": 1,
+     "rationale": "A buffer that closes its own inlet maps. The candidate has an extra sensor node and no production step.",
+     "role_mapping": {
+      "precursor": "mains",
+      "hmg": "inlet",
+      "chol": "tank",
+      "cells": "outlet"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "bio_calcium_homeostasis",
+     "grade": 1,
+     "rationale": "A regulated pool with a controller loop maps. The candidate senses and controls through two extra nodes and has a different feedback target.",
+     "role_mapping": {
+      "precursor": "intake",
+      "chol": "plasma",
+      "cells": "excretion"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "bio_lac_operon",
+     "grade": 0,
+     "rationale": "An induction switch, with inhibition of a repressor. The substrate is consumed by enzymes it induces, so the loop is reversed.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words enzymes, inhibits and substrate with the query but is an induction loop"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_yeast_vat",
+    "title": "Yeast in a closed vat",
+    "domain": "chemistry",
+    "statement": "Yeast cells divide and so their number grows faster as the culture grows. As the culture grows, ethanol accumulates and slows the division. The culture levels off at a ceiling.",
+    "goal": "Explain the levelling off of the culture",
+    "graph": {
+     "nodes": [
+      {
+       "id": "births",
+       "label": "Cell division",
+       "kind": "entity",
+       "role": "producer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "culture",
+       "label": "Yeast culture",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "ethanol",
+       "label": "Ethanol",
+       "kind": "entity",
+       "role": "regulator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "births",
+       "target": "culture",
+       "relation": "produces",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "culture",
+       "target": "births",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "culture",
+       "target": "ethanol",
+       "relation": "activates",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "ethanol",
+       "target": "births",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Ethanol tolerance sets a ceiling",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "saturating growth"
+   },
+   "labels": [
+    {
+     "system_id": "math_logistic_growth",
+     "grade": 2,
+     "rationale": "Three nodes and four edges correspond one to one.",
+     "role_mapping": {
+      "births": "growth",
+      "culture": "population",
+      "ethanol": "crowding"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "eco_fishery_harvest",
+     "grade": 1,
+     "rationale": "Growth fed by stock and a capacity limit on growth map. The candidate also has a harvest sink and an effort actuator.",
+     "role_mapping": {
+      "births": "growth",
+      "culture": "stock",
+      "ethanol": "capacity"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "eco_island_biogeography",
+     "grade": 1,
+     "rationale": "A stock inhibiting its own inflow and activating a loss maps. The source and the immigration node differ.",
+     "role_mapping": {
+      "culture": "island",
+      "ethanol": "extinction"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "chem_autocatalysis",
+     "grade": 1,
+     "rationale": "Self-activation maps. There is no limiting regulator.",
+     "role_mapping": {
+      "births": "rate",
+      "culture": "product"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "econ_solow_accumulation",
+     "grade": 0,
+     "rationale": "Capital produces output that is saved back into capital. The loop is saturating only through depreciation and has a different wiring.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words stock, produces and accumulation with the query but has a different wiring"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_taxi_rank",
+    "title": "Taxi rank with a marshal",
+    "domain": "transportation",
+    "statement": "Taxis arrive at a rank. Riders take taxis from the rank. When the rank is empty the marshal stops riders joining, and when it is full the marshal stops more taxis. The marshal releases taxis to the street.",
+    "goal": "Keep the rank neither empty nor overfull",
+    "graph": {
+     "nodes": [
+      {
+       "id": "taxis",
+       "label": "Arriving taxis",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "rank",
+       "label": "Taxi rank",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "riders",
+       "label": "Riders",
+       "kind": "entity",
+       "role": "consumer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "marshal",
+       "label": "Marshal",
+       "kind": "entity",
+       "role": "regulator",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "street",
+       "label": "Street",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "taxis",
+       "target": "rank",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "riders",
+       "target": "rank",
+       "relation": "consumes",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "rank",
+       "target": "marshal",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "marshal",
+       "target": "riders",
+       "relation": "inhibits",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "marshal",
+       "target": "street",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Rank length is a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "bounded buffer with a gate"
+   },
+   "labels": [
+    {
+     "system_id": "cs_token_bucket",
+     "grade": 2,
+     "rationale": "Refill, bucket, requests that consume it, a limiter inhibited by the bucket and inhibiting requests. All five edges correspond.",
+     "role_mapping": {
+      "taxis": "refill",
+      "rank": "bucket",
+      "riders": "requests",
+      "marshal": "limiter",
+      "street": "output"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "cs_bounded_buffer",
+     "grade": 1,
+     "rationale": "A buffer gating both its producer and its consumer maps. The wiring of the gate differs and there is no exit node.",
+     "role_mapping": {
+      "taxis": "producer",
+      "rank": "buffer",
+      "riders": "consumer",
+      "marshal": "semaphore"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_conwip",
+     "grade": 1,
+     "rationale": "A capped buffer with a signal back to the release maps. The candidate has a transformer line in between.",
+     "role_mapping": {
+      "taxis": "release",
+      "rank": "wip",
+      "marshal": "cards",
+      "street": "finished"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "cs_cache_hierarchy",
+     "grade": 0,
+     "rationale": "A chain of buffers consuming from each other and no regulator or limit. Check 3 fails.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words buffer, consumer and consumes with the query but is a chain without a gate"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_wine_to_vinegar",
+    "title": "Wine ageing to vinegar",
+    "domain": "chemistry",
+    "statement": "Grape sugar is converted into wine. The wine is converted into vinegar. Nothing returns to the earlier stages.",
+    "goal": "Predict the amount of each stage over time",
+    "graph": {
+     "nodes": [
+      {
+       "id": "sugar",
+       "label": "Grape sugar",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "wine",
+       "label": "Wine",
+       "kind": "entity",
+       "role": "buffer",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "vinegar",
+       "label": "Vinegar",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "sugar",
+       "target": "wine",
+       "relation": "converts",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "wine",
+       "target": "vinegar",
+       "relation": "converts",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Mass is conserved",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "sequential conversion"
+   },
+   "labels": [
+    {
+     "system_id": "chem_series_reaction",
+     "grade": 2,
+     "rationale": "Three nodes and two edges correspond one to one.",
+     "role_mapping": {
+      "sugar": "a",
+      "wine": "b",
+      "vinegar": "c"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "phys_decay_chain",
+     "grade": 2,
+     "rationale": "Three nodes and two edges correspond one to one.",
+     "role_mapping": {
+      "sugar": "parent",
+      "wine": "daughter",
+      "vinegar": "stable"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "math_mm1_queue",
+     "grade": 1,
+     "rationale": "A source to a stage to a sink maps. The candidate adds a server node and flows rather than conversion.",
+     "role_mapping": {
+      "sugar": "arrivals",
+      "wine": "queue",
+      "vinegar": "departures"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "math_sir_epidemic",
+     "grade": 1,
+     "rationale": "A three stage chain with conversions maps. The candidate adds a feedback edge.",
+     "role_mapping": {
+      "sugar": "susceptible",
+      "wine": "infected",
+      "vinegar": "recovered"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "chem_le_chatelier",
+     "grade": 0,
+     "rationale": "Reversible conversion between buffers with a control on equilibrium. The query is irreversible and has no control.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares the words converts and reactants or products with the query but is reversible"
+    }
+   ]
+  },
+  {
+   "query": {
+    "id": "hq_airline_hub",
+    "title": "Airline hub network",
+    "domain": "transportation",
+    "statement": "Passengers from two origin cities fly into a hub airport. From the hub a long haul route carries them to two destinations.",
+    "goal": "Understand how passengers merge and split at a hub",
+    "graph": {
+     "nodes": [
+      {
+       "id": "city_a",
+       "label": "Origin city A",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "city_b",
+       "label": "Origin city B",
+       "kind": "entity",
+       "role": "source",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "hub",
+       "label": "Hub airport",
+       "kind": "entity",
+       "role": "junction",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "longhaul",
+       "label": "Long haul route",
+       "kind": "entity",
+       "role": "conduit",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "dest_x",
+       "label": "Destination X",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      },
+      {
+       "id": "dest_y",
+       "label": "Destination Y",
+       "kind": "entity",
+       "role": "sink",
+       "attrs": {},
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0
+      }
+     ],
+     "edges": [
+      {
+       "id": "e1",
+       "source": "city_a",
+       "target": "hub",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e2",
+       "source": "city_b",
+       "target": "hub",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e3",
+       "source": "hub",
+       "target": "longhaul",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e4",
+       "source": "longhaul",
+       "target": "dest_x",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      },
+      {
+       "id": "e5",
+       "source": "longhaul",
+       "target": "dest_y",
+       "relation": "flows_to",
+       "weight": 1.0,
+       "provenance": "source",
+       "span": null,
+       "confidence": 1.0,
+       "flags": []
+      }
+     ]
+    },
+    "constraints": [
+     {
+      "id": "c1",
+      "description": "Route capacity is a maximum",
+      "kind": "hard",
+      "expression": null,
+      "provenance": "user",
+      "tags": []
+     }
+    ],
+    "note": "merge, trunk, split"
+   },
+   "labels": [
+    {
+     "system_id": "log_hub_and_spoke",
+     "grade": 2,
+     "rationale": "Six nodes and five edges correspond one to one.",
+     "role_mapping": {
+      "city_a": "origin1",
+      "city_b": "origin2",
+      "hub": "hub",
+      "longhaul": "trunk",
+      "dest_x": "dest1",
+      "dest_y": "dest2"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_transshipment_network",
+     "grade": 1,
+     "rationale": "Supply through an arc to a transfer to demand maps, with one origin and one destination. The arc constraint has no counterpart.",
+     "role_mapping": {
+      "city_a": "supply",
+      "hub": "transfer",
+      "longhaul": "arc",
+      "dest_x": "demand"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "log_cross_docking",
+     "grade": 1,
+     "rationale": "Inbound to a junction to outbound maps. No trunk conduit and a sort and staging stage.",
+     "role_mapping": {
+      "city_a": "inbound",
+      "hub": "dock",
+      "dest_x": "outbound"
+     },
+     "lookalike": false,
+     "label_status": "author_labelled",
+     "independent_review": "none"
+    },
+    {
+     "system_id": "phys_resistor_network",
+     "grade": 0,
+     "rationale": "A single source splits into two branches and recombines. The query merges two sources then splits, so the wiring is wrong.",
+     "role_mapping": {},
+     "lookalike": true,
+     "label_status": "author_labelled",
+     "independent_review": "none",
+     "lookalike_reason": "shares source, junction, conduit and sink role types with the query but splits then merges"
+    }
+   ]
+  }
+ ]
+}
