@@ -179,14 +179,21 @@
     {
      "citation": "Hibbeler, R.C., Structural Analysis, Pearson",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Salvadori, M., Why Buildings Stand Up, W.W. Norton, 1980",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -385,14 +392,21 @@
     {
      "citation": "ASHRAE Handbook: Fundamentals, ASHRAE",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Stein, B. et al., Mechanical and Electrical Equipment for Buildings, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -552,14 +566,21 @@
     {
      "citation": "NFPA 101: Life Safety Code, National Fire Protection Association",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "SFPE Handbook of Fire Protection Engineering, Springer",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -738,14 +759,21 @@
     {
      "citation": "International Plumbing Code, International Code Council",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Stein, B. et al., Mechanical and Electrical Equipment for Buildings, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -913,15 +941,870 @@
     {
      "citation": "Stein, B. et al., Mechanical and Electrical Equipment for Buildings, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "ASHRAE Handbook: Fundamentals, ASHRAE",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "arch_vav_zone_control",
+   "name": "Variable air volume zone control",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "A zone thermostat compares room air temperature with its set point and a damper changes supply air flow from a shared duct, so each zone is held near set point.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "supply_duct",
+      "label": "Supply air duct",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "damper",
+      "label": "VAV damper",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "zone",
+      "label": "Zone air temperature",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "thermostat",
+      "label": "Zone thermostat",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "controller",
+      "label": "Zone controller",
+      "kind": "entity",
+      "role": "controller",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "exhaust",
+      "label": "Return air",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "supply_duct",
+      "target": "damper",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "damper",
+      "target": "zone",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "zone",
+      "target": "thermostat",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "thermostat",
+      "target": "controller",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "controller",
+      "target": "damper",
+      "relation": "controls",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "zone",
+      "target": "exhaust",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "distribute",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "delay",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Minimum outdoor air flow must be kept for ventilation",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "safety_bound"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Duct capacity limits total flow",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "McQuiston, F.C., Parker, J.D. and Spitler, J.D., Heating, Ventilating, and Air Conditioning: Analysis and Design, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "ASHRAE Handbook: Fundamentals, ASHRAE",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "arch_smoke_control_compartment",
+   "name": "Smoke control by compartmentation and exhaust",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "Fire-rated walls hold smoke in one compartment while a smoke exhaust fan removes it, keeping a clear layer for escape on the other side of the barrier.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "fire",
+      "label": "Fire smoke source",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "compartment",
+      "label": "Fire compartment",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "barrier",
+      "label": "Fire-rated barrier",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "exhaust",
+      "label": "Smoke exhaust fan",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "vent",
+      "label": "Outside discharge",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "escape",
+      "label": "Adjacent escape route",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "fire",
+      "target": "compartment",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "barrier",
+      "target": "escape",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "compartment",
+      "target": "exhaust",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "exhaust",
+      "target": "vent",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "compartment",
+      "target": "escape",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "protect",
+    "transport",
+    "buffer"
+   ],
+   "dynamics": [
+    "accumulation",
+    "saturation",
+    "threshold"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Occupants must be able to leave before smoke layer reaches head height",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "safety_bound",
+      "hard_limit",
+      "delay_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "SFPE Handbook of Fire Protection Engineering, Springer",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "NFPA 101: Life Safety Code, National Fire Protection Association",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "arch_progressive_collapse",
+   "name": "Progressive collapse in a framed structure",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "Failure of one column puts its load on neighbouring members; if they lack reserve capacity they fail in turn, so a local failure can spread through the frame.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "loads",
+      "label": "Gravity load",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "col_a",
+      "label": "Failed column",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "col_b",
+      "label": "Neighbouring column",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "col_c",
+      "label": "Next neighbouring column",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "foundation",
+      "label": "Foundation",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "loads",
+      "target": "col_a",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "col_a",
+      "target": "col_b",
+      "relation": "transmits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "col_b",
+      "target": "col_c",
+      "relation": "transmits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "col_a",
+      "target": "foundation",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "col_c",
+      "target": "foundation",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "transport"
+   ],
+   "dynamics": [
+    "cascade",
+    "threshold",
+    "load_sharing"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "A member fails when its load exceeds capacity",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "hard_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Redundant load paths limit spread",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "safety_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Hibbeler, R.C., Structural Analysis, Pearson",
+     "kind": "textbook",
+     "note": "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "background_only"
+    },
+    {
+     "citation": "Salmon, C.G., Johnson, J.E. and Malhas, F.A., Steel Structures: Design and Behavior, Pearson",
+     "kind": "textbook",
+     "note": "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "background_only"
+    }
+   ],
+   "provenance_class": "hypothesis",
+   "confidence": "low",
+   "limitations": "The cascade structure is a generated abstraction; the references support member capacity and load transfer only."
+  },
+  {
+   "id": "arch_daylight_shading_control",
+   "name": "Daylight-responsive shading control",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "A light sensor measures interior illuminance and a controller moves blinds so that daylight is used while glare and solar heat gain stay below limits.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "sun",
+      "label": "Daylight",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "blinds",
+      "label": "Motorised blinds",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "room",
+      "label": "Interior illuminance",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "sensor",
+      "label": "Light sensor",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "controller",
+      "label": "Shading controller",
+      "kind": "entity",
+      "role": "controller",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "sun",
+      "target": "blinds",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "blinds",
+      "target": "room",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "room",
+      "target": "sensor",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "sensor",
+      "target": "controller",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "controller",
+      "target": "blinds",
+      "relation": "controls",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "delay",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Glare and heat gain limit how much light can pass",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "safety_bound",
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Lechner, N., Heating, Cooling, Lighting: Sustainable Design Methods for Architects, Wiley",
+     "kind": "textbook",
+     "note": "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "background_only"
+    },
+    {
+     "citation": "Olgyay, V., Design with Climate: Bioclimatic Approach to Architectural Regionalism, Princeton University Press, 1963",
+     "kind": "textbook",
+     "note": "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "background_only"
+    }
+   ],
+   "provenance_class": "hypothesis",
+   "confidence": "low",
+   "limitations": "The control structure is a generated abstraction; the references support only daylight and solar gain principles."
+  },
+  {
+   "id": "arch_foundation_load_spread",
+   "name": "Foundation load spreading into soil",
+   "domain": "architecture",
+   "kind": "system",
+   "summary": "Column loads pass into a footing that spreads them over a larger soil area, so soil bearing stress stays below the soil capacity and settlement stays small.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "column",
+      "label": "Column load",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "footing",
+      "label": "Spread footing",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "soil",
+      "label": "Supporting soil",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "ground",
+      "label": "Deep soil layers",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "column",
+      "target": "footing",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "footing",
+      "target": "soil",
+      "relation": "transmits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "soil",
+      "target": "ground",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "soil",
+      "target": "footing",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "transport"
+   ],
+   "dynamics": [
+    "saturation",
+    "threshold",
+    "accumulation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Bearing stress must stay below soil bearing capacity",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "hard_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Settlement must stay within tolerance",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "safety_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Das, B.M., Principles of Foundation Engineering, Cengage",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Salmon, C.G., Johnson, J.E. and Malhas, F.A., Steel Structures: Design and Behavior, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }
  ]

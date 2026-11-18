@@ -131,6 +131,8 @@ def main():
             la["behaviours"], la["dynamics"] = list(pos["behaviours"]), list(pos["dynamics"])
             la["constraints"] = [dict(c, id=c["id"]) for c in pos["constraints"]]
     doc = {"description": "Positive structural analog pairs and negative lookalikes. See docs/benchmark-notes.md for caveats.",
+           "split": "tuning",
+           "split_note": "Seen during matcher development. The held-out set is heldout_labels.json.",
            "pairs": [{"query": p["query"], "positive": p["positive"], "lookalikes": p["lookalikes"]} for p in PAIRS]}
     path = os.path.join(ROOT, "data", "benchmark_problems", "benchmarks.json")
     with open(path, "w") as f:

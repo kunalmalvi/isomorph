@@ -1,9 +1,9 @@
 {
  "concepts": [
   {
-   "analog_id": "bio_thermoregulation",
-   "analog_name": "Human core temperature regulation",
-   "analog_score": 36.4847,
+   "analog_id": "arch_vav_zone_control",
+   "analog_name": "Variable air volume zone control",
+   "analog_score": 37.4754,
    "caveats": [
     "Concept is an analogy transfer. Feasibility in the problem's domain is not established.",
     "Based on analog entry confidence high."
@@ -37,23 +37,23 @@
     "warnings": []
    },
    "expected_effect": "Disturbances are partly compensated before they reach the output",
-   "id": "add_sensing:bio_thermoregulation",
+   "id": "add_sensing:arch_vav_zone_control",
    "name": "Add an upstream measurement for anticipation",
    "parameter_overrides": {},
    "preconditions": [
     "an upstream variable correlated with the disturbance"
    ],
-   "rationale": "Human core temperature regulation senses its state before acting on it",
+   "rationale": "Variable air volume zone control senses its state before acting on it",
    "relies_on": [
     [
-     "energy",
-     "core_temp",
-     0.262
+     "operator",
+     "controller",
+     0.42
     ],
     [
-     "operator",
-     "hypothalamus",
-     0.303
+     "strip",
+     "zone",
+     0.282
     ]
    ],
    "status": "ok",
@@ -67,14 +67,14 @@
      ],
      "relies_on": [
       [
-       "energy",
-       "core_temp",
-       0.262
+       "operator",
+       "controller",
+       0.42
       ],
       [
-       "operator",
-       "hypothalamus",
-       0.303
+       "strip",
+       "zone",
+       0.282
       ]
      ]
     },
@@ -85,14 +85,14 @@
      "preconditions": [],
      "relies_on": [
       [
-       "energy",
-       "core_temp",
-       0.262
+       "operator",
+       "controller",
+       0.42
       ],
       [
-       "operator",
-       "hypothalamus",
-       0.303
+       "strip",
+       "zone",
+       0.282
       ]
      ]
     }
@@ -266,7 +266,7 @@
   {
    "analog_id": "arch_passive_solar_mass",
    "analog_name": "Passive solar gain with thermal mass",
-   "analog_score": 33.3823,
+   "analog_score": 33.3518,
    "caveats": [
     "Concept is an analogy transfer. Feasibility in the problem's domain is not established.",
     "Based on analog entry confidence medium."
@@ -364,7 +364,7 @@
   {
    "analog_id": "trans_airport_runway",
    "analog_name": "Airport runway arrival queue",
-   "analog_score": 24.6219,
+   "analog_score": 24.4953,
    "caveats": [
     "Concept is an analogy transfer. Feasibility in the problem's domain is not established.",
     "Based on analog entry confidence medium."
@@ -466,7 +466,7 @@
  "hypotheses": [
   {
    "based_on": [
-    "add_sensing:bio_thermoregulation"
+    "add_sensing:arch_vav_zone_control"
    ],
    "category": "robustness",
    "experiment": null,
@@ -474,7 +474,7 @@
    "id": "H1-add_sensing",
    "prediction": "the relevant outcome metric improves; no quantitative prediction is possible without an applicable model.",
    "provenance": "computation",
-   "statement": "If the design applies 'Add an upstream measurement for anticipation' (transferred from Human core temperature regulation), the problem's key outcome will improve compared with the current design. No simulation model is available for this idea, so the outcome metric still has to be defined by the user.",
+   "statement": "If the design applies 'Add an upstream measurement for anticipation' (transferred from Variable air volume zone control), the problem's key outcome will improve compared with the current design. No simulation model is available for this idea, so the outcome metric still has to be defined by the user.",
    "status": "untested"
   },
   {
@@ -1469,6 +1469,11 @@
    {
     "reason": "same domain as problem",
     "stage": "cross_domain_filter",
+    "system_id": "me_hydraulic_accumulator"
+   },
+   {
+    "reason": "same domain as problem",
+    "stage": "cross_domain_filter",
     "system_id": "me_hydraulic_press"
    },
    {
@@ -1485,6 +1490,96 @@
     "reason": "same domain as problem",
     "stage": "cross_domain_filter",
     "system_id": "me_room_thermostat"
+   },
+   {
+    "reason": "same domain as problem",
+    "stage": "cross_domain_filter",
+    "system_id": "me_tuned_mass_absorber"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "math_pid_control"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "arch_truss_load_path"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "energy_rankine_cycle"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "phys_counterflow_heat_exchanger"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "math_sir_epidemic"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "log_theory_of_constraints"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "trans_nagel_jam"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "energy_heat_pump_cycle"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "math_graph_diffusion"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "arch_stack_ventilation"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "trans_ramp_metering"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "econ_automatic_stabilizers"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "chem_michaelis_menten"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "energy_microgrid_battery"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "energy_reactor_reactivity"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "arch_roof_drainage"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "cs_cache_hierarchy"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
@@ -1509,7 +1604,27 @@
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "eco_wildlife_disease_sir"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "cs_bounded_buffer"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "eco_lake_eutrophication"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "cs_exponential_backoff"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "eco_fishery_harvest"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
@@ -1524,6 +1639,11 @@
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "trans_signal_cycle_queue"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "chem_buffer_solution"
    },
    {
@@ -1534,7 +1654,17 @@
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "log_cross_docking"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "cs_load_balancer"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "phys_rc_charging"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
@@ -1545,6 +1675,11 @@
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
     "system_id": "phys_clock_escapement"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "math_van_der_pol"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
@@ -1564,6 +1699,11 @@
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "chem_autocatalysis"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "log_hub_and_spoke"
    },
    {
@@ -1579,7 +1719,32 @@
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "math_mm1_queue"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "bio_coagulation_cascade"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "math_logistic_growth"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "chem_chromatography_column"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "trans_toll_plaza_queue"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "phys_coupled_pendulum_sync"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
@@ -1594,7 +1759,27 @@
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "chem_le_chatelier"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "math_max_flow_network"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "log_transshipment_network"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "eco_carbon_box_model"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "trans_littles_law"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
@@ -1629,12 +1814,27 @@
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "eco_competitive_exclusion"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "econ_multiplier_accelerator"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "eco_island_biogeography"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "eco_nitrogen_cycle"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "log_eoq_cycle_stock"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
@@ -1649,12 +1849,47 @@
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "math_saddle_node_switch"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "econ_lemons_unraveling"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "cs_circuit_breaker"
    },
    {
     "reason": "outside top 25 by fingerprint similarity",
     "stage": "1_retrieval",
+    "system_id": "chem_turing_pattern"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "econ_solow_accumulation"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
+    "system_id": "trans_wardrop_equilibrium"
+   },
+   {
+    "reason": "outside top 25 by fingerprint similarity",
+    "stage": "1_retrieval",
     "system_id": "eco_plant_pollinator"
+   },
+   {
+    "reason": "functional score 0.00 below floor 0.12",
+    "stage": "2_functional",
+    "system_id": "arch_foundation_load_spread"
+   },
+   {
+    "reason": "functional score 0.00 below floor 0.12",
+    "stage": "2_functional",
+    "system_id": "arch_progressive_collapse"
    },
    {
     "reason": "functional score 0.08 below floor 0.12",
@@ -1667,22 +1902,178 @@
     "system_id": "econ_banking_contagion"
    },
    {
-    "reason": "functional score 0.00 below floor 0.12",
+    "reason": "functional score 0.06 below floor 0.12",
     "stage": "2_functional",
-    "system_id": "arch_truss_load_path"
+    "system_id": "energy_battery_soc"
    },
    {
-    "reason": "functional score 0.05 below floor 0.12",
+    "reason": "functional score 0.10 below floor 0.12",
     "stage": "2_functional",
-    "system_id": "arch_roof_drainage"
+    "system_id": "chem_series_reaction"
    },
    {
-    "reason": "functional score 0.08 below floor 0.12",
+    "reason": "functional score 0.10 below floor 0.12",
     "stage": "2_functional",
-    "system_id": "cs_cache_hierarchy"
+    "system_id": "phys_decay_chain"
    }
   ],
   "matches": [
+   {
+    "components": {
+     "constraint": {
+      "contribution": 10.0,
+      "explanation": "constraint tag Jaccard 1.00; shared: capacity_limit, hard_limit, safety_bound",
+      "score": 1.0,
+      "weight": 10
+     },
+     "dynamic": {
+      "contribution": 0.0,
+      "explanation": "dynamics Jaccard 0.00; shared: none",
+      "score": 0.0,
+      "weight": 15
+     },
+     "functional": {
+      "contribution": 8.464872,
+      "explanation": "role overlap 0.43 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: actuator, controller, medium",
+      "score": 0.338595,
+      "weight": 25
+     },
+     "relationship": {
+      "contribution": 4.166667,
+      "explanation": "edge F1 0.17 under role constrained mapping (recall 0.17, precision 0.17; 1 preserved, 0 modified, 5 lost), role-relation-role pattern cosine 0.17",
+      "score": 0.166667,
+      "weight": 25
+     },
+     "semantic": {
+      "contribution": 0.407373,
+      "explanation": "lexical TF-IDF cosine 0.08. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.081475,
+      "weight": 5
+     },
+     "topological": {
+      "contribution": 14.436508,
+      "explanation": "feature distance 0.14; nodes 10 vs 6, edges 6 vs 6, cycles 0 vs 1, depth 4 vs 2",
+      "score": 0.721825,
+      "weight": 20
+     }
+    },
+    "differences": [
+     "Problem element 'bite' has no counterpart in the analog",
+     "Problem element 'energy' has no counterpart in the analog",
+     "Problem element 'friction' has no counterpart in the analog",
+     "Problem element 'motor' has no counterpart in the analog",
+     "Problem element 'roll' has no counterpart in the analog",
+     "Problem element 'roll gap' has no counterpart in the analog",
+     "Problem element 'target' has no counterpart in the analog",
+     "Analog element 'Return air' has no counterpart in the problem",
+     "Analog element 'Supply air duct' has no counterpart in the problem",
+     "Analog element 'Zone thermostat' has no counterpart in the problem",
+     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
+     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
+     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
+     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
+     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
+     "Problem dynamics not present in analog: damping, decay",
+     "Analog dynamics not present in problem: delay, positive_feedback, saturation"
+    ],
+    "domain": "architecture",
+    "domain_distance": 0.3,
+    "flags": [],
+    "id": "match-1-arch_vav_zone_control",
+    "limitations": [
+     "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
+     "Only 30% of problem elements are mapped; the analogy is partial",
+     "Scores come from heuristic structural features, not a proof of transferability",
+     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
+    ],
+    "mapping": {
+     "confidence": 0.262493,
+     "edge_f1": 0.16666666666666666,
+     "edge_pairs": [
+      {
+       "relation": "controls",
+       "source_edge": "e3",
+       "status": "preserved",
+       "target_edge": "e5",
+       "target_relation": "controls"
+      }
+     ],
+     "edge_precision": 0.16666666666666666,
+     "edge_recall": 0.16666666666666666,
+     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
+     "lost_edges": [
+      {
+       "reason": "endpoint unmapped",
+       "relation": "transmits",
+       "source_edge": "e1"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "converts",
+       "source_edge": "e2"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "controls",
+       "source_edge": "e4"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "constrains",
+       "source_edge": "e5"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "dissipates_to",
+       "source_edge": "e6"
+      }
+     ],
+     "node_coverage": 0.3,
+     "node_pairs": [
+      [
+       "operator",
+       "controller",
+       0.420372
+      ],
+      [
+       "screwdown",
+       "damper",
+       0.355703
+      ],
+      [
+       "strip",
+       "zone",
+       0.28219
+      ]
+     ],
+     "unmapped_source": [
+      "bite",
+      "energy",
+      "friction",
+      "motor",
+      "roll",
+      "roll_gap",
+      "target"
+     ],
+     "unmapped_target": [
+      "exhaust",
+      "supply_duct",
+      "thermostat"
+     ],
+     "unmatched_target_edges": [
+      "e1",
+      "e2",
+      "e3",
+      "e4",
+      "e6"
+     ]
+    },
+    "same_domain": false,
+    "score": 37.4754,
+    "stages": {},
+    "system_id": "arch_vav_zone_control",
+    "system_name": "Variable air volume zone control"
+   },
    {
     "components": {
      "constraint": {
@@ -1745,7 +2136,7 @@
     "domain": "biology",
     "domain_distance": 0.6,
     "flags": [],
-    "id": "match-1-bio_thermoregulation",
+    "id": "match-2-bio_thermoregulation",
     "limitations": [
      "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
      "Only 30% of problem elements are mapped; the analogy is partial",
@@ -1844,6 +2235,159 @@
    {
     "components": {
      "constraint": {
+      "contribution": 6.666667,
+      "explanation": "constraint tag Jaccard 0.67; shared: capacity_limit, safety_bound",
+      "score": 0.666667,
+      "weight": 10
+     },
+     "dynamic": {
+      "contribution": 0.0,
+      "explanation": "dynamics Jaccard 0.00; shared: none",
+      "score": 0.0,
+      "weight": 15
+     },
+     "functional": {
+      "contribution": 9.591229,
+      "explanation": "role overlap 0.47 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.25; shared roles: actuator, controller, medium",
+      "score": 0.383649,
+      "weight": 25
+     },
+     "relationship": {
+      "contribution": 4.55018,
+      "explanation": "edge F1 0.18 under role constrained mapping (recall 0.17, precision 0.20; 1 preserved, 0 modified, 5 lost), role-relation-role pattern cosine 0.18",
+      "score": 0.182007,
+      "weight": 25
+     },
+     "semantic": {
+      "contribution": 0.0,
+      "explanation": "lexical TF-IDF cosine 0.00. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.0,
+      "weight": 5
+     },
+     "topological": {
+      "contribution": 13.873321,
+      "explanation": "feature distance 0.15; nodes 10 vs 5, edges 6 vs 5, cycles 0 vs 1, depth 4 vs 1",
+      "score": 0.693666,
+      "weight": 20
+     }
+    },
+    "differences": [
+     "Problem element 'bite' has no counterpart in the analog",
+     "Problem element 'energy' has no counterpart in the analog",
+     "Problem element 'friction' has no counterpart in the analog",
+     "Problem element 'motor' has no counterpart in the analog",
+     "Problem element 'roll' has no counterpart in the analog",
+     "Problem element 'roll gap' has no counterpart in the analog",
+     "Problem element 'target' has no counterpart in the analog",
+     "Analog element 'Light sensor' has no counterpart in the problem",
+     "Analog element 'Daylight' has no counterpart in the problem",
+     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
+     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
+     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
+     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
+     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
+     "Problem dynamics not present in analog: damping, decay",
+     "Analog dynamics not present in problem: delay, positive_feedback, saturation"
+    ],
+    "domain": "architecture",
+    "domain_distance": 0.3,
+    "flags": [],
+    "id": "match-3-arch_daylight_shading_control",
+    "limitations": [
+     "Analog entry confidence is low; The control structure is a generated abstraction; the references support only daylight and solar gain principles.",
+     "Only 30% of problem elements are mapped; the analogy is partial",
+     "Scores come from heuristic structural features, not a proof of transferability",
+     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
+    ],
+    "mapping": {
+     "confidence": 0.262493,
+     "edge_f1": 0.1818181818181818,
+     "edge_pairs": [
+      {
+       "relation": "controls",
+       "source_edge": "e3",
+       "status": "preserved",
+       "target_edge": "e5",
+       "target_relation": "controls"
+      }
+     ],
+     "edge_precision": 0.2,
+     "edge_recall": 0.16666666666666666,
+     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
+     "lost_edges": [
+      {
+       "reason": "endpoint unmapped",
+       "relation": "transmits",
+       "source_edge": "e1"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "converts",
+       "source_edge": "e2"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "controls",
+       "source_edge": "e4"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "constrains",
+       "source_edge": "e5"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "dissipates_to",
+       "source_edge": "e6"
+      }
+     ],
+     "node_coverage": 0.3,
+     "node_pairs": [
+      [
+       "operator",
+       "controller",
+       0.420372
+      ],
+      [
+       "screwdown",
+       "blinds",
+       0.355703
+      ],
+      [
+       "strip",
+       "room",
+       0.28219
+      ]
+     ],
+     "unmapped_source": [
+      "bite",
+      "energy",
+      "friction",
+      "motor",
+      "roll",
+      "roll_gap",
+      "target"
+     ],
+     "unmapped_target": [
+      "sensor",
+      "sun"
+     ],
+     "unmatched_target_edges": [
+      "e1",
+      "e2",
+      "e3",
+      "e4"
+     ]
+    },
+    "same_domain": false,
+    "score": 34.6814,
+    "stages": {},
+    "system_id": "arch_daylight_shading_control",
+    "system_name": "Daylight-responsive shading control"
+   },
+   {
+    "components": {
+     "constraint": {
       "contribution": 2.5,
       "explanation": "constraint tag Jaccard 0.25; shared: hard_limit",
       "score": 0.25,
@@ -1868,9 +2412,9 @@
       "weight": 25
      },
      "semantic": {
-      "contribution": 0.886112,
-      "explanation": "lexical TF-IDF cosine 0.18. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.177222,
+      "contribution": 0.855594,
+      "explanation": "lexical TF-IDF cosine 0.17. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.171119,
       "weight": 5
      },
      "topological": {
@@ -1903,7 +2447,7 @@
     "domain": "architecture",
     "domain_distance": 0.3,
     "flags": [],
-    "id": "match-2-arch_passive_solar_mass",
+    "id": "match-4-arch_passive_solar_mass",
     "limitations": [
      "Analog entry confidence is medium; Qualitative structural abstraction; not a quantitative model.",
      "Only 30% of problem elements are mapped; the analogy is partial",
@@ -1993,10 +2537,169 @@
      ]
     },
     "same_domain": false,
-    "score": 33.3823,
+    "score": 33.3518,
     "stages": {},
     "system_id": "arch_passive_solar_mass",
     "system_name": "Passive solar gain with thermal mass"
+   },
+   {
+    "components": {
+     "constraint": {
+      "contribution": 10.0,
+      "explanation": "constraint tag Jaccard 1.00; shared: capacity_limit, hard_limit, safety_bound",
+      "score": 1.0,
+      "weight": 10
+     },
+     "dynamic": {
+      "contribution": 0.0,
+      "explanation": "dynamics Jaccard 0.00; shared: none",
+      "score": 0.0,
+      "weight": 15
+     },
+     "functional": {
+      "contribution": 8.464872,
+      "explanation": "role overlap 0.43 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: actuator, controller, medium",
+      "score": 0.338595,
+      "weight": 25
+     },
+     "relationship": {
+      "contribution": 1.153846,
+      "explanation": "edge F1 0.06 under role constrained mapping (recall 0.07, precision 0.06; 0 preserved, 1 modified, 5 lost), role-relation-role pattern cosine 0.00",
+      "score": 0.046154,
+      "weight": 25
+     },
+     "semantic": {
+      "contribution": 0.592272,
+      "explanation": "lexical TF-IDF cosine 0.12. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.118454,
+      "weight": 5
+     },
+     "topological": {
+      "contribution": 10.855626,
+      "explanation": "feature distance 0.23; nodes 10 vs 6, edges 6 vs 7, cycles 0 vs 2, depth 4 vs 2",
+      "score": 0.542781,
+      "weight": 20
+     }
+    },
+    "differences": [
+     "Problem element 'bite' has no counterpart in the analog",
+     "Problem element 'energy' has no counterpart in the analog",
+     "Problem element 'friction' has no counterpart in the analog",
+     "Problem element 'motor' has no counterpart in the analog",
+     "Problem element 'roll' has no counterpart in the analog",
+     "Problem element 'roll gap' has no counterpart in the analog",
+     "Problem element 'target' has no counterpart in the analog",
+     "Analog element 'Urinary excretion' has no counterpart in the problem",
+     "Analog element 'Dietary and bone calcium supply' has no counterpart in the problem",
+     "Analog element 'Parathyroid chief cells' has no counterpart in the problem",
+     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
+     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
+     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
+     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
+     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
+     "Relationship 'operator controls screwdown' maps to 'activates' (relation differs, same sign)",
+     "Problem dynamics not present in analog: damping, decay",
+     "Analog dynamics not present in problem: delay, equilibrium, negative_feedback, positive_feedback"
+    ],
+    "domain": "biology",
+    "domain_distance": 0.6,
+    "flags": [],
+    "id": "match-5-bio_calcium_homeostasis",
+    "limitations": [
+     "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
+     "Only 30% of problem elements are mapped; the analogy is partial",
+     "Scores come from heuristic structural features, not a proof of transferability",
+     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
+    ],
+    "mapping": {
+     "confidence": 0.204452,
+     "edge_f1": 0.06153846153846154,
+     "edge_pairs": [
+      {
+       "detail": "relation differs, same sign",
+       "relation": "controls",
+       "source_edge": "e3",
+       "status": "modified",
+       "target_edge": "e4",
+       "target_relation": "activates"
+      }
+     ],
+     "edge_precision": 0.05714285714285715,
+     "edge_recall": 0.06666666666666667,
+     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
+     "lost_edges": [
+      {
+       "reason": "endpoint unmapped",
+       "relation": "transmits",
+       "source_edge": "e1"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "converts",
+       "source_edge": "e2"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "controls",
+       "source_edge": "e4"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "constrains",
+       "source_edge": "e5"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "dissipates_to",
+       "source_edge": "e6"
+      }
+     ],
+     "node_coverage": 0.3,
+     "node_pairs": [
+      [
+       "operator",
+       "pth",
+       0.302968
+      ],
+      [
+       "screwdown",
+       "bone_kidney",
+       0.302968
+      ],
+      [
+       "strip",
+       "plasma",
+       0.271916
+      ]
+     ],
+     "unmapped_source": [
+      "bite",
+      "energy",
+      "friction",
+      "motor",
+      "roll",
+      "roll_gap",
+      "target"
+     ],
+     "unmapped_target": [
+      "excretion",
+      "intake",
+      "parathyroid"
+     ],
+     "unmatched_target_edges": [
+      "e1",
+      "e2",
+      "e3",
+      "e5",
+      "e6",
+      "e7"
+     ]
+    },
+    "same_domain": false,
+    "score": 31.0666,
+    "stages": {},
+    "system_id": "bio_calcium_homeostasis",
+    "system_name": "Plasma calcium homeostasis"
    },
    {
     "components": {
@@ -2025,9 +2728,9 @@
       "weight": 25
      },
      "semantic": {
-      "contribution": 1.144231,
-      "explanation": "lexical TF-IDF cosine 0.23. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.228846,
+      "contribution": 0.967228,
+      "explanation": "lexical TF-IDF cosine 0.19. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.193446,
       "weight": 5
      },
      "topological": {
@@ -2061,7 +2764,7 @@
     "domain": "biology",
     "domain_distance": 0.6,
     "flags": [],
-    "id": "match-3-bio_glucose_homeostasis",
+    "id": "match-6-bio_glucose_homeostasis",
     "limitations": [
      "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
      "Only 30% of problem elements are mapped; the analogy is partial",
@@ -2155,7 +2858,7 @@
      ]
     },
     "same_domain": false,
-    "score": 30.8823,
+    "score": 30.7053,
     "stages": {},
     "system_id": "bio_glucose_homeostasis",
     "system_name": "Blood glucose homeostasis"
@@ -2187,9 +2890,9 @@
       "weight": 25
      },
      "semantic": {
-      "contribution": 0.809164,
-      "explanation": "lexical TF-IDF cosine 0.16. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.161833,
+      "contribution": 0.728969,
+      "explanation": "lexical TF-IDF cosine 0.15. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.145794,
       "weight": 5
      },
      "topological": {
@@ -2223,7 +2926,7 @@
     "domain": "energy_systems",
     "domain_distance": 0.3,
     "flags": [],
-    "id": "match-4-energy_thermal_storage_tank",
+    "id": "match-7-energy_thermal_storage_tank",
     "limitations": [
      "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
      "Only 10% of problem elements are mapped; the analogy is partial",
@@ -2300,7 +3003,7 @@
      ]
     },
     "same_domain": false,
-    "score": 30.1007,
+    "score": 30.0205,
     "stages": {},
     "system_id": "energy_thermal_storage_tank",
     "system_name": "Hot water thermal storage tank"
@@ -2332,9 +3035,9 @@
       "weight": 25
      },
      "semantic": {
-      "contribution": 0.620734,
-      "explanation": "lexical TF-IDF cosine 0.12. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.124147,
+      "contribution": 0.64198,
+      "explanation": "lexical TF-IDF cosine 0.13. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.128396,
       "weight": 5
      },
      "topological": {
@@ -2365,7 +3068,7 @@
     "domain": "economics",
     "domain_distance": 0.6,
     "flags": [],
-    "id": "match-5-econ_taylor_rule",
+    "id": "match-8-econ_taylor_rule",
     "limitations": [
      "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
      "Only 30% of problem elements are mapped; the analogy is partial",
@@ -2453,10 +3156,171 @@
      ]
     },
     "same_domain": false,
-    "score": 29.4688,
+    "score": 29.49,
     "stages": {},
     "system_id": "econ_taylor_rule",
     "system_name": "Central bank interest rate rule"
+   },
+   {
+    "components": {
+     "constraint": {
+      "contribution": 5.0,
+      "explanation": "constraint tag Jaccard 0.50; shared: capacity_limit, hard_limit",
+      "score": 0.5,
+      "weight": 10
+     },
+     "dynamic": {
+      "contribution": 0.0,
+      "explanation": "dynamics Jaccard 0.00; shared: none",
+      "score": 0.0,
+      "weight": 15
+     },
+     "functional": {
+      "contribution": 6.761751,
+      "explanation": "role overlap 0.32 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: actuator, dissipater, transformer",
+      "score": 0.27047,
+      "weight": 25
+     },
+     "relationship": {
+      "contribution": 1.153846,
+      "explanation": "edge F1 0.06 under role constrained mapping (recall 0.07, precision 0.06; 0 preserved, 1 modified, 5 lost), role-relation-role pattern cosine 0.00",
+      "score": 0.046154,
+      "weight": 25
+     },
+     "semantic": {
+      "contribution": 1.824976,
+      "explanation": "lexical TF-IDF cosine 0.36. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.364995,
+      "weight": 5
+     },
+     "topological": {
+      "contribution": 14.496499,
+      "explanation": "feature distance 0.14; nodes 10 vs 7, edges 6 vs 7, cycles 0 vs 1, depth 4 vs 2",
+      "score": 0.724825,
+      "weight": 20
+     }
+    },
+    "differences": [
+     "Problem element 'bite' has no counterpart in the analog",
+     "Problem element 'energy' has no counterpart in the analog",
+     "Problem element 'operator' has no counterpart in the analog",
+     "Problem element 'roll gap' has no counterpart in the analog",
+     "Problem element 'screwdown' has no counterpart in the analog",
+     "Problem element 'strip' has no counterpart in the analog",
+     "Problem element 'target' has no counterpart in the analog",
+     "Analog element 'Bottoms product' has no counterpart in the problem",
+     "Analog element 'Reflux drum' has no counterpart in the problem",
+     "Analog element 'Feed' has no counterpart in the problem",
+     "Analog element 'Distillate product' has no counterpart in the problem",
+     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
+     "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
+     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
+     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
+     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
+     "Relationship 'motor transmits roll' maps to 'produces' (relation differs, same sign)",
+     "Problem dynamics not present in analog: damping, decay",
+     "Analog dynamics not present in problem: accumulation, delay, equilibrium, positive_feedback"
+    ],
+    "domain": "chemistry",
+    "domain_distance": 0.6,
+    "flags": [],
+    "id": "match-9-chem_distillation_column",
+    "limitations": [
+     "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
+     "Only 30% of problem elements are mapped; the analogy is partial",
+     "Scores come from heuristic structural features, not a proof of transferability",
+     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
+    ],
+    "mapping": {
+     "confidence": 0.238563,
+     "edge_f1": 0.06153846153846154,
+     "edge_pairs": [
+      {
+       "detail": "relation differs, same sign",
+       "relation": "transmits",
+       "source_edge": "e1",
+       "status": "modified",
+       "target_edge": "e2",
+       "target_relation": "produces"
+      }
+     ],
+     "edge_precision": 0.05714285714285715,
+     "edge_recall": 0.06666666666666667,
+     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
+     "lost_edges": [
+      {
+       "reason": "endpoint unmapped",
+       "relation": "converts",
+       "source_edge": "e2"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "controls",
+       "source_edge": "e3"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "controls",
+       "source_edge": "e4"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "constrains",
+       "source_edge": "e5"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "dissipates_to",
+       "source_edge": "e6"
+      }
+     ],
+     "node_coverage": 0.3,
+     "node_pairs": [
+      [
+       "friction",
+       "condenser",
+       0.261719
+      ],
+      [
+       "motor",
+       "reboiler",
+       0.669369
+      ],
+      [
+       "roll",
+       "column",
+       0.287877
+      ]
+     ],
+     "unmapped_source": [
+      "bite",
+      "energy",
+      "operator",
+      "roll_gap",
+      "screwdown",
+      "strip",
+      "target"
+     ],
+     "unmapped_target": [
+      "bottom",
+      "drum",
+      "feed",
+      "top"
+     ],
+     "unmatched_target_edges": [
+      "e1",
+      "e3",
+      "e4",
+      "e5",
+      "e6",
+      "e7"
+     ]
+    },
+    "same_domain": false,
+    "score": 29.2371,
+    "stages": {},
+    "system_id": "chem_distillation_column",
+    "system_name": "Distillation column with reflux"
    },
    {
     "components": {
@@ -2519,7 +3383,7 @@
     "domain": "chemistry",
     "domain_distance": 0.6,
     "flags": [],
-    "id": "match-6-chem_cstr_thermal_runaway",
+    "id": "match-10-chem_cstr_thermal_runaway",
     "limitations": [
      "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
      "Only 30% of problem elements are mapped; the analogy is partial",
@@ -2629,55 +3493,53 @@
       "weight": 15
      },
      "functional": {
-      "contribution": 6.761751,
-      "explanation": "role overlap 0.32 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: actuator, dissipater, transformer",
-      "score": 0.27047,
+      "contribution": 9.091229,
+      "explanation": "role overlap 0.47 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: actuator, medium, regulator",
+      "score": 0.363649,
       "weight": 25
      },
      "relationship": {
-      "contribution": 1.153846,
-      "explanation": "edge F1 0.06 under role constrained mapping (recall 0.07, precision 0.06; 0 preserved, 1 modified, 5 lost), role-relation-role pattern cosine 0.00",
-      "score": 0.046154,
+      "contribution": 0.0,
+      "explanation": "edge F1 0.00 under role constrained mapping (recall 0.00, precision 0.00; 0 preserved, 0 modified, 6 lost), role-relation-role pattern cosine 0.00",
+      "score": 0.0,
       "weight": 25
      },
      "semantic": {
-      "contribution": 1.477956,
-      "explanation": "lexical TF-IDF cosine 0.30. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.295591,
+      "contribution": 0.661882,
+      "explanation": "lexical TF-IDF cosine 0.13. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.132376,
       "weight": 5
      },
      "topological": {
-      "contribution": 14.496499,
-      "explanation": "feature distance 0.14; nodes 10 vs 7, edges 6 vs 7, cycles 0 vs 1, depth 4 vs 2",
-      "score": 0.724825,
+      "contribution": 13.873321,
+      "explanation": "feature distance 0.15; nodes 10 vs 5, edges 6 vs 5, cycles 0 vs 1, depth 4 vs 1",
+      "score": 0.693666,
       "weight": 20
      }
     },
     "differences": [
      "Problem element 'bite' has no counterpart in the analog",
      "Problem element 'energy' has no counterpart in the analog",
+     "Problem element 'friction' has no counterpart in the analog",
      "Problem element 'operator' has no counterpart in the analog",
-     "Problem element 'roll gap' has no counterpart in the analog",
+     "Problem element 'roll' has no counterpart in the analog",
      "Problem element 'screwdown' has no counterpart in the analog",
-     "Problem element 'strip' has no counterpart in the analog",
      "Problem element 'target' has no counterpart in the analog",
-     "Analog element 'Bottoms product' has no counterpart in the problem",
-     "Analog element 'Reflux drum' has no counterpart in the problem",
-     "Analog element 'Feed' has no counterpart in the problem",
-     "Analog element 'Distillate product' has no counterpart in the problem",
+     "Analog element 'Input signal' has no counterpart in the problem",
+     "Analog element 'Error summing node' has no counterpart in the problem",
+     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
      "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
      "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
      "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
      "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
      "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
-     "Relationship 'motor transmits roll' maps to 'produces' (relation differs, same sign)",
      "Problem dynamics not present in analog: damping, decay",
-     "Analog dynamics not present in problem: accumulation, delay, equilibrium, positive_feedback"
+     "Analog dynamics not present in problem: negative_feedback, saturation"
     ],
-    "domain": "chemistry",
+    "domain": "physics",
     "domain_distance": 0.6,
     "flags": [],
-    "id": "match-7-chem_distillation_column",
+    "id": "match-11-phys_opamp_negative_feedback",
     "limitations": [
      "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
      "Only 30% of problem elements are mapped; the analogy is partial",
@@ -2685,22 +3547,18 @@
      "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
     ],
     "mapping": {
-     "confidence": 0.238563,
-     "edge_f1": 0.06153846153846154,
-     "edge_pairs": [
-      {
-       "detail": "relation differs, same sign",
-       "relation": "transmits",
-       "source_edge": "e1",
-       "status": "modified",
-       "target_edge": "e2",
-       "target_relation": "produces"
-      }
-     ],
-     "edge_precision": 0.05714285714285715,
-     "edge_recall": 0.06666666666666667,
+     "confidence": 0.170563,
+     "edge_f1": 0.0,
+     "edge_pairs": [],
+     "edge_precision": 0.0,
+     "edge_recall": 0.0,
      "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
      "lost_edges": [
+      {
+       "reason": "endpoint unmapped",
+       "relation": "transmits",
+       "source_edge": "e1"
+      },
       {
        "reason": "endpoint unmapped",
        "relation": "converts",
@@ -2730,50 +3588,47 @@
      "node_coverage": 0.3,
      "node_pairs": [
       [
-       "friction",
-       "condenser",
+       "motor",
+       "amp",
        0.261719
       ],
       [
-       "motor",
-       "reboiler",
-       0.669369
+       "roll_gap",
+       "network",
+       0.261719
       ],
       [
-       "roll",
-       "column",
-       0.287877
+       "strip",
+       "output",
+       0.28219
       ]
      ],
      "unmapped_source": [
       "bite",
       "energy",
+      "friction",
       "operator",
-      "roll_gap",
+      "roll",
       "screwdown",
-      "strip",
       "target"
      ],
      "unmapped_target": [
-      "bottom",
-      "drum",
-      "feed",
-      "top"
+      "input",
+      "sense"
      ],
      "unmatched_target_edges": [
       "e1",
+      "e2",
       "e3",
       "e4",
-      "e5",
-      "e6",
-      "e7"
+      "e5"
      ]
     },
     "same_domain": false,
-    "score": 28.8901,
+    "score": 28.6264,
     "stages": {},
-    "system_id": "chem_distillation_column",
-    "system_name": "Distillation column with reflux"
+    "system_id": "phys_opamp_negative_feedback",
+    "system_name": "Op-amp negative feedback amplifier"
    },
    {
     "components": {
@@ -2839,7 +3694,7 @@
     "domain": "logistics",
     "domain_distance": 0.6,
     "flags": [],
-    "id": "match-8-log_kanban_pull",
+    "id": "match-12-log_kanban_pull",
     "limitations": [
      "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
      "Only 20% of problem elements are mapped; the analogy is partial",
@@ -2935,9 +3790,9 @@
    {
     "components": {
      "constraint": {
-      "contribution": 2.5,
-      "explanation": "constraint tag Jaccard 0.25; shared: hard_limit",
-      "score": 0.25,
+      "contribution": 5.0,
+      "explanation": "constraint tag Jaccard 0.50; shared: hard_limit, safety_bound",
+      "score": 0.5,
       "weight": 10
      },
      "dynamic": {
@@ -2947,9 +3802,162 @@
       "weight": 15
      },
      "functional": {
-      "contribution": 11.642808,
-      "explanation": "role overlap 0.61 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.25; shared roles: actuator, dissipater, medium, regulator",
-      "score": 0.465712,
+      "contribution": 3.90165,
+      "explanation": "role overlap 0.26 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.00; shared roles: actuator, regulator",
+      "score": 0.156066,
+      "weight": 25
+     },
+     "relationship": {
+      "contribution": 0.0,
+      "explanation": "edge F1 0.00 under role constrained mapping (recall 0.00, precision 0.00; 0 preserved, 0 modified, 6 lost), role-relation-role pattern cosine 0.00",
+      "score": 0.0,
+      "weight": 25
+     },
+     "semantic": {
+      "contribution": 0.419233,
+      "explanation": "lexical TF-IDF cosine 0.08. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.083847,
+      "weight": 5
+     },
+     "topological": {
+      "contribution": 17.813492,
+      "explanation": "feature distance 0.05; nodes 10 vs 6, edges 6 vs 5, cycles 0 vs 0, depth 4 vs 3",
+      "score": 0.890675,
+      "weight": 20
+     }
+    },
+    "differences": [
+     "Problem element 'bite' has no counterpart in the analog",
+     "Problem element 'energy' has no counterpart in the analog",
+     "Problem element 'friction' has no counterpart in the analog",
+     "Problem element 'roll' has no counterpart in the analog",
+     "Problem element 'roll gap' has no counterpart in the analog",
+     "Problem element 'screwdown' has no counterpart in the analog",
+     "Problem element 'strip' has no counterpart in the analog",
+     "Problem element 'target' has no counterpart in the analog",
+     "Analog element 'Fire compartment' has no counterpart in the problem",
+     "Analog element 'Adjacent escape route' has no counterpart in the problem",
+     "Analog element 'Fire smoke source' has no counterpart in the problem",
+     "Analog element 'Outside discharge' has no counterpart in the problem",
+     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
+     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
+     "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
+     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
+     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
+     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
+     "Problem dynamics not present in analog: damping, decay",
+     "Analog dynamics not present in problem: accumulation, saturation, threshold"
+    ],
+    "domain": "architecture",
+    "domain_distance": 0.3,
+    "flags": [],
+    "id": "match-13-arch_smoke_control_compartment",
+    "limitations": [
+     "Analog entry confidence is medium; Qualitative structural abstraction; not a quantitative model.",
+     "Only 20% of problem elements are mapped; the analogy is partial",
+     "Scores come from heuristic structural features, not a proof of transferability",
+     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
+    ],
+    "mapping": {
+     "confidence": 0.146572,
+     "edge_f1": 0.0,
+     "edge_pairs": [],
+     "edge_precision": 0.0,
+     "edge_recall": 0.0,
+     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
+     "lost_edges": [
+      {
+       "reason": "endpoint unmapped",
+       "relation": "transmits",
+       "source_edge": "e1"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "converts",
+       "source_edge": "e2"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "controls",
+       "source_edge": "e3"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "controls",
+       "source_edge": "e4"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "constrains",
+       "source_edge": "e5"
+      },
+      {
+       "reason": "endpoint unmapped",
+       "relation": "dissipates_to",
+       "source_edge": "e6"
+      }
+     ],
+     "node_coverage": 0.2,
+     "node_pairs": [
+      [
+       "motor",
+       "exhaust",
+       0.261719
+      ],
+      [
+       "operator",
+       "barrier",
+       0.31543
+      ]
+     ],
+     "unmapped_source": [
+      "bite",
+      "energy",
+      "friction",
+      "roll",
+      "roll_gap",
+      "screwdown",
+      "strip",
+      "target"
+     ],
+     "unmapped_target": [
+      "compartment",
+      "escape",
+      "fire",
+      "vent"
+     ],
+     "unmatched_target_edges": [
+      "e1",
+      "e2",
+      "e3",
+      "e4",
+      "e5"
+     ]
+    },
+    "same_domain": false,
+    "score": 27.1344,
+    "stages": {},
+    "system_id": "arch_smoke_control_compartment",
+    "system_name": "Smoke control by compartmentation and exhaust"
+   },
+   {
+    "components": {
+     "constraint": {
+      "contribution": 6.666667,
+      "explanation": "constraint tag Jaccard 0.67; shared: capacity_limit, hard_limit",
+      "score": 0.666667,
+      "weight": 10
+     },
+     "dynamic": {
+      "contribution": 0.0,
+      "explanation": "dynamics Jaccard 0.00; shared: none",
+      "score": 0.0,
+      "weight": 15
+     },
+     "functional": {
+      "contribution": 5.300128,
+      "explanation": "role overlap 0.22 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: regulator, transformer",
+      "score": 0.212005,
       "weight": 25
      },
      "relationship": {
@@ -2974,32 +3982,36 @@
     "differences": [
      "Problem element 'bite' has no counterpart in the analog",
      "Problem element 'energy' has no counterpart in the analog",
+     "Problem element 'friction' has no counterpart in the analog",
+     "Problem element 'motor' has no counterpart in the analog",
      "Problem element 'operator' has no counterpart in the analog",
-     "Problem element 'roll' has no counterpart in the analog",
      "Problem element 'screwdown' has no counterpart in the analog",
+     "Problem element 'strip' has no counterpart in the analog",
      "Problem element 'target' has no counterpart in the analog",
-     "Analog element 'Evaporator' has no counterpart in the problem",
+     "Analog element 'Finished jobs' has no counterpart in the problem",
+     "Analog element 'Job release' has no counterpart in the problem",
+     "Analog element 'Jobs in process' has no counterpart in the problem",
      "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
      "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
      "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
      "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
-     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
+     "Problem relationship 'roll gap constrains roll' is lost: no counterpart between mapped nodes",
      "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
      "Problem dynamics not present in analog: damping, decay",
-     "Analog dynamics not present in problem: delay, equilibrium, positive_feedback"
+     "Analog dynamics not present in problem: accumulation, positive_feedback, saturation"
     ],
-    "domain": "energy_systems",
-    "domain_distance": 0.3,
+    "domain": "logistics",
+    "domain_distance": 0.6,
     "flags": [],
-    "id": "match-9-energy_heat_pump_cycle",
+    "id": "match-14-log_conwip",
     "limitations": [
      "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
-     "Only 40% of problem elements are mapped; the analogy is partial",
+     "Only 20% of problem elements are mapped; the analogy is partial",
      "Scores come from heuristic structural features, not a proof of transferability",
      "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
     ],
     "mapping": {
-     "confidence": 0.227695,
+     "confidence": 0.138516,
      "edge_f1": 0.0,
      "edge_pairs": [],
      "edge_precision": 0.0,
@@ -3027,7 +4039,7 @@
        "source_edge": "e4"
       },
       {
-       "reason": "endpoint unmapped",
+       "reason": "no counterpart between mapped nodes",
        "relation": "constrains",
        "source_edge": "e5"
       },
@@ -3037,39 +4049,33 @@
        "source_edge": "e6"
       }
      ],
-     "node_coverage": 0.4,
+     "node_coverage": 0.2,
      "node_pairs": [
       [
-       "friction",
-       "condenser",
-       0.261719
-      ],
-      [
-       "motor",
-       "compressor",
+       "roll",
+       "line",
        0.261719
       ],
       [
        "roll_gap",
-       "valve",
+       "cards",
        0.261719
-      ],
-      [
-       "strip",
-       "refrigerant",
-       0.650771
       ]
      ],
      "unmapped_source": [
       "bite",
       "energy",
+      "friction",
+      "motor",
       "operator",
-      "roll",
       "screwdown",
+      "strip",
       "target"
      ],
      "unmapped_target": [
-      "evaporator"
+      "finished",
+      "release",
+      "wip"
      ],
      "unmatched_target_edges": [
       "e1",
@@ -3080,328 +4086,10 @@
      ]
     },
     "same_domain": false,
-    "score": 27.0161,
+    "score": 24.8401,
     "stages": {},
-    "system_id": "energy_heat_pump_cycle",
-    "system_name": "Vapour-compression heat pump cycle"
-   },
-   {
-    "components": {
-     "constraint": {
-      "contribution": 2.5,
-      "explanation": "constraint tag Jaccard 0.25; shared: capacity_limit",
-      "score": 0.25,
-      "weight": 10
-     },
-     "dynamic": {
-      "contribution": 0.0,
-      "explanation": "dynamics Jaccard 0.00; shared: none",
-      "score": 0.0,
-      "weight": 15
-     },
-     "functional": {
-      "contribution": 7.966585,
-      "explanation": "role overlap 0.40 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: actuator, medium, regulator",
-      "score": 0.318663,
-      "weight": 25
-     },
-     "relationship": {
-      "contribution": 0.0,
-      "explanation": "edge F1 0.00 under role constrained mapping (recall 0.00, precision 0.00; 0 preserved, 0 modified, 6 lost), role-relation-role pattern cosine 0.00",
-      "score": 0.0,
-      "weight": 25
-     },
-     "semantic": {
-      "contribution": 0.036284,
-      "explanation": "lexical TF-IDF cosine 0.01. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.007257,
-      "weight": 5
-     },
-     "topological": {
-      "contribution": 14.829832,
-      "explanation": "feature distance 0.13; nodes 10 vs 7, edges 6 vs 7, cycles 0 vs 1, depth 4 vs 2",
-      "score": 0.741492,
-      "weight": 20
-     }
-    },
-    "differences": [
-     "Problem element 'bite' has no counterpart in the analog",
-     "Problem element 'friction' has no counterpart in the analog",
-     "Problem element 'roll' has no counterpart in the analog",
-     "Problem element 'roll gap' has no counterpart in the analog",
-     "Problem element 'screwdown' has no counterpart in the analog",
-     "Problem element 'strip' has no counterpart in the analog",
-     "Problem element 'target' has no counterpart in the analog",
-     "Analog element 'Occupant and equipment heat' has no counterpart in the problem",
-     "Analog element 'Low inlet' has no counterpart in the problem",
-     "Analog element 'High outlet' has no counterpart in the problem",
-     "Analog element 'Ventilation stack' has no counterpart in the problem",
-     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
-     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
-     "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
-     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
-     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
-     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
-     "Problem dynamics not present in analog: damping, decay",
-     "Analog dynamics not present in problem: equilibrium, negative_feedback, saturation"
-    ],
-    "domain": "architecture",
-    "domain_distance": 0.3,
-    "flags": [],
-    "id": "match-10-arch_stack_ventilation",
-    "limitations": [
-     "Analog entry confidence is medium; Qualitative structural abstraction; not a quantitative model.",
-     "Only 30% of problem elements are mapped; the analogy is partial",
-     "Scores come from heuristic structural features, not a proof of transferability",
-     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
-    ],
-    "mapping": {
-     "confidence": 0.173887,
-     "edge_f1": 0.0,
-     "edge_pairs": [],
-     "edge_precision": 0.0,
-     "edge_recall": 0.0,
-     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
-     "lost_edges": [
-      {
-       "reason": "endpoint unmapped",
-       "relation": "transmits",
-       "source_edge": "e1"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "converts",
-       "source_edge": "e2"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e3"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e4"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "constrains",
-       "source_edge": "e5"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "dissipates_to",
-       "source_edge": "e6"
-      }
-     ],
-     "node_coverage": 0.3,
-     "node_pairs": [
-      [
-       "energy",
-       "room",
-       0.261719
-      ],
-      [
-       "motor",
-       "buoyancy",
-       0.261719
-      ],
-      [
-       "operator",
-       "damper",
-       0.31543
-      ]
-     ],
-     "unmapped_source": [
-      "bite",
-      "friction",
-      "roll",
-      "roll_gap",
-      "screwdown",
-      "strip",
-      "target"
-     ],
-     "unmapped_target": [
-      "gain",
-      "inlet",
-      "outlet",
-      "stack"
-     ],
-     "unmatched_target_edges": [
-      "e1",
-      "e2",
-      "e3",
-      "e4",
-      "e5",
-      "e6",
-      "e7"
-     ]
-    },
-    "same_domain": false,
-    "score": 25.3327,
-    "stages": {},
-    "system_id": "arch_stack_ventilation",
-    "system_name": "Stack effect natural ventilation"
-   },
-   {
-    "components": {
-     "constraint": {
-      "contribution": 5.0,
-      "explanation": "constraint tag Jaccard 0.50; shared: hard_limit, safety_bound",
-      "score": 0.5,
-      "weight": 10
-     },
-     "dynamic": {
-      "contribution": 0.0,
-      "explanation": "dynamics Jaccard 0.00; shared: none",
-      "score": 0.0,
-      "weight": 15
-     },
-     "functional": {
-      "contribution": 7.592793,
-      "explanation": "role overlap 0.51 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.00; shared roles: dissipater, medium, regulator",
-      "score": 0.303712,
-      "weight": 25
-     },
-     "relationship": {
-      "contribution": 1.153846,
-      "explanation": "edge F1 0.06 under role constrained mapping (recall 0.07, precision 0.06; 0 preserved, 1 modified, 5 lost), role-relation-role pattern cosine 0.00",
-      "score": 0.046154,
-      "weight": 25
-     },
-     "semantic": {
-      "contribution": 0.0,
-      "explanation": "lexical TF-IDF cosine 0.00. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.0,
-      "weight": 5
-     },
-     "topological": {
-      "contribution": 11.355626,
-      "explanation": "feature distance 0.22; nodes 10 vs 6, edges 6 vs 7, cycles 0 vs 2, depth 4 vs 2",
-      "score": 0.567781,
-      "weight": 20
-     }
-    },
-    "differences": [
-     "Problem element 'bite' has no counterpart in the analog",
-     "Problem element 'motor' has no counterpart in the analog",
-     "Problem element 'roll' has no counterpart in the analog",
-     "Problem element 'roll gap' has no counterpart in the analog",
-     "Problem element 'screwdown' has no counterpart in the analog",
-     "Problem element 'target' has no counterpart in the analog",
-     "Analog element 'Neutron detector' has no counterpart in the problem",
-     "Analog element 'Fission reactions' has no counterpart in the problem",
-     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
-     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
-     "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
-     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
-     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
-     "Relationship 'friction dissipates_to energy' maps to 'inhibits' (relation differs, same sign)",
-     "Problem dynamics not present in analog: damping, decay",
-     "Analog dynamics not present in problem: delay, negative_feedback, positive_feedback, threshold"
-    ],
-    "domain": "energy_systems",
-    "domain_distance": 0.3,
-    "flags": [],
-    "id": "match-11-energy_reactor_reactivity",
-    "limitations": [
-     "Analog entry confidence is medium; Qualitative structural abstraction; not a quantitative model.",
-     "Only 40% of problem elements are mapped; the analogy is partial",
-     "Scores come from heuristic structural features, not a proof of transferability",
-     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
-    ],
-    "mapping": {
-     "confidence": 0.262842,
-     "edge_f1": 0.06153846153846154,
-     "edge_pairs": [
-      {
-       "detail": "relation differs, same sign",
-       "relation": "dissipates_to",
-       "source_edge": "e6",
-       "status": "modified",
-       "target_edge": "e6",
-       "target_relation": "inhibits"
-      }
-     ],
-     "edge_precision": 0.05714285714285715,
-     "edge_recall": 0.06666666666666667,
-     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
-     "lost_edges": [
-      {
-       "reason": "endpoint unmapped",
-       "relation": "transmits",
-       "source_edge": "e1"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "converts",
-       "source_edge": "e2"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e3"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e4"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "constrains",
-       "source_edge": "e5"
-      }
-     ],
-     "node_coverage": 0.4,
-     "node_pairs": [
-      [
-       "energy",
-       "fuel",
-       0.301023
-      ],
-      [
-       "friction",
-       "coolant",
-       0.67083
-      ],
-      [
-       "operator",
-       "rods",
-       0.31543
-      ],
-      [
-       "strip",
-       "neutrons",
-       0.261719
-      ]
-     ],
-     "unmapped_source": [
-      "bite",
-      "motor",
-      "roll",
-      "roll_gap",
-      "screwdown",
-      "target"
-     ],
-     "unmapped_target": [
-      "detector",
-      "fission"
-     ],
-     "unmatched_target_edges": [
-      "e1",
-      "e2",
-      "e3",
-      "e4",
-      "e5",
-      "e7"
-     ]
-    },
-    "same_domain": false,
-    "score": 25.1023,
-    "stages": {},
-    "system_id": "energy_reactor_reactivity",
-    "system_name": "Nuclear reactor power and reactivity feedback"
+    "system_id": "log_conwip",
+    "system_name": "CONWIP work-in-process cap"
    },
    {
     "components": {
@@ -3430,9 +4118,9 @@
       "weight": 25
      },
      "semantic": {
-      "contribution": 0.28175,
-      "explanation": "lexical TF-IDF cosine 0.06. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.05635,
+      "contribution": 0.155211,
+      "explanation": "lexical TF-IDF cosine 0.03. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
+      "score": 0.031042,
       "weight": 5
      },
      "topological": {
@@ -3466,7 +4154,7 @@
     "domain": "transportation",
     "domain_distance": 0.3,
     "flags": [],
-    "id": "match-12-trans_airport_runway",
+    "id": "match-15-trans_airport_runway",
     "limitations": [
      "Analog entry confidence is medium; Qualitative structural abstraction; not a quantitative model.",
      "Only 20% of problem elements are mapped; the analogy is partial",
@@ -3549,469 +4237,10 @@
      ]
     },
     "same_domain": false,
-    "score": 24.6219,
+    "score": 24.4953,
     "stages": {},
     "system_id": "trans_airport_runway",
     "system_name": "Airport runway arrival queue"
-   },
-   {
-    "components": {
-     "constraint": {
-      "contribution": 5.0,
-      "explanation": "constraint tag Jaccard 0.50; shared: capacity_limit, safety_bound",
-      "score": 0.5,
-      "weight": 10
-     },
-     "dynamic": {
-      "contribution": 0.0,
-      "explanation": "dynamics Jaccard 0.00; shared: none",
-      "score": 0.0,
-      "weight": 15
-     },
-     "functional": {
-      "contribution": 3.90165,
-      "explanation": "role overlap 0.26 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.00; shared roles: actuator, controller",
-      "score": 0.156066,
-      "weight": 25
-     },
-     "relationship": {
-      "contribution": 0.0,
-      "explanation": "edge F1 0.00 under role constrained mapping (recall 0.00, precision 0.00; 0 preserved, 0 modified, 6 lost), role-relation-role pattern cosine 0.00",
-      "score": 0.0,
-      "weight": 25
-     },
-     "semantic": {
-      "contribution": 0.36075,
-      "explanation": "lexical TF-IDF cosine 0.07. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.07215,
-      "weight": 5
-     },
-     "topological": {
-      "contribution": 14.936508,
-      "explanation": "feature distance 0.13; nodes 10 vs 6, edges 6 vs 6, cycles 0 vs 1, depth 4 vs 2",
-      "score": 0.746825,
-      "weight": 20
-     }
-    },
-    "differences": [
-     "Problem element 'bite' has no counterpart in the analog",
-     "Problem element 'energy' has no counterpart in the analog",
-     "Problem element 'friction' has no counterpart in the analog",
-     "Problem element 'roll' has no counterpart in the analog",
-     "Problem element 'roll gap' has no counterpart in the analog",
-     "Problem element 'screwdown' has no counterpart in the analog",
-     "Problem element 'strip' has no counterpart in the analog",
-     "Problem element 'target' has no counterpart in the analog",
-     "Analog element 'Ramp demand' has no counterpart in the problem",
-     "Analog element 'Occupancy detector' has no counterpart in the problem",
-     "Analog element 'Mainline traffic' has no counterpart in the problem",
-     "Analog element 'Ramp queue' has no counterpart in the problem",
-     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
-     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
-     "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
-     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
-     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
-     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
-     "Problem dynamics not present in analog: damping, decay",
-     "Analog dynamics not present in problem: accumulation, delay, negative_feedback, queueing, saturation"
-    ],
-    "domain": "transportation",
-    "domain_distance": 0.3,
-    "flags": [],
-    "id": "match-13-trans_ramp_metering",
-    "limitations": [
-     "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
-     "Only 20% of problem elements are mapped; the analogy is partial",
-     "Scores come from heuristic structural features, not a proof of transferability",
-     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
-    ],
-    "mapping": {
-     "confidence": 0.138516,
-     "edge_f1": 0.0,
-     "edge_pairs": [],
-     "edge_precision": 0.0,
-     "edge_recall": 0.0,
-     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
-     "lost_edges": [
-      {
-       "reason": "endpoint unmapped",
-       "relation": "transmits",
-       "source_edge": "e1"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "converts",
-       "source_edge": "e2"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e3"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e4"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "constrains",
-       "source_edge": "e5"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "dissipates_to",
-       "source_edge": "e6"
-      }
-     ],
-     "node_coverage": 0.2,
-     "node_pairs": [
-      [
-       "motor",
-       "meter",
-       0.261719
-      ],
-      [
-       "operator",
-       "controller",
-       0.261719
-      ]
-     ],
-     "unmapped_source": [
-      "bite",
-      "energy",
-      "friction",
-      "roll",
-      "roll_gap",
-      "screwdown",
-      "strip",
-      "target"
-     ],
-     "unmapped_target": [
-      "demand",
-      "detector",
-      "mainline",
-      "rampq"
-     ],
-     "unmatched_target_edges": [
-      "e1",
-      "e2",
-      "e3",
-      "e4",
-      "e5",
-      "e6"
-     ]
-    },
-    "same_domain": false,
-    "score": 24.1989,
-    "stages": {},
-    "system_id": "trans_ramp_metering",
-    "system_name": "Freeway on-ramp metering feedback"
-   },
-   {
-    "components": {
-     "constraint": {
-      "contribution": 5.0,
-      "explanation": "constraint tag Jaccard 0.50; shared: capacity_limit, safety_bound",
-      "score": 0.5,
-      "weight": 10
-     },
-     "dynamic": {
-      "contribution": 2.5,
-      "explanation": "dynamics Jaccard 0.17; shared: damping",
-      "score": 0.166667,
-      "weight": 15
-     },
-     "functional": {
-      "contribution": 3.109984,
-      "explanation": "role overlap 0.10 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.17; shared roles: dissipater",
-      "score": 0.124399,
-      "weight": 25
-     },
-     "relationship": {
-      "contribution": 0.0,
-      "explanation": "edge F1 0.00 under role constrained mapping (recall 0.00, precision 0.00; 0 preserved, 0 modified, 6 lost), role-relation-role pattern cosine 0.00",
-      "score": 0.0,
-      "weight": 25
-     },
-     "semantic": {
-      "contribution": 0.603952,
-      "explanation": "lexical TF-IDF cosine 0.12. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.12079,
-      "weight": 5
-     },
-     "topological": {
-      "contribution": 12.252951,
-      "explanation": "feature distance 0.19; nodes 10 vs 5, edges 6 vs 6, cycles 0 vs 2, depth 4 vs 2",
-      "score": 0.612648,
-      "weight": 20
-     }
-    },
-    "differences": [
-     "Problem element 'bite' has no counterpart in the analog",
-     "Problem element 'energy' has no counterpart in the analog",
-     "Problem element 'motor' has no counterpart in the analog",
-     "Problem element 'operator' has no counterpart in the analog",
-     "Problem element 'roll' has no counterpart in the analog",
-     "Problem element 'roll gap' has no counterpart in the analog",
-     "Problem element 'screwdown' has no counterpart in the analog",
-     "Problem element 'strip' has no counterpart in the analog",
-     "Problem element 'target' has no counterpart in the analog",
-     "Analog element 'Capacitor' has no counterpart in the problem",
-     "Analog element 'Resistive heating' has no counterpart in the problem",
-     "Analog element 'Inductor' has no counterpart in the problem",
-     "Analog element 'Voltage source' has no counterpart in the problem",
-     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
-     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
-     "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
-     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
-     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
-     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
-     "Problem dynamics not present in analog: decay",
-     "Analog dynamics not present in problem: accumulation, equilibrium, negative_feedback, oscillation"
-    ],
-    "domain": "physics",
-    "domain_distance": 0.6,
-    "flags": [],
-    "id": "match-14-phys_rlc_circuit",
-    "limitations": [
-     "Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.",
-     "Only 10% of problem elements are mapped; the analogy is partial",
-     "Scores come from heuristic structural features, not a proof of transferability",
-     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
-    ],
-    "mapping": {
-     "confidence": 0.108516,
-     "edge_f1": 0.0,
-     "edge_pairs": [],
-     "edge_precision": 0.0,
-     "edge_recall": 0.0,
-     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
-     "lost_edges": [
-      {
-       "reason": "endpoint unmapped",
-       "relation": "transmits",
-       "source_edge": "e1"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "converts",
-       "source_edge": "e2"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e3"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e4"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "constrains",
-       "source_edge": "e5"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "dissipates_to",
-       "source_edge": "e6"
-      }
-     ],
-     "node_coverage": 0.1,
-     "node_pairs": [
-      [
-       "friction",
-       "resistor",
-       0.261719
-      ]
-     ],
-     "unmapped_source": [
-      "bite",
-      "energy",
-      "motor",
-      "operator",
-      "roll",
-      "roll_gap",
-      "screwdown",
-      "strip",
-      "target"
-     ],
-     "unmapped_target": [
-      "capacitor",
-      "heat",
-      "inductor",
-      "vsource"
-     ],
-     "unmatched_target_edges": [
-      "e1",
-      "e2",
-      "e3",
-      "e4",
-      "e5",
-      "e6"
-     ]
-    },
-    "same_domain": false,
-    "score": 23.4669,
-    "stages": {},
-    "system_id": "phys_rlc_circuit",
-    "system_name": "Series RLC circuit"
-   },
-   {
-    "components": {
-     "constraint": {
-      "contribution": 5.0,
-      "explanation": "constraint tag Jaccard 0.50; shared: capacity_limit, hard_limit",
-      "score": 0.5,
-      "weight": 10
-     },
-     "dynamic": {
-      "contribution": 0.0,
-      "explanation": "dynamics Jaccard 0.00; shared: none",
-      "score": 0.0,
-      "weight": 15
-     },
-     "functional": {
-      "contribution": 3.017767,
-      "explanation": "role overlap 0.20 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.00; shared roles: controller, transformer",
-      "score": 0.120711,
-      "weight": 25
-     },
-     "relationship": {
-      "contribution": 0.0,
-      "explanation": "edge F1 0.00 under role constrained mapping (recall 0.00, precision 0.00; 0 preserved, 0 modified, 6 lost), role-relation-role pattern cosine 0.00",
-      "score": 0.0,
-      "weight": 25
-     },
-     "semantic": {
-      "contribution": 0.0,
-      "explanation": "lexical TF-IDF cosine 0.00. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.",
-      "score": 0.0,
-      "weight": 5
-     },
-     "topological": {
-      "contribution": 15.103175,
-      "explanation": "feature distance 0.12; nodes 10 vs 6, edges 6 vs 6, cycles 0 vs 1, depth 4 vs 2",
-      "score": 0.755159,
-      "weight": 20
-     }
-    },
-    "differences": [
-     "Problem element 'bite' has no counterpart in the analog",
-     "Problem element 'energy' has no counterpart in the analog",
-     "Problem element 'friction' has no counterpart in the analog",
-     "Problem element 'motor' has no counterpart in the analog",
-     "Problem element 'roll gap' has no counterpart in the analog",
-     "Problem element 'screwdown' has no counterpart in the analog",
-     "Problem element 'strip' has no counterpart in the analog",
-     "Problem element 'target' has no counterpart in the analog",
-     "Analog element 'Battery storage' has no counterpart in the problem",
-     "Analog element 'Utility grid' has no counterpart in the problem",
-     "Analog element 'Local load' has no counterpart in the problem",
-     "Analog element 'Solar array' has no counterpart in the problem",
-     "Problem relationship 'motor transmits roll' is lost: endpoint unmapped",
-     "Problem relationship 'roll converts strip' is lost: endpoint unmapped",
-     "Problem relationship 'operator controls screwdown' is lost: endpoint unmapped",
-     "Problem relationship 'screwdown controls roll gap' is lost: endpoint unmapped",
-     "Problem relationship 'roll gap constrains roll' is lost: endpoint unmapped",
-     "Problem relationship 'friction dissipates_to energy' is lost: endpoint unmapped",
-     "Problem dynamics not present in analog: damping, decay",
-     "Analog dynamics not present in problem: accumulation, delay, positive_feedback, saturation"
-    ],
-    "domain": "energy_systems",
-    "domain_distance": 0.3,
-    "flags": [],
-    "id": "match-15-energy_microgrid_battery",
-    "limitations": [
-     "Analog entry confidence is medium; Qualitative structural abstraction; not a quantitative model.",
-     "Only 20% of problem elements are mapped; the analogy is partial",
-     "Scores come from heuristic structural features, not a proof of transferability",
-     "Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight."
-    ],
-    "mapping": {
-     "confidence": 0.149962,
-     "edge_f1": 0.0,
-     "edge_pairs": [],
-     "edge_precision": 0.0,
-     "edge_recall": 0.0,
-     "formula": "confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2)",
-     "lost_edges": [
-      {
-       "reason": "endpoint unmapped",
-       "relation": "transmits",
-       "source_edge": "e1"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "converts",
-       "source_edge": "e2"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e3"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "controls",
-       "source_edge": "e4"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "constrains",
-       "source_edge": "e5"
-      },
-      {
-       "reason": "endpoint unmapped",
-       "relation": "dissipates_to",
-       "source_edge": "e6"
-      }
-     ],
-     "node_coverage": 0.2,
-     "node_pairs": [
-      [
-       "operator",
-       "ems",
-       0.338026
-      ],
-      [
-       "roll",
-       "inverter",
-       0.261719
-      ]
-     ],
-     "unmapped_source": [
-      "bite",
-      "energy",
-      "friction",
-      "motor",
-      "roll_gap",
-      "screwdown",
-      "strip",
-      "target"
-     ],
-     "unmapped_target": [
-      "battery",
-      "grid",
-      "load",
-      "pv"
-     ],
-     "unmatched_target_edges": [
-      "e1",
-      "e2",
-      "e3",
-      "e4",
-      "e5",
-      "e6"
-     ]
-    },
-    "same_domain": false,
-    "score": 23.1209,
-    "stages": {},
-    "system_id": "energy_microgrid_battery",
-    "system_name": "PV and battery microgrid"
    }
   ],
   "notes": [
@@ -4020,12 +4249,12 @@
    "Threshold 0.0; weights {'functional': 25, 'relationship': 25, 'topological': 20, 'dynamic': 15, 'constraint': 10, 'semantic': 5}."
   ],
   "stage_counts": {
-   "knowledge_base": 66,
+   "knowledge_base": 111,
    "stage1_retrieval": 25,
-   "stage2_functional": 20,
-   "stage3_structural": 20,
-   "stage4_behavioural": 20,
-   "stage5_ranked": 20
+   "stage2_functional": 18,
+   "stage3_structural": 18,
+   "stage4_behavioural": 18,
+   "stage5_ranked": 18
   },
   "threshold": 0.0,
   "weights": {

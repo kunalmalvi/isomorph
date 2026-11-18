@@ -1,0 +1,136 @@
+{
+ "domain": "ecology",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "eco_competitive_exclusion",
+   "name": "Competitive exclusion of two species",
+   "domain": "ecology",
+   "kind": "mechanism",
+   "summary": "Two species use the same limiting resource; each reduces the growth of the other, and unless self limitation exceeds competition one species drives the other out.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "resource",
+      "label": "Shared limiting resource",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "species_a",
+      "label": "Species A",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "species_b",
+      "label": "Species B",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "resource",
+      "target": "species_a",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "resource",
+      "target": "species_b",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "species_a",
+      "target": "species_b",
+      "relation": "competes_with",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "species_b",
+      "target": "species_a",
+      "relation": "competes_with",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "compete",
+    "allocate"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "equilibrium",
+    "threshold"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Resource supply is finite",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "resource_scarcity",
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Lotka, A.J., Elements of Physical Biology, Williams and Wilkins, 1925",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Gotelli, N.J., A Primer of Ecology, Sinauer Associates",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

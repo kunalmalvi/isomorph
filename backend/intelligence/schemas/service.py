@@ -43,6 +43,7 @@ RELATIONS: Dict[str, int] = {
     "consumes": -1, "inhibits": -1, "constrains": -1, "dissipates_to": -1,
     "competes_with": -1,
 }
+PROVENANCE_CLASSES: Tuple[str, ...] = ("sourced", "hypothesis")
 UNCLASSIFIED = "unclassified"
 DYNAMICS_TAGS: Tuple[str, ...] = (
     "negative_feedback", "positive_feedback", "oscillation", "saturation",
@@ -294,9 +295,12 @@ class System:
     sources: List[dict] = field(default_factory=list)
     confidence: str = "medium"  # low | medium | high
     limitations: str = ""
+    provenance_class: str = "sourced"  # sourced | hypothesis
 
     def validate(self) -> List[str]:
         p = [f"{self.id}: {x}" for x in self.graph.validate()]
+        if self.provenance_class not in PROVENANCE_CLASSES:
+            p.append(f"{self.id}: bad provenance_class")
         if self.kind not in ("system", "mechanism"):
             p.append(f"{self.id}: bad kind")
         if self.confidence not in ("low", "medium", "high"):
@@ -328,7 +332,8 @@ class System:
         return {"id": self.id, "name": self.name, "domain": self.domain, "kind": self.kind,
                 "summary": self.summary, "graph": self.graph.to_dict(), "behaviours": self.behaviours,
                 "dynamics": self.dynamics, "constraints": [c.to_dict() for c in self.constraints],
-                "sources": self.sources, "confidence": self.confidence, "limitations": self.limitations}
+                "sources": self.sources, "confidence": self.confidence, "limitations": self.limitations,
+                "provenance_class": self.provenance_class}
 
     @classmethod
     def from_dict(cls, d: dict) -> "System":
@@ -337,7 +342,7 @@ class System:
                    behaviours=list(d.get("behaviours", [])), dynamics=list(d.get("dynamics", [])),
                    constraints=[Constraint.from_dict(c) for c in d.get("constraints", [])],
                    sources=list(d.get("sources", [])), confidence=d.get("confidence", "medium"),
-                   limitations=d.get("limitations", ""))
+                   limitations=d.get("limitations", ""), provenance_class=d.get("provenance_class", "sourced"))
 
 
 @dataclass

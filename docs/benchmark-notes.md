@@ -35,8 +35,66 @@ Files: `data/benchmark_problems/perception_heldout.json`, evaluated by `python3 
 - Unchanged by this work: `evaluate_benchmarks.py` MRR 0.9286 (lexical-only baseline 0.2566), roller top score about 36.5, knowledge base still 66 seed systems. The roller score was not tuned.
 - `run_demo.py` changed only the limitations text in `data/demo/sample_investigation.json` (the text now describes the new perception). `docs/sample-discovery-report.md` is unchanged.
 
+## Knowledge base growth (phase 6, FEAT-002)
+The seed knowledge base grew from 66 to 111 systems (14 to 31 mechanisms; every domain now has 8 to 10). Nothing in the matcher, weights, lexicon or seed graphs was changed. New data comes from `scripts/seed_systems_c.py`.
+
+| Metric | Before (66 systems) | After (111 systems) |
+|---|---|---|
+| candidates per query | 69 | 114 |
+| hit@1 / hit@3 / hit@10 | 1.0 / 1.0 / 1.0 | 1.0 / 1.0 / 1.0 |
+| MRR (primary target) | 0.9286 | 0.9286 |
+| positives beating all negatives | 7 of 7 | 7 of 7 |
+| mean margin | 12.94 | 13.07 |
+| lexical-only MRR baseline | 0.2566 | 0.2123 |
+| roller top match | Human core temperature regulation, 36.5 | Variable air volume zone control (architecture), 37.5 |
+| roller next matches | 33.4, 30.9, 30.1, 29.5 | Human core temperature regulation 36.5, Daylight-responsive shading control 34.7, Passive solar gain with thermal mass 33.4, Plasma calcium homeostasis 31.1 |
+
+- The roller top match changed because a new thermostat-like zone controller (`arch_vav_zone_control`) outscored the previous best. The old best is now second at an unchanged 36.5. This is the expected effect of adding a closer structural neighbour, not a tuning effect. The other new top-five entries (daylight shading control, plasma calcium homeostasis) are also feedback regulators; the shading control system is classed `hypothesis`.
+- The lexical-only baseline fell because more candidates dilute it. The structural MRR is unchanged at n = 7 with tuning overlap, so this says only that the 45 new systems did not displace the 7 positives. It is not evidence of better retrieval.
+- `run_demo.py` rewrote `docs/sample-discovery-report.md` and `data/demo/sample_investigation.json`; the regenerated files are kept.
+
+### Source metadata and its limits
+- Every source now has `confidence` (high, medium or low: how sure the author is that the reference exists and says what is claimed), `verification` and `claim_scope`. Every `verification` value is `unverified_no_network`: no citation was checked online, because doi.org and crossref were unreachable (403) in this session. All citations are recalled from memory. No human has reviewed them; a human should spot check the `medium` and `low` ones first.
+- Counts across 111 systems: sources high 134, medium 60, low 1; systems 107 `sourced` and 4 `hypothesis`. `hypothesis` marks a generated structural abstraction whose cited references support only background facts (`claim_scope` is `background_only`).
+- Where the author was unsure of volume or pages, the citation gives title, venue and year, or title and publisher only. No DOI, URL or page number was added that the author could not recall with confidence.
+- `provenance_class: sourced` means a cited reference supports the description of the system. It never means the ISOMORPH graph, or any analogy between systems, is sourced.
+
+## Tuning set and held-out set (phase 6, FEAT-003)
+
+**NO independent review of any label has happened. All labels are `author_labelled`. The held-out set was written by the same author as the matcher, so it is only less overlapping with the tuning set. It is not independent.**
+
+- **Tuning split.** `data/benchmark_problems/benchmarks.json` (7 pairs) is marked `"split": "tuning"`. The matcher, weights and lexicon were developed while looking at it.
+- **Held-out split.** `data/benchmark_problems/heldout_labels.json` has 20 new queries and 94 graded labels (2 strong, 1 partial, 0 not analog) over the 111 system knowledge base, built by `scripts/build_heldout.py`. Each query has at least one strong label, two partial or negative labels, and one lookalike (grade 0, same words or role types, wrong wiring). Each label has a rationale, a role mapping and `label_status: author_labelled`, `independent_review: none`. Query titles, ids and wording do not overlap the tuning set (tested).
+- **Freeze order.** Labels and the labelling guide (`docs/labelling-guide.md`) were written from the guide without running the matcher on the held-out queries, and committed as `4ec1d34967ab46959b73866c8804ef6587a23cc0` on branch `isomorph-phase6`. The evaluator (`scripts/evaluate_heldout.py`) was written and first run after that commit. Results below are from that first run, unchanged. The matcher, weights, lexicon and seeds were not modified in response.
+- **Review path.** `docs/label-review-template.md` and `data/benchmark_problems/review_template.json` let a second person re-grade every label. `scripts/compare_reviews.py` reports percent agreement, Cohen's kappa and disputed labels. It has only run on a synthetic example in `backend/tests/intelligence/test_heldout.py`.
+- **Amendment log.** None. Labels have not been edited after the first evaluation run. Any future change must be listed here with its reason and commit hash.
+
+| Metric (111 candidates per query) | Tuning (7 pairs) | Held-out (20 queries) |
+|---|---|---|
+| strong analog hit@1 | 1.0 | 0.95 |
+| strong analog hit@3 / hit@10 | 1.0 / 1.0 | 1.0 / 1.0 |
+| MRR of first strong analog | 0.9286 | 0.975 |
+| nDCG@10 with graded labels | not computed | 0.8324 |
+| lookalikes ranked above best strong analog | 0 of 7 (benchmark lookalikes beaten) | 0 of 20 queries |
+| lexical-only baseline (semantic component alone) MRR | 0.2123 | 0.2602 |
+| lexical-only hit@1 / hit@3 | not reported | 0.2 / 0.3 |
+
+How to read this:
+- The one held-out miss is `hq_canal_intake`, where a labelled partial analog (`me_float_valve_cistern`) ranked first and the strong analog (`log_reorder_point_inventory`) ranked second.
+- The held-out MRR is higher than the tuning MRR, probably because the tuning pairs use harder, deliberately confusable negatives and a rewired control. The two columns measure different things and should not be ranked against each other.
+- The held-out queries were written by the matcher's author, mostly as close re-wordings of structures that exist in the knowledge base (many strong labels map one to one onto a seed system). High hit rates therefore show the matcher finds a same-wired system under new words. They do not show it finds a distant analog.
+- Lookalikes in the held-out set are existing knowledge base systems, not synthetic graphs, and they are labelled by the author. A lookalike is only counted as beating the strong analog if it ranks above it.
+- nDCG treats unlabelled systems as grade 0, which can penalise a genuine analog nobody labelled.
+- The lexical-only baseline is the semantic component of the score alone, not an independent text retriever.
+- n = 20 and one author. Do not read these as accuracy estimates.
+
+## Review notes on limits (phase 6)
+- The "labels frozen before any matcher run" claim rests on commit order (`4ec1d34` precedes the evaluator commit) and the author's statement. The commits landed within a few minutes of each other, so the repo is not an audit trail and cannot prove no matcher run touched these queries earlier.
+- Textbook citations carry no edition, chapter or page. A reviewer can confirm a book exists but cannot check that it supports the specific graph under `claim_scope: description`. A human should spot-check the `medium` and `low` confidence entries first. `trans_nagel_jam` cites Lighthill-Whitham kinematic waves next to Nagel-Schreckenberg, which is a weaker fit for a cellular automaton model.
+- All 20 held-out lookalikes are existing knowledge base systems chosen by the author, so "0 lookalikes above the best strong analog" depends on how hard those were chosen. An independent reviewer should re-grade the lookalikes first.
+
 ## Roller demo score and placeholder parameters
-- The flagship roller demo (`python3 scripts/run_demo.py`) ranks "Human core temperature regulation" first with a score of about 36.5 out of 100 (roughly 37). This is a low absolute number. Scores are heuristic and only meaningful as a ranking, and the weights sum over six components that rarely all match for distant domains.
+- Before phase 6 KB growth, the flagship roller demo (`python3 scripts/run_demo.py`) ranked "Human core temperature regulation" first with a score of about 36.5 (after growth the top match is Variable air volume zone control at 37.5, see above) out of 100 (roughly 37). This is a low absolute number. Scores are heuristic and only meaningful as a ranking, and the weights sum over six components that rarely all match for distant domains.
 - Results were not tuned to look better. The best cross-domain score for the roller problem is about 36.5/100 and is reported as is. Weights, lexicon and seed graphs were not adjusted to raise it, and any future change that does so must be recorded here.
 - The roller experiment uses placeholder material parameters (for example for copper). They are not measured values. The seeded rolling simulation is illustrative: a "supported" result means the proposed controller beat the baseline inside that toy model, not in a real mill.
 

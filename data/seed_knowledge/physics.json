@@ -167,14 +167,21 @@
     {
      "citation": "Halliday, D., Resnick, R. and Walker, J., Fundamentals of Physics, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Feynman, R.P., Leighton, R.B. and Sands, M., The Feynman Lectures on Physics, Addison-Wesley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -345,14 +352,21 @@
     {
      "citation": "Halliday, D., Resnick, R. and Walker, J., Fundamentals of Physics, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Feynman, R.P., Leighton, R.B. and Sands, M., The Feynman Lectures on Physics, Addison-Wesley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -489,9 +503,13 @@
     {
      "citation": "Incropera, F.P. et al., Fundamentals of Heat and Mass Transfer, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -667,14 +685,439 @@
     {
      "citation": "Halliday, D., Resnick, R. and Walker, J., Fundamentals of Physics, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Feynman, R.P., Leighton, R.B. and Sands, M., The Feynman Lectures on Physics, Addison-Wesley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "phys_coupled_pendulum_sync",
+   "name": "Synchronisation of coupled pendulum clocks",
+   "domain": "physics",
+   "kind": "system",
+   "summary": "Two pendulum clocks on a shared support exchange small amounts of energy through the support, which pulls their swings into a common phase.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "clock_a",
+      "label": "Pendulum clock A",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "clock_b",
+      "label": "Pendulum clock B",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "support",
+      "label": "Shared support beam",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "damping",
+      "label": "Friction losses",
+      "kind": "entity",
+      "role": "dissipater",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "clock_a",
+      "target": "support",
+      "relation": "couples_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "clock_b",
+      "target": "support",
+      "relation": "couples_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "support",
+      "target": "clock_a",
+      "relation": "couples_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "support",
+      "target": "clock_b",
+      "relation": "couples_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "support",
+      "target": "damping",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "oscillate",
+    "synchronize"
+   ],
+   "dynamics": [
+    "oscillation",
+    "negative_feedback",
+    "damping",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Coupling must be weak enough to leave each clock a distinct oscillator",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "stability_margin"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Strogatz, S.H., Nonlinear Dynamics and Chaos, Westview Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Strogatz, S.H., Sync: How Order Emerges from Chaos in the Universe, Nature, and Daily Life, Hyperion, 2003",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "phys_counterflow_heat_exchanger",
+   "name": "Counterflow heat exchanger",
+   "domain": "physics",
+   "kind": "system",
+   "summary": "Hot and cold fluids flow in opposite directions on either side of a wall, so heat moves across the wall along the whole length and the cold stream can leave hotter than the hot stream's outlet.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "hot_in",
+      "label": "Hot stream inlet",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "wall",
+      "label": "Separating wall",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "cold_in",
+      "label": "Cold stream inlet",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "hot_out",
+      "label": "Cooled outlet",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "cold_out",
+      "label": "Heated outlet",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "hot_in",
+      "target": "wall",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "cold_in",
+      "target": "wall",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "wall",
+      "target": "cold_out",
+      "relation": "transmits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "wall",
+      "target": "hot_out",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "transport",
+    "convert"
+   ],
+   "dynamics": [
+    "equilibrium",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Energy is conserved between the two streams",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Heat flows only from hot to cold",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Incropera, F.P. et al., Fundamentals of Heat and Mass Transfer, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "phys_decay_chain",
+   "name": "Radioactive decay chain",
+   "domain": "physics",
+   "kind": "system",
+   "summary": "A parent nuclide decays into a daughter that itself decays; the daughter population rises, peaks and falls, and approaches transient or secular equilibrium when the parent is long lived.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "parent",
+      "label": "Parent nuclide population",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "daughter",
+      "label": "Daughter nuclide population",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "stable",
+      "label": "Stable end product",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "parent",
+      "target": "daughter",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "daughter",
+      "target": "stable",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "convert",
+    "store"
+   ],
+   "dynamics": [
+    "decay",
+    "accumulation",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Total number of nuclei is conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Populations cannot be negative",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "non_negativity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Lamarsh, J.R. and Baratta, A.J., Introduction to Nuclear Engineering, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Halliday, D., Resnick, R. and Walker, J., Fundamentals of Physics, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

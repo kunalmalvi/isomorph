@@ -1,5 +1,7 @@
 {
  "description": "Positive structural analog pairs and negative lookalikes. See docs/benchmark-notes.md for caveats.",
+ "split": "tuning",
+ "split_note": "Seen during matcher development. The held-out set is heldout_labels.json.",
  "pairs": [
   {
    "query": {
@@ -337,6 +339,7 @@
        "note": ""
       }
      ],
+     "provenance_class": "sourced",
      "confidence": "low",
      "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
     }
@@ -665,6 +668,7 @@
        "note": ""
       }
      ],
+     "provenance_class": "sourced",
      "confidence": "low",
      "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
     }
@@ -899,6 +903,7 @@
        "note": ""
       }
      ],
+     "provenance_class": "sourced",
      "confidence": "low",
      "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
     }
@@ -1225,6 +1230,7 @@
        "note": ""
       }
      ],
+     "provenance_class": "sourced",
      "confidence": "low",
      "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
     }
@@ -1522,6 +1528,7 @@
        "note": ""
       }
      ],
+     "provenance_class": "sourced",
      "confidence": "low",
      "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
     }
@@ -1822,6 +1829,7 @@
        "note": ""
       }
      ],
+     "provenance_class": "sourced",
      "confidence": "low",
      "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
     }
@@ -2151,6 +2159,7 @@
        "note": ""
       }
      ],
+     "provenance_class": "sourced",
      "confidence": "low",
      "limitations": "Synthetic benchmark lookalike, not a real catalogued system."
     }

@@ -178,9 +178,13 @@
     {
      "citation": "Fogler, H.S., Elements of Chemical Reaction Engineering, Prentice Hall",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -349,14 +353,21 @@
     {
      "citation": "Field, R.J., Koros, E. and Noyes, R.M., Oscillations in chemical systems II, Journal of the American Chemical Society 94:8649-8664, 1972",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Strogatz, S.H., Nonlinear Dynamics and Chaos, Westview Press",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -556,9 +567,442 @@
     {
      "citation": "Seader, J.D., Henley, E.J. and Roper, D.K., Separation Process Principles, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "chem_turing_pattern",
+   "name": "Turing reaction-diffusion pattern",
+   "domain": "chemistry",
+   "kind": "system",
+   "summary": "A short-range activator promotes itself and a faster-diffusing inhibitor, so a uniform state becomes unstable and spatial spots or stripes form.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "activator",
+      "label": "Activator species",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "inhibitor",
+      "label": "Inhibitor species",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "diffusion",
+      "label": "Differential diffusion",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "pattern",
+      "label": "Spatial pattern",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "activator",
+      "target": "activator",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "activator",
+      "target": "inhibitor",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "inhibitor",
+      "target": "activator",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "inhibitor",
+      "target": "diffusion",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "diffusion",
+      "target": "pattern",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "oscillate",
+    "allocate"
+   ],
+   "dynamics": [
+    "positive_feedback",
+    "negative_feedback",
+    "threshold",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Inhibitor must diffuse faster than activator",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "equilibrium_condition"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Turing, A.M., The chemical basis of morphogenesis, Philosophical Transactions of the Royal Society of London B 237:37-72, 1952",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Murray, J.D., Mathematical Biology, Springer",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "chem_series_reaction",
+   "name": "Consecutive reactions A to B to C",
+   "domain": "chemistry",
+   "kind": "system",
+   "summary": "Reactant A converts into an intermediate B that converts into product C; B rises, passes a maximum and falls, so the best time to stop depends on the two rate constants.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "a",
+      "label": "Reactant A",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "b",
+      "label": "Intermediate B",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "c",
+      "label": "Product C",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "a",
+      "target": "b",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "b",
+      "target": "c",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "convert",
+    "store"
+   ],
+   "dynamics": [
+    "accumulation",
+    "decay",
+    "delay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Total moles are conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Concentrations cannot be negative",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "non_negativity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Levenspiel, O., Chemical Reaction Engineering, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Fogler, H.S., Elements of Chemical Reaction Engineering, Prentice Hall",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "chem_chromatography_column",
+   "name": "Chromatography column separation",
+   "domain": "chemistry",
+   "kind": "system",
+   "summary": "A mixture is carried by a mobile phase through a column of stationary phase; species with stronger affinity for the stationary phase move more slowly, so they separate into bands.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "feed",
+      "label": "Sample mixture",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "mobile",
+      "label": "Mobile phase",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "stationary",
+      "label": "Stationary phase",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "detector",
+      "label": "Detector",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "fractions",
+      "label": "Separated fractions",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "feed",
+      "target": "mobile",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "mobile",
+      "target": "stationary",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "stationary",
+      "target": "mobile",
+      "relation": "competes_with",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "mobile",
+      "target": "detector",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "detector",
+      "target": "fractions",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "filter",
+    "transport",
+    "allocate"
+   ],
+   "dynamics": [
+    "delay",
+    "equilibrium",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Column capacity limits sample load before bands overlap",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Skoog, D.A., Holler, F.J. and Crouch, S.R., Principles of Instrumental Analysis, Cengage",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Harris, D.C., Quantitative Chemical Analysis, W.H. Freeman",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

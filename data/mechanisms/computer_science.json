@@ -124,9 +124,13 @@
     {
      "citation": "Nygard, M.T., Release It!, Pragmatic Bookshelf, 2007",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -274,9 +278,315 @@
     {
      "citation": "Tanenbaum, A.S. and Wetherall, D.J., Computer Networks, Pearson",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "cs_exponential_backoff",
+   "name": "Retry with exponential backoff",
+   "domain": "computer_science",
+   "kind": "mechanism",
+   "summary": "A client that fails to get a response waits a delay that doubles after each failure, which lowers the offered load on a congested resource until it recovers.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "client",
+      "label": "Client retry logic",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "resource",
+      "label": "Shared resource",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "failure",
+      "label": "Failure signal",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "delay",
+      "label": "Backoff delay",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "client",
+      "target": "resource",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "resource",
+      "target": "failure",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "failure",
+      "target": "delay",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "delay",
+      "target": "client",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "protect",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "delay",
+    "adaptation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Maximum delay bounds how long a client waits",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "delay_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Kurose, J.F. and Ross, K.W., Computer Networking: A Top-Down Approach, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Tanenbaum, A.S. and Wetherall, D.J., Computer Networks, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "cs_bounded_buffer",
+   "name": "Bounded producer-consumer buffer",
+   "domain": "computer_science",
+   "kind": "mechanism",
+   "summary": "Producers add items to a fixed-size buffer and consumers remove them; a full buffer blocks producers and an empty buffer blocks consumers, which couples their rates.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "producer",
+      "label": "Producer thread",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "buffer",
+      "label": "Bounded buffer",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "consumer",
+      "label": "Consumer thread",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "semaphore",
+      "label": "Counting semaphores",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "producer",
+      "target": "buffer",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "buffer",
+      "target": "consumer",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "buffer",
+      "target": "semaphore",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "semaphore",
+      "target": "producer",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "semaphore",
+      "target": "consumer",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "synchronize",
+    "regulate"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "saturation",
+    "accumulation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Buffer capacity is fixed",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "hard_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Item count cannot be negative",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "non_negativity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Silberschatz, A., Galvin, P.B. and Gagne, G., Operating System Concepts, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Tanenbaum, A.S. and Bos, H., Modern Operating Systems, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

@@ -146,15 +146,344 @@
     {
      "citation": "Strogatz, S.H., Nonlinear Dynamics and Chaos, Westview Press",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Halliday, D., Resnick, R. and Walker, J., Fundamentals of Physics, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "phys_rc_charging",
+   "name": "Capacitor charging through a resistor",
+   "domain": "physics",
+   "kind": "mechanism",
+   "summary": "A voltage source charges a capacitor through a resistor; the charging current falls as the capacitor voltage approaches the source voltage, giving an exponential approach.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "supply",
+      "label": "Voltage source",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "resistor",
+      "label": "Series resistor",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "cap",
+      "label": "Capacitor charge",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "ground",
+      "label": "Return path",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "supply",
+      "target": "resistor",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "resistor",
+      "target": "cap",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "cap",
+      "target": "resistor",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "cap",
+      "target": "ground",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "filter",
+    "store"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "decay",
+    "accumulation",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Charge is conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Capacitor voltage cannot exceed the source voltage",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Halliday, D., Resnick, R. and Walker, J., Fundamentals of Physics, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Horowitz, P. and Hill, W., The Art of Electronics, Cambridge University Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "phys_opamp_negative_feedback",
+   "name": "Op-amp negative feedback amplifier",
+   "domain": "physics",
+   "kind": "mechanism",
+   "summary": "A high-gain amplifier output is fed back to its inverting input through a resistor network, so the closed-loop gain is set by the network and the input error is driven near zero.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "input",
+      "label": "Input signal",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "amp",
+      "label": "High-gain amplifier",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "output",
+      "label": "Output voltage",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "network",
+      "label": "Feedback resistor network",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "sense",
+      "label": "Error summing node",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "input",
+      "target": "sense",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "sense",
+      "target": "amp",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "amp",
+      "target": "output",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "output",
+      "target": "network",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "network",
+      "target": "sense",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "amplify",
+    "regulate",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Output is limited by the supply rails",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "capacity_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Gain bandwidth limits loop stability",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "stability_margin"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Sedra, A.S. and Smith, K.C., Microelectronic Circuits, Oxford University Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Horowitz, P. and Hill, W., The Art of Electronics, Cambridge University Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }
  ]

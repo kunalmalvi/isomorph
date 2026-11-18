@@ -1,0 +1,285 @@
+{
+ "domain": "mathematics",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "math_saddle_node_switch",
+   "name": "Saddle-node bifurcation with hysteresis",
+   "domain": "mathematics",
+   "kind": "mechanism",
+   "summary": "Slowly changing a parameter moves a stable equilibrium until it collides with an unstable one and vanishes, so the state jumps to a distant branch and does not return at the same parameter value.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "param",
+      "label": "Slowly varied parameter",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "state",
+      "label": "System state",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "stable_branch",
+      "label": "Stable branch",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "threshold",
+      "label": "Fold point",
+      "kind": "entity",
+      "role": "switch",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "param",
+      "target": "state",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "state",
+      "target": "stable_branch",
+      "relation": "stores_in",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "param",
+      "target": "threshold",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "threshold",
+      "target": "stable_branch",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "store",
+    "regulate"
+   ],
+   "dynamics": [
+    "threshold",
+    "positive_feedback",
+    "accumulation",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Reversal needs the parameter to go past the original fold",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "equilibrium_condition"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Strogatz, S.H., Nonlinear Dynamics and Chaos, Westview Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Scheffer, M. et al., Catastrophic shifts in ecosystems, Nature 413:591-596, 2001",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "math_graph_diffusion",
+   "name": "Diffusion of a quantity on a graph",
+   "domain": "mathematics",
+   "kind": "mechanism",
+   "summary": "Each node passes a share of its value to its neighbours at each step, so differences across edges shrink and values converge toward a common level on a connected graph.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "hot_node",
+      "label": "High-valued node",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "links",
+      "label": "Edges between nodes",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "cold_node",
+      "label": "Low-valued node",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "mean",
+      "label": "Common average value",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "hot_node",
+      "target": "links",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "links",
+      "target": "cold_node",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "cold_node",
+      "target": "mean",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "hot_node",
+      "target": "mean",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "equilibrium",
+    "decay",
+    "negative_feedback"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Total quantity is conserved by symmetric exchange",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Newman, M.E.J., Networks: An Introduction, Oxford University Press, 2010",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Diestel, R., Graph Theory, Springer",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

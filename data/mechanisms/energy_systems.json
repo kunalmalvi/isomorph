@@ -124,14 +124,206 @@
     {
      "citation": "Cengel, Y.A. and Boles, M.A., Thermodynamics: An Engineering Approach, McGraw-Hill",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Incropera, F.P. et al., Fundamentals of Heat and Mass Transfer, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "energy_battery_soc",
+   "name": "Battery state-of-charge limits",
+   "domain": "energy_systems",
+   "kind": "mechanism",
+   "summary": "A battery stores charge between a lower and an upper state-of-charge limit; a management system stops charging at the top and discharging at the bottom to protect the cells.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "charger",
+      "label": "Charging source",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "cells",
+      "label": "Battery charge",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "load",
+      "label": "Discharge load",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "bms",
+      "label": "Battery management system",
+      "kind": "entity",
+      "role": "controller",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "sense",
+      "label": "Voltage and current sensing",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "charger",
+      "target": "cells",
+      "relation": "stores_in",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "cells",
+      "target": "load",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "cells",
+      "target": "sense",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "sense",
+      "target": "bms",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "bms",
+      "target": "charger",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "bms",
+      "target": "load",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "store",
+    "protect",
+    "regulate"
+   ],
+   "dynamics": [
+    "accumulation",
+    "saturation",
+    "threshold",
+    "negative_feedback"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Charge must stay between lower and upper limits",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "safety_bound",
+      "capacity_limit"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Charge rate is bounded",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "rate_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Reddy, T.B. (ed.), Linden's Handbook of Batteries, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Mohan, N., Undeland, T.M. and Robbins, W.P., Power Electronics: Converters, Applications, and Design, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }
