@@ -47,22 +47,35 @@ Nodes 10, edges 6, cycles 0 (negative loops 0, positive loops 0), depth 4.
 Dynamics tags: damping, decay. Constraint tags: capacity_limit, hard_limit, safety_bound.
 
 ## 3. Cross-domain matches (same-domain entries excluded)
-Weights: {'functional': 25, 'relationship': 25, 'topological': 20, 'dynamic': 15, 'constraint': 10, 'semantic': 5}. Stage counts: {'knowledge_base': 66, 'stage1_retrieval': 25, 'stage2_functional': 20, 'stage3_structural': 20, 'stage4_behavioural': 20, 'stage5_ranked': 20}.
+Weights: {'functional': 25, 'relationship': 25, 'topological': 20, 'dynamic': 15, 'constraint': 10, 'semantic': 5}. Stage counts: {'knowledge_base': 111, 'stage1_retrieval': 25, 'stage2_functional': 18, 'stage3_structural': 18, 'stage4_behavioural': 18, 'stage5_ranked': 18}.
 
 | Rank | System | Domain | Score | Functional | Relationship | Topological | Dynamic | Constraint | Semantic | Domain distance |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Human core temperature regulation | biology | 36.5 | 0.42 | 0.05 | 0.74 | 0.00 | 1.00 | 0.00 | 0.6 |
-| 2 | Passive solar gain with thermal mass | architecture | 33.4 | 0.30 | 0.05 | 0.90 | 0.20 | 0.25 | 0.18 | 0.3 |
-| 3 | Blood glucose homeostasis | biology | 30.9 | 0.31 | 0.04 | 0.55 | 0.00 | 1.00 | 0.23 | 0.6 |
-| 4 | Hot water thermal storage tank | energy_systems | 30.1 | 0.15 | 0.00 | 0.78 | 0.50 | 0.25 | 0.16 | 0.3 |
-| 5 | Central bank interest rate rule | economics | 29.5 | 0.36 | 0.18 | 0.64 | 0.00 | 0.25 | 0.12 | 0.6 |
-| 6 | Exothermic CSTR with cooling | chemistry | 29.2 | 0.32 | 0.05 | 0.62 | 0.00 | 0.75 | 0.00 | 0.6 |
-| 7 | Distillation column with reflux | chemistry | 28.9 | 0.27 | 0.05 | 0.72 | 0.00 | 0.50 | 0.30 | 0.6 |
-| 8 | Kanban pull production line | logistics | 28.4 | 0.22 | 0.05 | 0.75 | 0.00 | 0.67 | 0.00 | 0.6 |
-| 9 | Vapour-compression heat pump cycle | energy_systems | 27.0 | 0.47 | 0.00 | 0.64 | 0.00 | 0.25 | 0.00 | 0.3 |
-| 10 | Stack effect natural ventilation | architecture | 25.3 | 0.32 | 0.00 | 0.74 | 0.00 | 0.25 | 0.01 | 0.3 |
+| 1 | Variable air volume zone control | architecture | 37.5 | 0.34 | 0.17 | 0.72 | 0.00 | 1.00 | 0.08 | 0.3 |
+| 2 | Human core temperature regulation | biology | 36.5 | 0.42 | 0.05 | 0.74 | 0.00 | 1.00 | 0.00 | 0.6 |
+| 3 | Daylight-responsive shading control | architecture | 34.7 | 0.38 | 0.18 | 0.69 | 0.00 | 0.67 | 0.00 | 0.3 |
+| 4 | Passive solar gain with thermal mass | architecture | 33.4 | 0.30 | 0.05 | 0.90 | 0.20 | 0.25 | 0.17 | 0.3 |
+| 5 | Plasma calcium homeostasis | biology | 31.1 | 0.34 | 0.05 | 0.54 | 0.00 | 1.00 | 0.12 | 0.6 |
+| 6 | Blood glucose homeostasis | biology | 30.7 | 0.31 | 0.04 | 0.55 | 0.00 | 1.00 | 0.19 | 0.6 |
+| 7 | Hot water thermal storage tank | energy_systems | 30.0 | 0.15 | 0.00 | 0.78 | 0.50 | 0.25 | 0.15 | 0.3 |
+| 8 | Central bank interest rate rule | economics | 29.5 | 0.36 | 0.18 | 0.64 | 0.00 | 0.25 | 0.13 | 0.6 |
+| 9 | Distillation column with reflux | chemistry | 29.2 | 0.27 | 0.05 | 0.72 | 0.00 | 0.50 | 0.36 | 0.6 |
+| 10 | Exothermic CSTR with cooling | chemistry | 29.2 | 0.32 | 0.05 | 0.62 | 0.00 | 0.75 | 0.00 | 0.6 |
 
-Reading the table: the best score is 36.5 out of 100. That is a weak match overall. The problem as stated is an open chain with no feedback loop, so relationship scores are low and ranking is driven mostly by role, constraint and topology overlap. Treat the analogs as idea prompts, not as validated models.
+Reading the table: the best score is 37.5 out of 100. That is a weak match overall. The problem as stated is an open chain with no feedback loop, so relationship scores are low and ranking is driven mostly by role, constraint and topology overlap. Treat the analogs as idea prompts, not as validated models.
+
+### Match detail: Variable air volume zone control (architecture), score 37.5
+- functional 0.34 x weight 25: role overlap 0.43 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: actuator, controller, medium
+- relationship 0.17 x weight 25: edge F1 0.17 under role constrained mapping (recall 0.17, precision 0.17; 1 preserved, 0 modified, 5 lost), role-relation-role pattern cosine 0.17
+- topological 0.72 x weight 20: feature distance 0.14; nodes 10 vs 6, edges 6 vs 6, cycles 0 vs 1, depth 4 vs 2
+- dynamic 0.00 x weight 15: dynamics Jaccard 0.00; shared: none
+- constraint 1.00 x weight 10: constraint tag Jaccard 1.00; shared: capacity_limit, hard_limit, safety_bound
+- semantic 0.08 x weight 5: lexical TF-IDF cosine 0.08. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.
+- Mapping confidence 0.26 (confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2))
+- Mapped pairs (problem -> analog, confidence): operator -> controller (0.42); screwdown -> damper (0.36); strip -> zone (0.28)
+- Preserved relationships: 1, modified: 0, lost: 5
+- Differences: Problem element 'bite' has no counterpart in the analog; Problem element 'energy' has no counterpart in the analog; Problem element 'friction' has no counterpart in the analog; Problem element 'motor' has no counterpart in the analog; Problem element 'roll' has no counterpart in the analog; Problem element 'roll gap' has no counterpart in the analog; Problem element 'target' has no counterpart in the analog; Analog element 'Return air' has no counterpart in the problem
+- Limitations: Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.; Only 30% of problem elements are mapped; the analogy is partial; Scores come from heuristic structural features, not a proof of transferability
 
 ### Match detail: Human core temperature regulation (biology), score 36.5
 - functional 0.42 x weight 25: role overlap 0.43 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.40; shared roles: actuator, controller, medium
@@ -77,39 +90,26 @@ Reading the table: the best score is 36.5 out of 100. That is a weak match overa
 - Differences: Problem element 'bite' has no counterpart in the analog; Problem element 'friction' has no counterpart in the analog; Problem element 'motor' has no counterpart in the analog; Problem element 'roll' has no counterpart in the analog; Problem element 'roll gap' has no counterpart in the analog; Problem element 'strip' has no counterpart in the analog; Problem element 'target' has no counterpart in the analog; Analog element 'Environment' has no counterpart in the problem
 - Limitations: Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.; Only 30% of problem elements are mapped; the analogy is partial; Scores come from heuristic structural features, not a proof of transferability
 
-### Match detail: Passive solar gain with thermal mass (architecture), score 33.4
-- functional 0.30 x weight 25: role overlap 0.37 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.20; shared roles: dissipater, medium, regulator
-- relationship 0.05 x weight 25: edge F1 0.07 under role constrained mapping (recall 0.07, precision 0.08; 0 preserved, 1 modified, 5 lost), role-relation-role pattern cosine 0.00
-- topological 0.90 x weight 20: feature distance 0.05; nodes 10 vs 6, edges 6 vs 5, cycles 0 vs 0, depth 4 vs 4
-- dynamic 0.20 x weight 15: dynamics Jaccard 0.20; shared: damping
-- constraint 0.25 x weight 10: constraint tag Jaccard 0.25; shared: hard_limit
-- semantic 0.18 x weight 5: lexical TF-IDF cosine 0.18. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.
-- Mapping confidence 0.20 (confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2))
-- Mapped pairs (problem -> analog, confidence): energy -> room (0.26); friction -> loss (0.26); operator -> shade (0.32)
-- Preserved relationships: 0, modified: 1, lost: 5
-- Differences: Problem element 'bite' has no counterpart in the analog; Problem element 'motor' has no counterpart in the analog; Problem element 'roll' has no counterpart in the analog; Problem element 'roll gap' has no counterpart in the analog; Problem element 'screwdown' has no counterpart in the analog; Problem element 'strip' has no counterpart in the analog; Problem element 'target' has no counterpart in the analog; Analog element 'South glazing' has no counterpart in the problem
-- Limitations: Analog entry confidence is medium; Qualitative structural abstraction; not a quantitative model.; Only 30% of problem elements are mapped; the analogy is partial; Scores come from heuristic structural features, not a proof of transferability
-
-### Match detail: Blood glucose homeostasis (biology), score 30.9
-- functional 0.31 x weight 25: role overlap 0.40 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.17; shared roles: actuator, controller, medium
-- relationship 0.04 x weight 25: edge F1 0.06 under role constrained mapping (recall 0.07, precision 0.05; 0 preserved, 1 modified, 5 lost), role-relation-role pattern cosine 0.00
-- topological 0.55 x weight 20: feature distance 0.22; nodes 10 vs 7, edges 6 vs 8, cycles 0 vs 2, depth 4 vs 2
+### Match detail: Daylight-responsive shading control (architecture), score 34.7
+- functional 0.38 x weight 25: role overlap 0.47 (cosine and weighted Jaccard of role counts), behaviour Jaccard 0.25; shared roles: actuator, controller, medium
+- relationship 0.18 x weight 25: edge F1 0.18 under role constrained mapping (recall 0.17, precision 0.20; 1 preserved, 0 modified, 5 lost), role-relation-role pattern cosine 0.18
+- topological 0.69 x weight 20: feature distance 0.15; nodes 10 vs 5, edges 6 vs 5, cycles 0 vs 1, depth 4 vs 1
 - dynamic 0.00 x weight 15: dynamics Jaccard 0.00; shared: none
-- constraint 1.00 x weight 10: constraint tag Jaccard 1.00; shared: capacity_limit, hard_limit, safety_bound
-- semantic 0.23 x weight 5: lexical TF-IDF cosine 0.23. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.
-- Mapping confidence 0.20 (confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2))
-- Mapped pairs (problem -> analog, confidence): energy -> glucose (0.26); operator -> insulin (0.30); screwdown -> uptake (0.30)
-- Preserved relationships: 0, modified: 1, lost: 5
-- Differences: Problem element 'bite' has no counterpart in the analog; Problem element 'friction' has no counterpart in the analog; Problem element 'motor' has no counterpart in the analog; Problem element 'roll' has no counterpart in the analog; Problem element 'roll gap' has no counterpart in the analog; Problem element 'strip' has no counterpart in the analog; Problem element 'target' has no counterpart in the analog; Analog element 'Pancreatic beta cells' has no counterpart in the problem
-- Limitations: Analog entry confidence is high; Qualitative structural abstraction; not a quantitative model.; Only 30% of problem elements are mapped; the analogy is partial; Scores come from heuristic structural features, not a proof of transferability
+- constraint 0.67 x weight 10: constraint tag Jaccard 0.67; shared: capacity_limit, safety_bound
+- semantic 0.00 x weight 5: lexical TF-IDF cosine 0.00. Semantic score is a lexical TF-IDF cosine over hashed words. It measures shared vocabulary, not meaning, and is deliberately given a small weight.
+- Mapping confidence 0.26 (confidence = 0.3*mean_pair_score + 0.4*weighted_edge_recall + 0.3*node_coverage (preserved edge = 1.0, modified same sign = 0.4, modified other = 0.2))
+- Mapped pairs (problem -> analog, confidence): operator -> controller (0.42); screwdown -> blinds (0.36); strip -> room (0.28)
+- Preserved relationships: 1, modified: 0, lost: 5
+- Differences: Problem element 'bite' has no counterpart in the analog; Problem element 'energy' has no counterpart in the analog; Problem element 'friction' has no counterpart in the analog; Problem element 'motor' has no counterpart in the analog; Problem element 'roll' has no counterpart in the analog; Problem element 'roll gap' has no counterpart in the analog; Problem element 'target' has no counterpart in the analog; Analog element 'Light sensor' has no counterpart in the problem
+- Limitations: Analog entry confidence is low; The control structure is a generated abstraction; the references support only daylight and solar gain principles.; Only 30% of problem elements are mapped; the analogy is partial; Scores come from heuristic structural features, not a proof of transferability
 
 ## 4. Transformation concepts (distinct)
-### Add an upstream measurement for anticipation (from Human core temperature regulation, analog score 36.5)
+### Add an upstream measurement for anticipation (from Variable air volume zone control, analog score 37.5)
 - Concept type: `add_sensing`. Constraint status: **ok**.
-- Why: Human core temperature regulation senses its state before acting on it.
+- Why: Variable air volume zone control senses its state before acting on it.
   1. Choose a measurable upstream indicator of the disturbance
   2. Feed it forward to adjust the process before the effect arrives
-- Relies on mapping pairs (problem, analog, confidence): [['energy', 'core_temp', 0.262], ['operator', 'hypothalamus', 0.303]]
+- Relies on mapping pairs (problem, analog, confidence): [['operator', 'controller', 0.42], ['strip', 'zone', 0.282]]
 - Expected effect: Disturbances are partly compensated before they reach the output.
 - Constraint c_force (hard): satisfied (roll_force_kn=40.2426 <= 90: True)
 - Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.712 mm)
@@ -140,7 +140,7 @@ Reading the table: the best score is 36.5 out of 100. That is a weak match overa
 - Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.712 mm)
 - Constraint c_tol (soft): satisfied (rms_dev_mm=0.0172691 <= 0.02: True)
 
-### Allocate the limited resource by marginal value (from Airport runway arrival queue, analog score 24.6)
+### Allocate the limited resource by marginal value (from Airport runway arrival queue, analog score 24.5)
 - Concept type: `allocate_resources`. Constraint status: **ok**.
 - Why: Airport runway arrival queue divides a limited supply among competing uses by a rule.
   1. List competing uses and their diminishing returns
@@ -153,7 +153,7 @@ Reading the table: the best score is 36.5 out of 100. That is a weak match overa
 
 ## 5. Hypotheses and validation
 ### H1-add_sensing (robustness)
-- Statement: If the design applies 'Add an upstream measurement for anticipation' (transferred from Human core temperature regulation), the problem's key outcome will improve compared with the current design. No simulation model is available for this idea, so the outcome metric still has to be defined by the user.
+- Statement: If the design applies 'Add an upstream measurement for anticipation' (transferred from Variable air volume zone control), the problem's key outcome will improve compared with the current design. No simulation model is available for this idea, so the outcome metric still has to be defined by the user.
 - Prediction: the relevant outcome metric improves; no quantitative prediction is possible without an applicable model.
 - Falsifier: The hypothesis is falsified if the mean improvement in the relevant outcome metric is below 5% or the proposed arm wins in fewer than 90% of seeded runs, or if any hard constraint is violated.
 - Outcome: **untested** by none

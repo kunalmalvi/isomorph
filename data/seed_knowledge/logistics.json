@@ -177,14 +177,21 @@
     {
      "citation": "Silver, E.A., Pyke, D.F. and Peterson, R., Inventory Management and Production Planning and Scheduling, Wiley",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Chopra, S. and Meindl, P., Supply Chain Management: Strategy, Planning, and Operation, Pearson",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -322,19 +329,29 @@
     {
      "citation": "Lee, H.L., Padmanabhan, V. and Whang, S., The bullwhip effect in supply chains, Sloan Management Review 38(3):93-102, 1997",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Forrester, J.W., Industrial Dynamics, MIT Press, 1961",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Sterman, J.D., Business Dynamics: Systems Thinking and Modeling for a Complex World, McGraw-Hill, 2000",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -500,14 +517,21 @@
     {
      "citation": "O'Kelly, M.E., The location of interacting hub facilities, Transportation Science 20(2):92-106, 1986",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Chopra, S. and Meindl, P., Supply Chain Management: Strategy, Planning, and Operation, Pearson",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -676,14 +700,513 @@
     {
      "citation": "Ohno, T., Toyota Production System: Beyond Large-Scale Production, Productivity Press, 1988",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Hopp, W.J. and Spearman, M.L., Factory Physics, Waveland Press",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "log_theory_of_constraints",
+   "name": "Theory of constraints bottleneck line",
+   "domain": "logistics",
+   "kind": "system",
+   "summary": "In a serial line the slowest station sets throughput; work piles up in front of it and stations downstream starve, so improving a non-bottleneck station does not raise output.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "release",
+      "label": "Material release",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "fast1",
+      "label": "Fast station",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "buffer",
+      "label": "Queue before bottleneck",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "bottleneck",
+      "label": "Bottleneck station",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "fast2",
+      "label": "Downstream station",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "market",
+      "label": "Customers",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "release",
+      "target": "fast1",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "fast1",
+      "target": "buffer",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "buffer",
+      "target": "bottleneck",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "bottleneck",
+      "target": "fast2",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "fast2",
+      "target": "market",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "bottleneck",
+      "target": "release",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "allocate",
+    "buffer"
+   ],
+   "dynamics": [
+    "queueing",
+    "accumulation",
+    "saturation",
+    "negative_feedback"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Throughput cannot exceed the capacity of the slowest station",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "hard_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Goldratt, E.M. and Cox, J., The Goal: A Process of Ongoing Improvement, North River Press, 1984",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Hopp, W.J. and Spearman, M.L., Factory Physics, Waveland Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "log_cross_docking",
+   "name": "Cross-docking terminal",
+   "domain": "logistics",
+   "kind": "system",
+   "summary": "Inbound shipments are unloaded, sorted and loaded onto outbound trucks with little or no storage, so the terminal works as a transfer point whose buffer is small.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "inbound",
+      "label": "Inbound trucks",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "dock",
+      "label": "Receiving dock",
+      "kind": "entity",
+      "role": "junction",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "sort",
+      "label": "Sorting area",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "outbound",
+      "label": "Outbound trucks",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "staging",
+      "label": "Small staging buffer",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "inbound",
+      "target": "dock",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "dock",
+      "target": "sort",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "sort",
+      "target": "staging",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "staging",
+      "target": "outbound",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "sort",
+      "target": "outbound",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "transport"
+   ],
+   "dynamics": [
+    "queueing",
+    "saturation",
+    "load_sharing"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Dock doors and floor space limit simultaneous trucks",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Bowersox, D.J. et al., Supply Chain Logistics Management, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "background_only"
+    },
+    {
+     "citation": "Ballou, R.H., Business Logistics/Supply Chain Management, Pearson",
+     "kind": "textbook",
+     "note": "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "background_only"
+    }
+   ],
+   "provenance_class": "hypothesis",
+   "confidence": "low",
+   "limitations": "The terminal structure is a generated abstraction; the references support general distribution practice only."
+  },
+  {
+   "id": "log_transshipment_network",
+   "name": "Minimum-cost transshipment network",
+   "domain": "logistics",
+   "kind": "system",
+   "summary": "Goods move from supply nodes through intermediate nodes to demand nodes along arcs with capacities and costs, and flow is conserved at every intermediate node.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "supply",
+      "label": "Supply node",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "transfer",
+      "label": "Transshipment node",
+      "kind": "entity",
+      "role": "junction",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "arc",
+      "label": "Capacitated arc",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "demand",
+      "label": "Demand node",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "supply",
+      "target": "arc",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "arc",
+      "target": "transfer",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "transfer",
+      "target": "demand",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "arc",
+      "target": "supply",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "transport",
+    "allocate"
+   ],
+   "dynamics": [
+    "saturation",
+    "load_sharing"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Flow is conserved at intermediate nodes",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Arc flow cannot exceed capacity",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Ford, L.R. and Fulkerson, D.R., Flows in Networks, Princeton University Press, 1962",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Dantzig, G.B., Linear Programming and Extensions, Princeton University Press, 1963",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

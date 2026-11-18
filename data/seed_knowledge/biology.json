@@ -179,9 +179,13 @@
     {
      "citation": "Hall, J.E. and Hall, M.E., Guyton and Hall Textbook of Medical Physiology, Elsevier",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -395,14 +399,21 @@
     {
      "citation": "Hall, J.E. and Hall, M.E., Guyton and Hall Textbook of Medical Physiology, Elsevier",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Nelson, D.L. and Cox, M.M., Lehninger Principles of Biochemistry, W.H. Freeman",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -563,9 +574,13 @@
     {
      "citation": "Hodgkin, A.L. and Huxley, A.F., A quantitative description of membrane current and its application to conduction and excitation in nerve, Journal of Physiology 117:500-544, 1952",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -777,9 +792,217 @@
     {
      "citation": "Hall, J.E. and Hall, M.E., Guyton and Hall Textbook of Medical Physiology, Elsevier",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "bio_calcium_homeostasis",
+   "name": "Plasma calcium homeostasis",
+   "domain": "biology",
+   "kind": "system",
+   "summary": "Parathyroid cells sense low plasma calcium and release parathyroid hormone, which raises calcium by acting on bone and kidney; high calcium suppresses the release.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "intake",
+      "label": "Dietary and bone calcium supply",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "plasma",
+      "label": "Plasma calcium",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "parathyroid",
+      "label": "Parathyroid chief cells",
+      "kind": "entity",
+      "role": "sensor",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "pth",
+      "label": "Parathyroid hormone release",
+      "kind": "entity",
+      "role": "controller",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "bone_kidney",
+      "label": "Bone resorption and renal reabsorption",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "excretion",
+      "label": "Urinary excretion",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "intake",
+      "target": "plasma",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "plasma",
+      "target": "parathyroid",
+      "relation": "observed_by",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "parathyroid",
+      "target": "pth",
+      "relation": "signals",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "pth",
+      "target": "bone_kidney",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "bone_kidney",
+      "target": "plasma",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "plasma",
+      "target": "excretion",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e7",
+      "source": "plasma",
+      "target": "pth",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "sense",
+    "reduce_variation"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "delay",
+    "equilibrium"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Plasma calcium must stay in a narrow band",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "safety_bound"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Bone mineral reserve is finite",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Hall, J.E. and Hall, M.E., Guyton and Hall Textbook of Medical Physiology, Elsevier",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Reece, J.B. et al., Campbell Biology, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

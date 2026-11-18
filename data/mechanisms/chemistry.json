@@ -133,14 +133,21 @@
     {
      "citation": "Nelson, D.L. and Cox, M.M., Lehninger Principles of Biochemistry, W.H. Freeman",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Atkins, P. and de Paula, J., Atkins' Physical Chemistry, Oxford University Press",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -287,9 +294,303 @@
     {
      "citation": "Atkins, P. and de Paula, J., Atkins' Physical Chemistry, Oxford University Press",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "chem_autocatalysis",
+   "name": "Autocatalytic reaction",
+   "domain": "chemistry",
+   "kind": "mechanism",
+   "summary": "A product catalyses its own formation, so the rate starts slowly, accelerates as product accumulates and then slows when the reactant is used up, giving a sigmoidal concentration curve.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "reactant",
+      "label": "Reactant",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "product",
+      "label": "Autocatalytic product",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "rate",
+      "label": "Reaction rate",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "reactant",
+      "target": "product",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "product",
+      "target": "rate",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "rate",
+      "target": "product",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "reactant",
+      "target": "rate",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "amplify",
+    "convert"
+   ],
+   "dynamics": [
+    "positive_feedback",
+    "threshold",
+    "saturation",
+    "accumulation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Mass is conserved",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Reactant supply limits the final product",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "resource_scarcity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Epstein, I.R. and Pojman, J.A., An Introduction to Nonlinear Chemical Dynamics, Oxford University Press, 1998",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Atkins, P. and de Paula, J., Atkins' Physical Chemistry, Oxford University Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "chem_le_chatelier",
+   "name": "Le Chatelier equilibrium shift",
+   "domain": "chemistry",
+   "kind": "mechanism",
+   "summary": "When a reaction at equilibrium is disturbed by adding or removing a species, the composition shifts to partly oppose the disturbance until a new equilibrium is reached.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "reactants",
+      "label": "Reactant pool",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "products",
+      "label": "Product pool",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "disturbance",
+      "label": "Added or removed species",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "equilibrium",
+      "label": "Equilibrium condition",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "disturbance",
+      "target": "reactants",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "reactants",
+      "target": "products",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "products",
+      "target": "reactants",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "equilibrium",
+      "target": "reactants",
+      "relation": "controls",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "equilibrium",
+      "target": "products",
+      "relation": "controls",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "buffer"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "equilibrium",
+    "adaptation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "The equilibrium constant is fixed at constant temperature",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "equilibrium_condition"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Atkins, P. and de Paula, J., Atkins' Physical Chemistry, Oxford University Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "McQuarrie, D.A. and Simon, J.D., Physical Chemistry: A Molecular Approach, University Science Books",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

@@ -123,14 +123,21 @@
     {
      "citation": "Jacob, F. and Monod, J., Genetic regulatory mechanisms in the synthesis of proteins, Journal of Molecular Biology 3:318-356, 1961",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Alberts, B. et al., Molecular Biology of the Cell, Garland Science",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -278,10 +285,174 @@
     {
      "citation": "Nelson, D.L. and Cox, M.M., Lehninger Principles of Biochemistry, W.H. Freeman",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "bio_coagulation_cascade",
+   "name": "Blood coagulation cascade",
+   "domain": "biology",
+   "kind": "mechanism",
+   "summary": "Tissue injury activates a clotting factor that activates the next factor in sequence, amplifying a small trigger into a clot, while thrombin feeds back to speed its own production.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "injury",
+      "label": "Vessel injury",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "factor_a",
+      "label": "Early clotting factor",
+      "kind": "entity",
+      "role": "switch",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "factor_b",
+      "label": "Intermediate clotting factor",
+      "kind": "entity",
+      "role": "switch",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "thrombin",
+      "label": "Thrombin",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "fibrin",
+      "label": "Fibrin clot",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "injury",
+      "target": "factor_a",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "factor_a",
+      "target": "factor_b",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "factor_b",
+      "target": "thrombin",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "thrombin",
+      "target": "factor_b",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "thrombin",
+      "target": "fibrin",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "amplify",
+    "protect"
+   ],
+   "dynamics": [
+    "cascade",
+    "positive_feedback",
+    "threshold"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Clot formation must stay local to the injury",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "safety_bound"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Hall, J.E. and Hall, M.E., Guyton and Hall Textbook of Medical Physiology, Elsevier",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Alberts, B. et al., Molecular Biology of the Cell, Garland Science",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }
  ]

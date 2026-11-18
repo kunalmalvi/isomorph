@@ -35,8 +35,32 @@ Files: `data/benchmark_problems/perception_heldout.json`, evaluated by `python3 
 - Unchanged by this work: `evaluate_benchmarks.py` MRR 0.9286 (lexical-only baseline 0.2566), roller top score about 36.5, knowledge base still 66 seed systems. The roller score was not tuned.
 - `run_demo.py` changed only the limitations text in `data/demo/sample_investigation.json` (the text now describes the new perception). `docs/sample-discovery-report.md` is unchanged.
 
+## Knowledge base growth (phase 6, FEAT-002)
+The seed knowledge base grew from 66 to 111 systems (14 to 31 mechanisms; every domain now has 8 to 10). Nothing in the matcher, weights, lexicon or seed graphs was changed. New data comes from `scripts/seed_systems_c.py`.
+
+| Metric | Before (66 systems) | After (111 systems) |
+|---|---|---|
+| candidates per query | 69 | 114 |
+| hit@1 / hit@3 / hit@10 | 1.0 / 1.0 / 1.0 | 1.0 / 1.0 / 1.0 |
+| MRR (primary target) | 0.9286 | 0.9286 |
+| positives beating all negatives | 7 of 7 | 7 of 7 |
+| mean margin | 12.94 | 13.07 |
+| lexical-only MRR baseline | 0.2566 | 0.2123 |
+| roller top match | Human core temperature regulation, 36.5 | Variable air volume zone control (architecture), 37.5 |
+| roller next matches | 33.4, 30.9, 30.1, 29.5 | Human core temperature regulation 36.5, Daylight-responsive shading control 34.7, Passive solar gain with thermal mass 33.4, Plasma calcium homeostasis 31.1 |
+
+- The roller top match changed because a new thermostat-like zone controller (`arch_vav_zone_control`) outscored the previous best. The old best is now second at an unchanged 36.5. This is the expected effect of adding a closer structural neighbour, not a tuning effect. The other new top-five entries (daylight shading control, plasma calcium homeostasis) are also feedback regulators; the shading control system is classed `hypothesis`.
+- The lexical-only baseline fell because more candidates dilute it. The structural MRR is unchanged at n = 7 with tuning overlap, so this says only that the 45 new systems did not displace the 7 positives. It is not evidence of better retrieval.
+- `run_demo.py` rewrote `docs/sample-discovery-report.md` and `data/demo/sample_investigation.json`; the regenerated files are kept.
+
+### Source metadata and its limits
+- Every source now has `confidence` (high, medium or low: how sure the author is that the reference exists and says what is claimed), `verification` and `claim_scope`. Every `verification` value is `unverified_no_network`: no citation was checked online, because doi.org and crossref were unreachable (403) in this session. All citations are recalled from memory. No human has reviewed them; a human should spot check the `medium` and `low` ones first.
+- Counts across 111 systems: sources high 134, medium 60, low 1; systems 107 `sourced` and 4 `hypothesis`. `hypothesis` marks a generated structural abstraction whose cited references support only background facts (`claim_scope` is `background_only`).
+- Where the author was unsure of volume or pages, the citation gives title, venue and year, or title and publisher only. No DOI, URL or page number was added that the author could not recall with confidence.
+- `provenance_class: sourced` means a cited reference supports the description of the system. It never means the ISOMORPH graph, or any analogy between systems, is sourced.
+
 ## Roller demo score and placeholder parameters
-- The flagship roller demo (`python3 scripts/run_demo.py`) ranks "Human core temperature regulation" first with a score of about 36.5 out of 100 (roughly 37). This is a low absolute number. Scores are heuristic and only meaningful as a ranking, and the weights sum over six components that rarely all match for distant domains.
+- Before phase 6 KB growth, the flagship roller demo (`python3 scripts/run_demo.py`) ranked "Human core temperature regulation" first with a score of about 36.5 (after growth the top match is Variable air volume zone control at 37.5, see above) out of 100 (roughly 37). This is a low absolute number. Scores are heuristic and only meaningful as a ranking, and the weights sum over six components that rarely all match for distant domains.
 - Results were not tuned to look better. The best cross-domain score for the roller problem is about 36.5/100 and is reported as is. Weights, lexicon and seed graphs were not adjusted to raise it, and any future change that does so must be recorded here.
 - The roller experiment uses placeholder material parameters (for example for copper). They are not measured values. The seeded rolling simulation is illustrative: a "supported" result means the proposed controller beat the baseline inside that toy model, not in a real mill.
 

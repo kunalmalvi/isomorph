@@ -136,14 +136,21 @@
     {
      "citation": "Mankiw, N.G., Principles of Economics, Cengage",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Ezekiel, M., The cobweb theorem, Quarterly Journal of Economics 52(2):255-280, 1938",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -280,14 +287,21 @@
     {
      "citation": "Samuelson, P.A., Interactions between the multiplier analysis and the principle of acceleration, Review of Economics and Statistics 21(2):75-78, 1939",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Mankiw, N.G., Principles of Economics, Cengage",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -445,14 +459,21 @@
     {
      "citation": "Taylor, J.B., Discretion versus policy rules in practice, Carnegie-Rochester Conference Series on Public Policy 39:195-214, 1993",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Mankiw, N.G., Principles of Economics, Cengage",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -601,14 +622,21 @@
     {
      "citation": "Hardin, G., The tragedy of the commons, Science 162:1243-1248, 1968",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Mankiw, N.G., Principles of Economics, Cengage",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -734,9 +762,302 @@
     {
      "citation": "Allen, F. and Gale, D., Financial contagion, Journal of Political Economy 108(1):1-33, 2000",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "econ_solow_accumulation",
+   "name": "Solow capital accumulation",
+   "domain": "economics",
+   "kind": "system",
+   "summary": "Saving adds to the capital stock while depreciation removes it; with diminishing returns the capital stock converges to a steady state where investment equals depreciation.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "output",
+      "label": "Output",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "saving",
+      "label": "Saving and investment",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "capital",
+      "label": "Capital stock",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "depreciation",
+      "label": "Depreciation",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "output",
+      "target": "saving",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "saving",
+      "target": "capital",
+      "relation": "stores_in",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "capital",
+      "target": "output",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "capital",
+      "target": "depreciation",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "store",
+    "regulate"
+   ],
+   "dynamics": [
+    "accumulation",
+    "negative_feedback",
+    "equilibrium",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Capital cannot be negative",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "non_negativity"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Steady state requires investment equal to depreciation",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "equilibrium_condition"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Solow, R.M., A contribution to the theory of economic growth, Quarterly Journal of Economics, 1956",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Blanchard, O., Macroeconomics, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "econ_lemons_unraveling",
+   "name": "Adverse selection unraveling (market for lemons)",
+   "domain": "economics",
+   "kind": "system",
+   "summary": "Buyers cannot tell good items from bad, so they offer an average price; owners of good items withdraw, the average quality falls, and the offered price falls again.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "buyers",
+      "label": "Buyers",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "price",
+      "label": "Average offered price",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "good",
+      "label": "Good-quality sellers",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "quality",
+      "label": "Average quality on offer",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "buyers",
+      "target": "price",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "price",
+      "target": "good",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "good",
+      "target": "quality",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "quality",
+      "target": "price",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "filter",
+    "compete"
+   ],
+   "dynamics": [
+    "positive_feedback",
+    "cascade",
+    "threshold"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Buyers cannot observe quality directly",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "resource_scarcity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Akerlof, G.A., The market for lemons: quality uncertainty and the market mechanism, Quarterly Journal of Economics, 1970",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Varian, H.R., Intermediate Microeconomics, W.W. Norton",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

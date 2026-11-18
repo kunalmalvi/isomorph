@@ -167,14 +167,21 @@
     {
      "citation": "Ogata, K., Modern Control Engineering, Pearson",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Astrom, K.J. and Murray, R.M., Feedback Systems: An Introduction for Scientists and Engineers, Princeton University Press",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -321,9 +328,13 @@
     {
      "citation": "Budynas, R.G. and Nisbett, J.K., Shigley's Mechanical Engineering Design, McGraw-Hill",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -470,14 +481,21 @@
     {
      "citation": "White, F.M., Fluid Mechanics, McGraw-Hill",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Budynas, R.G. and Nisbett, J.K., Shigley's Mechanical Engineering Design, McGraw-Hill",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -624,14 +642,302 @@
     {
      "citation": "White, F.M., Fluid Mechanics, McGraw-Hill",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Ogata, K., Modern Control Engineering, Pearson",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "me_hydraulic_accumulator",
+   "name": "Hydraulic accumulator",
+   "domain": "mechanical_engineering",
+   "kind": "mechanism",
+   "summary": "A gas-charged chamber stores pressurised fluid when pump flow exceeds demand and releases it when demand peaks, smoothing pressure and flow in a hydraulic line.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "pump",
+      "label": "Pump",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "line",
+      "label": "Pressure line",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "accum",
+      "label": "Gas-charged accumulator",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "actuator",
+      "label": "Hydraulic actuator",
+      "kind": "entity",
+      "role": "consumer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "pump",
+      "target": "line",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "line",
+      "target": "accum",
+      "relation": "stores_in",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "accum",
+      "target": "line",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "line",
+      "target": "actuator",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "reduce_variation",
+    "store"
+   ],
+   "dynamics": [
+    "accumulation",
+    "damping",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Accumulator volume and precharge limit stored energy",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "hard_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Munson, B.R. et al., Fundamentals of Fluid Mechanics, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "White, F.M., Fluid Mechanics, McGraw-Hill",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "me_tuned_mass_absorber",
+   "name": "Tuned vibration absorber",
+   "domain": "mechanical_engineering",
+   "kind": "mechanism",
+   "summary": "A small mass on a spring is attached to a vibrating machine and tuned to the disturbance frequency, so it moves and absorbs the energy that would otherwise shake the main mass.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "disturbance",
+      "label": "Periodic excitation",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "main",
+      "label": "Main mass",
+      "kind": "entity",
+      "role": "medium",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "absorber",
+      "label": "Absorber mass and spring",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "damper",
+      "label": "Damping element",
+      "kind": "entity",
+      "role": "dissipater",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "disturbance",
+      "target": "main",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "main",
+      "target": "absorber",
+      "relation": "couples_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "absorber",
+      "target": "main",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "absorber",
+      "target": "damper",
+      "relation": "dissipates_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "reduce_variation",
+    "dissipate",
+    "filter"
+   ],
+   "dynamics": [
+    "oscillation",
+    "damping",
+    "negative_feedback"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Effective only near the tuned frequency",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "stability_margin"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Rao, S.S., Mechanical Vibrations, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Inman, D.J., Engineering Vibration, Pearson",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

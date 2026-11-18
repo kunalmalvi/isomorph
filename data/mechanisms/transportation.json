@@ -1,0 +1,295 @@
+{
+ "domain": "transportation",
+ "kind": "mechanism",
+ "systems": [
+  {
+   "id": "trans_wardrop_equilibrium",
+   "name": "Wardrop user equilibrium route choice",
+   "domain": "transportation",
+   "kind": "mechanism",
+   "summary": "Drivers choose among routes whose travel time rises with flow; at equilibrium no driver can lower their own time by switching, so used routes have equal times.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "demand",
+      "label": "Origin-destination demand",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "route_a",
+      "label": "Route A",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "route_b",
+      "label": "Route B",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "destination",
+      "label": "Destination",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "demand",
+      "target": "route_a",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "demand",
+      "target": "route_b",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "route_a",
+      "target": "destination",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "route_b",
+      "target": "destination",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "route_a",
+      "target": "route_b",
+      "relation": "competes_with",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "allocate"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "equilibrium",
+    "load_sharing"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Total flow is conserved across routes",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Used routes have equal travel time",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "equilibrium_condition"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Wardrop, J.G., Some theoretical aspects of road traffic research, Proceedings of the Institution of Civil Engineers, 1952",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Ortuzar, J. de D. and Willumsen, L.G., Modelling Transport, Wiley",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "trans_littles_law",
+   "name": "Little's law for a transit station",
+   "domain": "transportation",
+   "kind": "mechanism",
+   "summary": "In a stable system the average number waiting equals arrival rate times average time spent, so a station that holds more people for longer needs more space.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "arrivals",
+      "label": "Arriving passengers",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "station",
+      "label": "Passengers in station",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "wait",
+      "label": "Average dwell time",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "departures",
+      "label": "Departing passengers",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "arrivals",
+      "target": "station",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "wait",
+      "target": "station",
+      "relation": "constrains",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "station",
+      "target": "departures",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "store"
+   ],
+   "dynamics": [
+    "queueing",
+    "equilibrium",
+    "accumulation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Average inflow equals average outflow in steady state",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation",
+      "equilibrium_condition"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Little, J.D.C., A proof for the queuing formula L = lambda W, Operations Research, 1961",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Kleinrock, L., Queueing Systems Volume 1: Theory, Wiley, 1975",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  }
+ ]
+}

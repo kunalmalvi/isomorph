@@ -124,14 +124,21 @@
     {
      "citation": "Lotka, A.J., Elements of Physical Biology, Williams and Wilkins, 1925",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Begon, M., Townsend, C.R. and Harper, J.L., Ecology: From Individuals to Ecosystems, Blackwell",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -320,14 +327,21 @@
     {
      "citation": "Schlesinger, W.H. and Bernhardt, E.S., Biogeochemistry: An Analysis of Global Change, Academic Press",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Odum, E.P. and Barrett, G.W., Fundamentals of Ecology, Cengage",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -475,9 +489,13 @@
     {
      "citation": "Scheffer, M. et al., Catastrophic shifts in ecosystems, Nature 413:591-596, 2001",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -592,14 +610,21 @@
     {
      "citation": "Bascompte, J. and Jordano, P., Plant-animal mutualistic networks: the architecture of biodiversity, Annual Review of Ecology, Evolution, and Systematics 38:567-593, 2007",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Begon, M., Townsend, C.R. and Harper, J.L., Ecology: From Individuals to Ecosystems, Blackwell",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -733,14 +758,645 @@
     {
      "citation": "Estes, J.A. et al., Killer whale predation on sea otters linking oceanic and nearshore ecosystems, Science 282:473-476, 1998",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Begon, M., Townsend, C.R. and Harper, J.L., Ecology: From Individuals to Ecosystems, Blackwell",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "eco_wildlife_disease_sir",
+   "name": "Wildlife disease transmission",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "A pathogen spreads in a host population by contact; infection depletes susceptible hosts, and disease can persist or die out depending on host density relative to a threshold.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "hosts",
+      "label": "Susceptible hosts",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "infected",
+      "label": "Infected hosts",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "immune",
+      "label": "Immune or dead hosts",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "births",
+      "label": "Births",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "births",
+      "target": "hosts",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "hosts",
+      "target": "infected",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "infected",
+      "target": "hosts",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "infected",
+      "target": "immune",
+      "relation": "converts",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "distribute",
+    "convert"
+   ],
+   "dynamics": [
+    "positive_feedback",
+    "threshold",
+    "negative_feedback",
+    "accumulation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Host density must exceed a threshold for persistence",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "equilibrium_condition"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Anderson, R.M. and May, R.M., Infectious Diseases of Humans: Dynamics and Control, Oxford University Press, 1991",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Keeling, M.J. and Rohani, P., Modeling Infectious Diseases in Humans and Animals, Princeton University Press, 2008",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "eco_carbon_box_model",
+   "name": "Carbon cycle box model",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "Carbon moves between atmosphere, land biota and ocean reservoirs by uptake and release fluxes, so a pulse into one reservoir is redistributed among the others over time.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "atmosphere",
+      "label": "Atmospheric carbon",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "land",
+      "label": "Land biota carbon",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "ocean",
+      "label": "Ocean carbon",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "fossil",
+      "label": "Fossil emissions",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "fossil",
+      "target": "atmosphere",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "atmosphere",
+      "target": "land",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "land",
+      "target": "atmosphere",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "atmosphere",
+      "target": "ocean",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "ocean",
+      "target": "atmosphere",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "store",
+    "distribute",
+    "buffer"
+   ],
+   "dynamics": [
+    "accumulation",
+    "delay",
+    "equilibrium",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Total carbon is conserved among reservoirs",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "conservation"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Reservoir uptake saturates",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Schlesinger, W.H. and Bernhardt, E.S., Biogeochemistry: An Analysis of Global Change, Academic Press",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Odum, E.P. and Barrett, G.W., Fundamentals of Ecology, Cengage",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "eco_fishery_harvest",
+   "name": "Harvested fishery with surplus production",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "A fish stock grows logistically and is removed by fishing; yield is highest at an intermediate stock size and harvest above the maximum sustainable level drives the stock down.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "stock",
+      "label": "Fish stock",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "growth",
+      "label": "Population growth",
+      "kind": "entity",
+      "role": "producer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "catch",
+      "label": "Fishing catch",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "effort",
+      "label": "Fishing effort",
+      "kind": "entity",
+      "role": "actuator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "capacity",
+      "label": "Carrying capacity",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "growth",
+      "target": "stock",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "stock",
+      "target": "growth",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "capacity",
+      "target": "growth",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "stock",
+      "target": "catch",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "effort",
+      "target": "stock",
+      "relation": "consumes",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "store",
+    "regulate"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "saturation",
+    "threshold",
+    "accumulation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Harvest above surplus production depletes the stock",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "resource_scarcity"
+     ]
+    },
+    {
+     "id": "c2",
+     "description": "Stock cannot be negative",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "non_negativity"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Begon, M., Townsend, C.R. and Harper, J.L., Ecology: From Individuals to Ecosystems, Blackwell",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Gotelli, N.J., A Primer of Ecology, Sinauer Associates",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "eco_island_biogeography",
+   "name": "Island biogeography equilibrium",
+   "domain": "ecology",
+   "kind": "system",
+   "summary": "Immigration of new species falls and extinction of present species rises as an island fills, so species number settles where the two rates are equal.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "mainland",
+      "label": "Mainland species pool",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "island",
+      "label": "Island species richness",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "immigration",
+      "label": "Immigration rate",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "extinction",
+      "label": "Extinction rate",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "mainland",
+      "target": "immigration",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "immigration",
+      "target": "island",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "island",
+      "target": "immigration",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "island",
+      "target": "extinction",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "extinction",
+      "target": "island",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "regulate",
+    "store"
+   ],
+   "dynamics": [
+    "negative_feedback",
+    "equilibrium",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Richness cannot exceed the mainland pool",
+     "kind": "soft",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "MacArthur, R.H. and Wilson, E.O., The Theory of Island Biogeography, Princeton University Press, 1967",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Ricklefs, R.E., The Economy of Nature, W.H. Freeman",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   }

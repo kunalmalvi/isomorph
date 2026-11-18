@@ -7,9 +7,10 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from seed_refs import REFS, PAPER_KEYS  # noqa: E402
+from seed_refs import REFS, PAPER_KEYS, CONFIDENCE, VERIFICATION  # noqa: E402
 from seed_systems_a import SYSTEMS_A  # noqa: E402
 from seed_systems_b import SYSTEMS_B  # noqa: E402
+from seed_systems_c import SYSTEMS_C  # noqa: E402
 
 DOMAINS = [
  ("biology", "Biology", "natural", "Living systems, physiology, cells and genes", "cell organism gene enzyme blood neuron hormone tissue protein physiology"),
@@ -45,18 +46,22 @@ def parse_system(s):
     for i, (kind, desc, tags) in enumerate(s.get("cons", []), 1):
         cons.append({"id": f"c{i}", "description": desc, "kind": kind, "expression": None,
                      "provenance": "source", "tags": tags.split(",")})
+    prov = s.get("prov", "sourced")
+    scope = ("Supports the description of the underlying system; the graph is an ISOMORPH abstraction." if prov == "sourced"
+             else "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.")
     sources = []
     for key in s["refs"].split(","):
         sources.append({"citation": REFS[key], "kind": "paper" if key in PAPER_KEYS else "textbook",
-                        "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."})
+                        "note": scope, "confidence": CONFIDENCE[key], "verification": VERIFICATION,
+                        "claim_scope": "description" if prov == "sourced" else "background_only"})
     return {"id": s["id"], "name": s["name"], "domain": s["domain"], "kind": s.get("kind", "system"),
             "summary": s["summary"], "graph": {"nodes": nodes, "edges": edges},
             "behaviours": s["beh"].split(","), "dynamics": s["dyn"].split(","), "constraints": cons,
-            "sources": sources, "confidence": s.get("conf", "medium"), "limitations": s.get("lim", "Qualitative structural abstraction; not a quantitative model.")}
+            "sources": sources, "provenance_class": prov, "confidence": s.get("conf", "medium"), "limitations": s.get("lim", "Qualitative structural abstraction; not a quantitative model.")}
 
 
 def main():
-    systems = [parse_system(s) for s in SYSTEMS_A + SYSTEMS_B]
+    systems = [parse_system(s) for s in SYSTEMS_A + SYSTEMS_B + SYSTEMS_C]
     for sub in ("seed_knowledge", "mechanisms", "domains"):
         os.makedirs(os.path.join(ROOT, "data", sub), exist_ok=True)
     for d, _, _, _, _ in DOMAINS:

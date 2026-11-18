@@ -185,7 +185,7 @@ Goal: reduce missed roles for unfamiliar words, and read uploaded text, CSV and 
 | Compile | `python3 -m compileall -q backend scripts` | Pass |
 | Benchmarks | `python3 scripts/evaluate_benchmarks.py` | 7 of 7 positives beat all negatives, MRR 0.9286, hit@1 1.0, unchanged |
 | Demo | `python3 scripts/run_demo.py` | Runs. Roller top score about 36.5, unchanged. Only the limitations text in `data/demo/sample_investigation.json` changed |
-| Seed data | `python3 scripts/validate_seed_data.py` | seed data OK (66 systems) |
+| Seed data | `python3 scripts/validate_seed_data.py` | seed data OK (111 systems since phase 6; citations unverified, see benchmark-notes.md) |
 | Held-out perception | `python3 scripts/evaluate_perception.py` | Coverage 0.220 to 0.440, accuracy 0.115 to 0.404, precision when assigned 1.000 to 0.857, detection recall 0.788 to 0.846 |
 | Upload over HTTP | `tests/platform/` tests start a live server on a free port | Upload of a stdlib-built PDF (uncompressed and Flate) returns extracted text, then a discovery starts from `upload_id`. Scanned or empty PDF, images, oversized and bad-magic files report not interpreted or are rejected |
 | Fake provider | tests for `classify_unknown_roles` | Raises on provider failure and rejects roles outside the enum |

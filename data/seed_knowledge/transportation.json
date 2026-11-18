@@ -177,14 +177,21 @@
     {
      "citation": "Lighthill, M.J. and Whitham, G.B., On kinematic waves II: a theory of traffic flow on long crowded roads, Proceedings of the Royal Society of London A 229:317-345, 1955",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Highway Capacity Manual, Transportation Research Board",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -364,14 +371,21 @@
     {
      "citation": "Papageorgiou, M., Hadj-Salem, H. and Blosseville, J.-M., ALINEA: a local feedback control law for on-ramp metering, Transportation Research Record 1320:58-64, 1991",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     },
     {
      "citation": "Highway Capacity Manual, Transportation Research Board",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "high",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -520,9 +534,13 @@
     {
      "citation": "de Neufville, R. and Odoni, A., Airport Systems: Planning, Design, and Management, McGraw-Hill",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -680,9 +698,13 @@
     {
      "citation": "Pachl, J., Railway Operation and Control, VTD Rail Publishing",
      "kind": "textbook",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
   },
@@ -808,11 +830,502 @@
     {
      "citation": "Newell, G.F. and Potts, R.B., Maintaining a bus schedule, Proceedings of the 2nd Australian Road Research Board Conference, 1964",
      "kind": "paper",
-     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction."
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "low",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
     }
    ],
+   "provenance_class": "sourced",
    "confidence": "medium",
    "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "trans_signal_cycle_queue",
+   "name": "Signalised intersection queue",
+   "domain": "transportation",
+   "kind": "system",
+   "summary": "Vehicles queue during red and discharge at saturation flow during green, so the queue builds and clears each cycle and grows without bound if arrivals exceed capacity per cycle.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "arrivals",
+      "label": "Arriving vehicles",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "queue",
+      "label": "Queue at stop line",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "signal",
+      "label": "Signal phase",
+      "kind": "entity",
+      "role": "switch",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "stopline",
+      "label": "Stop line discharge",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "downstream",
+      "label": "Downstream road",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "arrivals",
+      "target": "queue",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "signal",
+      "target": "stopline",
+      "relation": "controls",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "queue",
+      "target": "stopline",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "stopline",
+      "target": "downstream",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "buffer",
+    "allocate",
+    "synchronize"
+   ],
+   "dynamics": [
+    "queueing",
+    "accumulation",
+    "oscillation",
+    "saturation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Discharge is limited to saturation flow during green",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "rate_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Garber, N.J. and Hoel, L.A., Traffic and Highway Engineering, Cengage",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Highway Capacity Manual, Transportation Research Board",
+     "kind": "textbook",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "high",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "trans_nagel_jam",
+   "name": "Stop-and-go jam formation in freeway traffic",
+   "domain": "transportation",
+   "kind": "system",
+   "summary": "Each driver accelerates toward a free speed but brakes when the gap ahead is short, and random slowdowns can grow into a backward-moving jam above a critical density.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "inflow",
+      "label": "Entering vehicles",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "lane",
+      "label": "Road segment",
+      "kind": "entity",
+      "role": "conduit",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "braking",
+      "label": "Braking response",
+      "kind": "entity",
+      "role": "regulator",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "jam",
+      "label": "Jam region",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "outflow",
+      "label": "Exiting vehicles",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "inflow",
+      "target": "lane",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "lane",
+      "target": "braking",
+      "relation": "activates",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "braking",
+      "target": "jam",
+      "relation": "produces",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "jam",
+      "target": "lane",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "lane",
+      "target": "outflow",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e6",
+      "source": "jam",
+      "target": "outflow",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "oscillate",
+    "buffer"
+   ],
+   "dynamics": [
+    "cascade",
+    "threshold",
+    "positive_feedback",
+    "delay"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Vehicles cannot overlap so density has a maximum",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "hard_limit",
+      "capacity_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Nagel, K. and Schreckenberg, M., A cellular automaton model for freeway traffic, Journal de Physique I, 1992",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    },
+    {
+     "citation": "Lighthill, M.J. and Whitham, G.B., On kinematic waves II: a theory of traffic flow on long crowded roads, Proceedings of the Royal Society of London A 229:317-345, 1955",
+     "kind": "paper",
+     "note": "Supports the description of the underlying system; the graph is an ISOMORPH abstraction.",
+     "confidence": "medium",
+     "verification": "unverified_no_network",
+     "claim_scope": "description"
+    }
+   ],
+   "provenance_class": "sourced",
+   "confidence": "medium",
+   "limitations": "Qualitative structural abstraction; not a quantitative model."
+  },
+  {
+   "id": "trans_toll_plaza_queue",
+   "name": "Toll plaza lane queue",
+   "domain": "transportation",
+   "kind": "system",
+   "summary": "Vehicles split across toll lanes with fixed service times; a lane that runs out of capacity accumulates a queue that spills back onto the highway.",
+   "graph": {
+    "nodes": [
+     {
+      "id": "highway",
+      "label": "Approaching traffic",
+      "kind": "entity",
+      "role": "source",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "lanes",
+      "label": "Toll lanes",
+      "kind": "entity",
+      "role": "junction",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "booth",
+      "label": "Toll booths",
+      "kind": "entity",
+      "role": "transformer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "queue",
+      "label": "Spillback queue",
+      "kind": "entity",
+      "role": "buffer",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     },
+     {
+      "id": "exit",
+      "label": "Exit road",
+      "kind": "entity",
+      "role": "sink",
+      "attrs": {},
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0
+     }
+    ],
+    "edges": [
+     {
+      "id": "e1",
+      "source": "highway",
+      "target": "lanes",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e2",
+      "source": "lanes",
+      "target": "booth",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e3",
+      "source": "booth",
+      "target": "exit",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e4",
+      "source": "lanes",
+      "target": "queue",
+      "relation": "flows_to",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     },
+     {
+      "id": "e5",
+      "source": "queue",
+      "target": "highway",
+      "relation": "inhibits",
+      "weight": 1.0,
+      "provenance": "source",
+      "span": null,
+      "confidence": 1.0,
+      "flags": []
+     }
+    ]
+   },
+   "behaviours": [
+    "allocate",
+    "buffer"
+   ],
+   "dynamics": [
+    "queueing",
+    "saturation",
+    "load_sharing",
+    "accumulation"
+   ],
+   "constraints": [
+    {
+     "id": "c1",
+     "description": "Each booth serves at a limited rate",
+     "kind": "hard",
+     "expression": null,
+     "provenance": "source",
+     "tags": [
+      "capacity_limit",
+      "rate_limit"
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "citation": "Kleinrock, L., Queueing Systems Volume 1: Theory, Wiley, 1975",
+     "kind": "textbook",
+     "note": "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "background_only"
+    },
+    {
+     "citation": "Garber, N.J. and Hoel, L.A., Traffic and Highway Engineering, Cengage",
+     "kind": "textbook",
+     "note": "Background facts only; the specific structure is an ISOMORPH hypothesis, not stated by this source.",
+     "confidence": "high",
+     "verification": "unverified_no_network",
+     "claim_scope": "background_only"
+    }
+   ],
+   "provenance_class": "hypothesis",
+   "confidence": "low",
+   "limitations": "The plaza structure is a generated abstraction of a generic queue; references support queueing theory only."
   }
  ]
 }
