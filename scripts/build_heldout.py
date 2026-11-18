@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Author data/benchmark_problems/heldout_labels.json and review_template.json.
 
-HELD-OUT SET. 21 queries, graded labels (2 strong, 1 partial, 0 not analog) written from docs/labelling-guide.md.
+HELD-OUT SET. 20 queries, graded labels (2 strong, 1 partial, 0 not analog) written from docs/labelling-guide.md.
 The labels in this file were written WITHOUT running the matcher on these queries. They are `author_labelled`
 and `independent_review: none`. The author of the labels also wrote the matcher, so the held-out set is only less
 overlapping with the tuning set, it is not independent. Do not edit labels after the first evaluation run except

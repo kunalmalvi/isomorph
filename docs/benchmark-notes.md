@@ -88,6 +88,11 @@ How to read this:
 - The lexical-only baseline is the semantic component of the score alone, not an independent text retriever.
 - n = 20 and one author. Do not read these as accuracy estimates.
 
+## Review notes on limits (phase 6)
+- The "labels frozen before any matcher run" claim rests on commit order (`4ec1d34` precedes the evaluator commit) and the author's statement. The commits landed within a few minutes of each other, so the repo is not an audit trail and cannot prove no matcher run touched these queries earlier.
+- Textbook citations carry no edition, chapter or page. A reviewer can confirm a book exists but cannot check that it supports the specific graph under `claim_scope: description`. A human should spot-check the `medium` and `low` confidence entries first. `trans_nagel_jam` cites Lighthill-Whitham kinematic waves next to Nagel-Schreckenberg, which is a weaker fit for a cellular automaton model.
+- All 20 held-out lookalikes are existing knowledge base systems chosen by the author, so "0 lookalikes above the best strong analog" depends on how hard those were chosen. An independent reviewer should re-grade the lookalikes first.
+
 ## Roller demo score and placeholder parameters
 - Before phase 6 KB growth, the flagship roller demo (`python3 scripts/run_demo.py`) ranked "Human core temperature regulation" first with a score of about 36.5 (after growth the top match is Variable air volume zone control at 37.5, see above) out of 100 (roughly 37). This is a low absolute number. Scores are heuristic and only meaningful as a ranking, and the weights sum over six components that rarely all match for distant domains.
 - Results were not tuned to look better. The best cross-domain score for the roller problem is about 36.5/100 and is reported as is. Weights, lexicon and seed graphs were not adjusted to raise it, and any future change that does so must be recorded here.

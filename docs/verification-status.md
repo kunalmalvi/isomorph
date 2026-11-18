@@ -210,7 +210,7 @@ Goal: grow the knowledge base to 111 systems with per-source confidence, and add
 | Tuning benchmarks | `python3 scripts/evaluate_benchmarks.py` | 7 of 7 positives beat all negatives, MRR 0.9286, hit@1 1.0 |
 | Held-out benchmark | `python3 scripts/evaluate_heldout.py` | 20 queries: strong hit@1 0.95, hit@3 1.0, MRR 0.975, nDCG@10 0.8324, 0 lookalikes above the best strong analog. Banner printed. See `docs/benchmark-notes.md` |
 | Seed data | `python3 scripts/validate_seed_data.py` | seed data OK (111 systems) |
-| Demo | `python3 scripts/run_demo.py` | Runs. Roller top match Variable air volume zone control 37.5; tracked output files unchanged by this feature |
+| Demo | `python3 scripts/run_demo.py` | Runs. Roller top match Variable air volume zone control 37.5; `run_demo.py` rewrote `docs/sample-discovery-report.md` and `data/demo/sample_investigation.json` because the top match changed (commit `a69a66f`); the regenerated files are committed |
 
 ### UNVERIFIED
 - **Citations.** No citation was checked online (no network; doi.org returned 403). All are recalled from memory and carry `verification: unverified_no_network`.
