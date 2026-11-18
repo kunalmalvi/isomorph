@@ -24,7 +24,7 @@ Optional: `./install.sh` creates `.venv` and installs an `isomorph` command (`.v
 - Uploads: .txt, .md, .csv and text PDFs (best effort, stdlib extractor tested only on generated PDFs) are read. JSON, scanned or encrypted PDFs and images are stored but reported as not interpreted. Remote vision is UNVERIFIED.
 - Perception of unfamiliar words is better but weak: on a 25 problem held-out set written by the author, role coverage went from 0.22 to 0.44 and accuracy from 0.12 to 0.40, and about 1 in 7 assigned roles is wrong. See `docs/benchmark-notes.md`.
 - Benchmarks: the 7 pair tuning set was seen during matcher development. A separate 20 query held-out set exists with graded labels, a labelling guide and a review template (`docs/labelling-guide.md`, `docs/label-review-template.md`). All labels are author-written and no independent review has happened, and the author also wrote the matcher, so the held-out set is not independent. Run `python3 scripts/evaluate_heldout.py`. Citations in the knowledge base are unverified. See `docs/benchmark-notes.md`.
-- The roller demo scores about 37.5 out of 100 against its best analog (VAV zone control, with 36.5 second), which is a weak match. Its material parameters are placeholders, so its simulations are capped at inconclusive.
+- The roller demo scores about 37.5 out of 100 against its best analog (VAV zone control, with 36.5 second), which is a weak match. Its material parameters are recalled and unverified (no source was checked, silver is a low confidence estimate), so its simulations are capped at inconclusive and its uncertainty ranges are conceptual, not verified or certified engineering analysis.
 - Runs execute in the server process (thread pool). A restart marks interrupted runs failed and you can resume them.
 - Single user, local mode. Binding a non-local address requires `ISOMORPH_TOKEN`; put a TLS proxy in front if you expose it.
 
@@ -102,7 +102,7 @@ Behavior to know about:
 E2E specs register a fresh user per test, so they can run against an empty database. Override `E2E_BASE_URL` if the frontend is not on port 3000.
 
 ## Flagship demo
-The demo scenario reduces copper or silver strip thickness with rolls. Walkthrough: [docs/demo-script.md](docs/demo-script.md). Sample report: [docs/sample-discovery-report.md](docs/sample-discovery-report.md). The demo material model is a clearly labelled demo only scenario with assumed placeholder parameters.
+The demo scenario reduces copper or silver strip thickness with rolls. Walkthrough: [docs/demo-script.md](docs/demo-script.md). Sample report: [docs/sample-discovery-report.md](docs/sample-discovery-report.md). The demo material model is a clearly labelled demo only scenario with labelled but unverified parameters (see docs/verification-status.md, Phase 7). It omits roll flattening, tension, temperature, roll deflection and edge effects, and was not compared with measured mill data.
 
 ## Deploy
 See [docs/deployment.md](docs/deployment.md) for configuration, security notes and a pre-flight checklist.

@@ -30,13 +30,15 @@ def register_validator(name: str):
 
 @register_validator("bite_condition")
 def _bite(values: Dict[str, float], params: dict) -> Tuple[str, str]:
-    """Rolling bite condition: draft <= R * (1 - 1/sqrt(1 + mu^2)). Needs h0, reduction fraction, R, mu."""
+    """Rolling bite condition: draft <= 2R * (1 - 1/sqrt(1 + mu^2)) for a two-roll mill. Needs h0, reduction fraction, R, mu."""
     need = ["thickness_mm", "reduction_fraction", "roll_radius_mm", "friction"]
     missing = [k for k in need if k not in values]
     if missing:
         return INSUFFICIENT, "missing values: " + ", ".join(missing)
     draft = values["thickness_mm"] * values["reduction_fraction"]
-    limit = values["roll_radius_mm"] * (1.0 - 1.0 / math.sqrt(1.0 + values["friction"] ** 2))
+    # Same formula as experiments.runners.max_bite_draft (duplicated to avoid a package import cycle; a test keeps them equal).
+    # The earlier limit lacked the factor 2, which is half the correct value (a conservative error).
+    limit = 2.0 * values["roll_radius_mm"] * (1.0 - 1.0 / math.sqrt(1.0 + values["friction"] ** 2))
     ok = draft <= limit + 1e-12
     return (SATISFIED if ok else VIOLATED), f"draft {draft:.3f} mm vs maximum bite draft {limit:.3f} mm"
 

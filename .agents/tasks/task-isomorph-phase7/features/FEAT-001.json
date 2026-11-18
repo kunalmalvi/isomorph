@@ -1,0 +1,18 @@
+{
+  "id": "FEAT-001",
+  "type": "chore",
+  "description": "Confirm baseline on branch isomorph-phase7 before any change.",
+  "status": "completed",
+  "steps": [
+    "Run compileall, the pytest suite, run_demo.py, evaluate_benchmarks.py, evaluate_heldout.py, validate_seed_data.py.",
+    "Record counts and the roller top-2 scores in this feature's findings. If run_demo.py rewrote tracked files, check with git diff that only noise changed and restore with git checkout -- docs data, then confirm git status shows only .agents."
+  ],
+  "acceptance_criteria": [
+    "Baseline numbers recorded: 276 passed 2 skipped, MRR 0.9286, held-out MRR 0.975, roller 37.5 and 36.5."
+  ],
+  "verification": [
+    "cd backend && python3 -m pytest tests -q -rs"
+  ],
+  "blocked_reason": null,
+  "findings": "Baseline on isomorph-phase7: compileall ok; 276 passed, 2 skipped (fastapi, sqlalchemy); run_demo top match arch_vav_zone_control 37.5, second 36.5 (human core temperature 36.5); benchmark MRR 0.9286; held-out MRR 0.975; validate_seed_data OK. run_demo is deterministic: git status clean afterwards. `isomorph doctor` fails on the data directory (/root/.isomorph read-only) on base too; with ISOMORPH_HOME=/tmp/iso_home it passes."
+}

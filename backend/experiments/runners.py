@@ -191,10 +191,36 @@ def _oscillator(params: dict, seed: int) -> Dict[str, Any]:
 
 # ------------------------------------------------------------------ strip rolling
 MATERIALS = {
-    # K (MPa) and n of a power-law flow curve sigma = K * eps^n.
-    "copper": {"K": 315.0, "n": 0.54, "source": "commonly tabulated annealed copper strength coefficient (Dieter, Mechanical Metallurgy)", "confidence": "medium"},
-    "silver": {"K": 250.0, "n": 0.40, "source": "ASSUMED placeholder, not taken from a verified table; supply measured data", "confidence": "low"},
+    # K (MPa) and n of a power-law flow curve sigma = K * eps^n (true stress, true strain). Every value was recalled
+    # without network access, so none is checked against its source (verification: unverified_no_network).
+    # None of this is certified data. Replace with measured tensile or compression data for the actual strip.
+    "copper": {
+        "K": 315.0, "n": 0.54, "K_low": 268.0, "K_high": 362.0, "n_low": 0.46, "n_high": 0.62,
+        "condition": "annealed",
+        "source": "recalled from the strength coefficient and strain hardening exponent tables in Dieter, Mechanical Metallurgy (annealed copper)",
+        "range_basis": "analyst_judgment", "confidence": "medium", "verification": "unverified_no_network",
+        "notes": "Range is plus or minus 15 percent on K and n, an analyst judgment: temper, purity and prior cold work all shift the curve.",
+    },
+    "silver": {
+        "K": 320.0, "n": 0.40, "K_low": 250.0, "K_high": 450.0, "n_low": 0.30, "n_high": 0.50,
+        "condition": "annealed fine silver",
+        "source": "estimate derived from a recalled annealed fine silver ultimate tensile strength of about 125 to 170 MPa and n of about 0.4",
+        "range_basis": "analyst_judgment", "confidence": "low", "verification": "unverified_no_network",
+        "notes": ("At the onset of necking true strain equals n and true stress equals K * n^n. With UTS 125 to 170 MPa, "
+                  "true stress = UTS * exp(n) = about 187 to 254 MPa, and n^n = 0.693 for n = 0.4, so K = about 270 to 366 MPa; "
+                  "nominal K is set to 320 MPa. The range 250 to 450 MPa is widened for temper and purity. Supply measured tensile data."),
+    },
 }
+
+
+def max_bite_draft(R: float, mu: float) -> float:
+    """Largest draft a two-roll mill can bite: dh_max = 2*R*(1 - cos(atan(mu))) = 2*R*(1 - 1/sqrt(1 + mu^2)), about mu^2 * R.
+
+    The contact length L = sqrt(R*dh) in roll_pass uses the same geometry. A copy of this formula lives in
+    intelligence/constraint_engine/service.py (_bite); a test asserts the two agree. The earlier limit R*(1 - 1/sqrt(1+mu^2))
+    was half this value, a conservative error.
+    """
+    return 2.0 * R * (1.0 - 1.0 / math.sqrt(1.0 + mu * mu))
 
 
 def mean_flow_stress(K: float, n: float, e_a: float, e_b: float) -> float:
@@ -216,7 +242,7 @@ def roll_pass(h0: float, h1: float, width: float, R: float, mu: float, K: float,
     L = math.sqrt(R * dh)
     p = sig * (1.0 + mu * L / (h0 + h1))
     F = p * width * L
-    max_draft = R * (1.0 - 1.0 / math.sqrt(1.0 + mu * mu))
+    max_draft = max_bite_draft(R, mu)
     return {"exit_thickness_mm": h1, "draft_mm": dh, "contact_length_mm": L, "mean_pressure_mpa": p,
             "roll_force_kn": F / 1000.0, "torque_per_roll_nm": 0.5 * F * L / 1000.0, "max_bite_draft_mm": max_draft,
             "bite_ok": dh <= max_draft + 1e-12, "strain_after": e_b}

@@ -217,3 +217,47 @@ Goal: grow the knowledge base to 111 systems with per-source confidence, and add
 - **No independent review.** All held-out labels are `author_labelled` with `independent_review: none`. The label author also wrote the matcher. `scripts/compare_reviews.py` has only run on a synthetic file.
 - **No browser.** The bundled UI was not rendered in a real browser in this phase.
 - The held-out set was never tuned against, but it is small (20 queries) and mostly close to structures already in the knowledge base.
+
+## Phase 7: labelled parameters, uncertainty analysis and bite limit fix
+
+Goal: replace the roller demo's unlabelled placeholder numbers with parameter records that state their source, range and confidence, add an uncertainty analysis, and fix a wrong bite limit.
+
+### What ran (sandbox: Python 3.11, no browser, no network, no FastAPI or SQLAlchemy)
+| Check | Command | Result |
+|---|---|---|
+| Full test suite | `cd backend && python3 -m pytest tests -q -rs` | 288 passed, 2 skipped (12 new tests in `tests/intelligence/test_phase7_parameters.py`; the skips need FastAPI and SQLAlchemy) |
+| Tuning benchmarks | `python3 scripts/evaluate_benchmarks.py` | MRR 0.9286, unchanged |
+| Held-out benchmark | `python3 scripts/evaluate_heldout.py` | MRR 0.975, unchanged |
+| Demo | `python3 scripts/run_demo.py` | Roller top match arch_vav_zone_control 37.5, second Human core temperature regulation 36.5, unchanged. The script is deterministic (fixed seeds) and rewrites `docs/sample-discovery-report.md` and `data/demo/sample_investigation.json` |
+
+### Bite limit correction
+The maximum single-pass draft for a two roll mill is `2R(1 - 1/sqrt(1+mu^2))`. The earlier code used half of that value. The error was conservative (it rejected passes that can bite), and it has been fixed in `experiments/runners.py` (`max_bite_draft`). The constraint validator `_bite` keeps a commented copy of the formula (to avoid an import cycle), and a test asserts the two agree. Existing bite tests changed to a 0.8 reduction where the old limit mattered.
+
+### Parameters
+| Parameter | Kind | Basis | Status |
+|---|---|---|---|
+| Copper K=315 MPa, n=0.54 | handbook-level, recalled | Annealed copper, range plus or minus 15 percent by analyst judgment | Medium confidence, `unverified_no_network` |
+| Silver K=320 MPa, n=0.40 | derived estimate | From recalled annealed fine silver tensile strength (about 125 to 170 MPa); K range 250 to 450 | Low confidence, `unverified_no_network`. Measured tensile data is needed |
+| Friction 0.08 (range 0.03 to 0.12) | handbook-level, recalled | Lubricated cold rolling. Nominal moved from 0.12 to 0.08 | Low to medium confidence, `unverified_no_network` |
+| Roll radius | assumption | Range chosen by the analyst | Not sourced |
+| Mill modulus (range 100 to 500 kN/mm) | assumption | Must come from the mill's measured stretch curve | Not sourced |
+| Roll force limit 90 kN | what-if rating | The user must replace it with the real machine rating | Not sourced |
+| Width, thickness, reduction, tolerance | user input | Taken from the problem statement | Not checked |
+
+### Results of the uncertainty analysis (conceptual model)
+- Nominal copper, 20 percent single pass: roll force 37.9 kN.
+- Monte Carlo pass fraction (force within limit and bite OK): 70 percent for one pass, 93 percent for two passes. Low friction causes the failures, because the bite condition then fails.
+- Feedback beat open loop gauge control in 100 percent of 60 samples.
+- These fractions depend on the assumed ranges above. They are not probabilities for a real mill.
+
+### UNVERIFIED
+- **No material value was checked against a source.** There is no network. Every K, n, friction range and citation is recalled from memory.
+- **Silver is a low confidence estimate** derived from a recalled tensile strength, not a measurement.
+- **Friction range** is recalled and unverified.
+- **Mill modulus, roll radius and the 90 kN force limit are not sourced.** The limit is a what-if rating.
+- **The model omits** roll flattening, strip tension, temperature rise, roll deflection and edge effects.
+- **No comparison with measured mill data exists.** Results are conceptual, not verified, not certified engineering analysis.
+- **UI not rendered in a browser.**
+- **Held-out labels** are still author labelled with no independent review.
+- **`python3 ./isomorph doctor`** fails under the default home here because `/root/.isomorph` is read-only (same on the base commit). It passes with `ISOMORPH_HOME` set to a writable directory.
+- **`serve` health request by hand** was not run in this phase. The pytest live-server tests cover serving.

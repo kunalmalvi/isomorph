@@ -7,7 +7,9 @@ The roller and metal strip scenario is a **demo**. The engine takes any problem;
 - Matching is heuristic structural scoring, not a proof of transferability. Scores come from the component breakdown below.
 - Semantic similarity is a lexical hashed TF-IDF cosine, not a neural embedding.
 - Experiments are simplified simulations with stated assumptions. A 'supported' outcome means supported in simulation only.
-- Material data: copper uses a commonly tabulated power-law fit (confidence medium). Silver uses an **assumed placeholder** (confidence low). Replace both with measured flow curves before relying on forces.
+- **Analysis status: conceptual simplified model, not verified engineering analysis, not certified.** Forces, bite and gauge results below come from a plane strain pass model with unverified, recalled parameter ranges. They are not certified and must not be used for mill, safety or purchasing decisions.
+- Material data: copper K and n were recalled from Dieter, Mechanical Metallurgy (confidence medium). Silver K is an estimate derived from a recalled tensile strength (confidence low). No value was checked against its source (no network): verification is `unverified_no_network` for every parameter.
+- Verified engineering analysis would need a measured flow curve for the actual strip, measured friction for the actual lubricant and rolls, a calibrated mill stretch curve, and qualified engineering review.
 
 ## 1. Problem and perception
 Statement: Strip made of copper or silver must be reduced in thickness. The strip is 50 mm width and 2 mm thickness. The motor drives the rolls. The rolls reduce the strip. The operator sets the screwdown once per coil. The screwdown sets the roll gap. The roll gap constrains the rolls. Friction dissipates energy at the bite. The thickness variation must not exceed 0.02 mm. The goal is to achieve the target reduction with minimal thickness variation.
@@ -111,9 +113,9 @@ Reading the table: the best score is 37.5 out of 100. That is a weak match overa
   2. Feed it forward to adjust the process before the effect arrives
 - Relies on mapping pairs (problem, analog, confidence): [['operator', 'controller', 0.42], ['strip', 'zone', 0.282]]
 - Expected effect: Disturbances are partly compensated before they reach the output.
-- Constraint c_force (hard): satisfied (roll_force_kn=40.2426 <= 90: True)
-- Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.712 mm)
-- Constraint c_tol (soft): satisfied (rms_dev_mm=0.0172691 <= 0.02: True)
+- Constraint c_force (hard): satisfied (roll_force_kn=37.9071 <= 90: True)
+- Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.637 mm)
+- Constraint c_tol (soft): satisfied (rms_dev_mm=0.0168866 <= 0.02: True)
 
 ### Close a measurement and correction loop (from Human core temperature regulation, analog score 36.5)
 - Concept type: `close_feedback_loop`. Constraint status: **ok**.
@@ -124,9 +126,9 @@ Reading the table: the best score is 37.5 out of 100. That is a weak match overa
   4. Apply the correction through an adjustable element
 - Relies on mapping pairs (problem, analog, confidence): [['energy', 'core_temp', 0.262], ['operator', 'hypothalamus', 0.303], ['screwdown', 'sweat', 0.303]]
 - Expected effect: Disturbances are partly cancelled, lowering variation around the target.
-- Constraint c_force (hard): satisfied (roll_force_kn=40.2426 <= 90: True)
-- Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.712 mm)
-- Constraint c_tol (soft): satisfied (rms_dev_mm=0.00942039 <= 0.02: True)
+- Constraint c_force (hard): satisfied (roll_force_kn=37.9071 <= 90: True)
+- Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.637 mm)
+- Constraint c_tol (soft): satisfied (rms_dev_mm=0.00903371 <= 0.02: True)
 
 ### Introduce a buffer between supply and demand (from Passive solar gain with thermal mass, analog score 33.4)
 - Concept type: `add_buffer`. Constraint status: **ok**.
@@ -136,9 +138,9 @@ Reading the table: the best score is 37.5 out of 100. That is a weak match overa
   3. Size the store to the largest expected mismatch
 - Relies on mapping pairs (problem, analog, confidence): [['energy', 'room', 0.262]]
 - Expected effect: Short bursts are absorbed instead of propagating, at the cost of added storage and delay.
-- Constraint c_force (hard): satisfied (roll_force_kn=40.2426 <= 90: True)
-- Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.712 mm)
-- Constraint c_tol (soft): satisfied (rms_dev_mm=0.0172691 <= 0.02: True)
+- Constraint c_force (hard): satisfied (roll_force_kn=37.9071 <= 90: True)
+- Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.637 mm)
+- Constraint c_tol (soft): satisfied (rms_dev_mm=0.0168866 <= 0.02: True)
 
 ### Allocate the limited resource by marginal value (from Airport runway arrival queue, analog score 24.5)
 - Concept type: `allocate_resources`. Constraint status: **ok**.
@@ -147,9 +149,9 @@ Reading the table: the best score is 37.5 out of 100. That is a weak match overa
   2. Give each increment to the use with the highest marginal gain
 - Relies on mapping pairs (problem, analog, confidence): [['operator', 'atc', 0.262], ['roll_gap', 'runway', 0.262]]
 - Expected effect: Total benefit from the same resource rises compared with an equal split.
-- Constraint c_force (hard): satisfied (roll_force_kn=40.2426 <= 90: True)
-- Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.712 mm)
-- Constraint c_tol (soft): satisfied (rms_dev_mm=0.0172691 <= 0.02: True)
+- Constraint c_force (hard): satisfied (roll_force_kn=37.9071 <= 90: True)
+- Constraint c_bite (hard): satisfied (draft 0.400 mm vs maximum bite draft 0.637 mm)
+- Constraint c_tol (soft): satisfied (rms_dev_mm=0.0168866 <= 0.02: True)
 
 ## 5. Hypotheses and validation
 ### H1-add_sensing (robustness)
@@ -164,8 +166,8 @@ Reading the table: the best score is 37.5 out of 100. That is a weak match overa
 - Prediction: rms_dev_mm is lower by at least 5% on average and in at least 90% of seeded runs compared with the baseline arm.
 - Falsifier: The hypothesis is falsified if the mean improvement in rms_dev_mm is below 5% or the proposed arm wins in fewer than 90% of seeded runs, or if any hard constraint is violated.
 - Outcome: **supported** by seeded simulation: strip_rolling_gauge
-- Baseline mean rms_dev_mm: 0.01727; proposed mean: 0.00942; relative improvement 41.8% (95% CI half-width 6.6%); proposed wins in 100% of 20 seeded runs. Config hashes ['2ed954359faba1d2', '012af4fa955dcc6b'], code version isomorph-experiments-0.1.0.
-- Other metrics that moved more than 5 percent: exit_std_mm 0.01442 -> 0.00941; fraction_within_tolerance 0.7343 -> 0.9653; max_abs_dev_mm 0.04046 -> 0.02716; peak_roll_force_kn 46.75 -> 49.52
+- Baseline mean rms_dev_mm: 0.01689; proposed mean: 0.009034; relative improvement 42.6% (95% CI half-width 6.7%); proposed wins in 100% of 20 seeded runs. Config hashes ['aa3bb80532031cd6', '37448b2f326ec8b2'], code version isomorph-experiments-0.1.0.
+- Other metrics that moved more than 5 percent: exit_std_mm 0.014 -> 0.009023; fraction_within_tolerance 0.7472 -> 0.972; max_abs_dev_mm 0.03939 -> 0.02604; peak_roll_force_kn 44.14 -> 46.58
 - Caveats: SUPPORTED IN SIMULATION ONLY under the stated model assumptions; not confirmed by real-world evidence. Simulation results come from simplified models with stated assumptions. They are not real-world validation. Elastic mill stretch plus power-law flow stress; disturbances are Gaussian with AR(1) persistence 0.95 and a random-walk gap drift; mill modulus (default 200 kN/mm, a small lab mill) is an ASSUMPTION; real mills have more dynamics. Simulation results come from simplified models with stated assumptions. They are not real-world validation. Fixed screw setting vs integral gauge feedback with 2 coil delay. Disturbance, drift and mill modulus values are assumptions, see runner limitations.
 
 ### H3-add_buffer (scalability)
@@ -182,23 +184,69 @@ Reading the table: the best score is 37.5 out of 100. That is a weak match overa
 - Outcome: **untested** by none
 - Caveats: Not tested: no applicable experiment. No claim about this hypothesis is made.
 
-## 6. Rolling model sensitivity (single pass versus two passes)
-Force limit 90 kN (assumed). 'Bite' is the friction bite condition. Silver rows use placeholder material data.
+## 6. Rolling model uncertainty (single pass versus two passes)
+Analysis status: conceptual simplified model, not verified engineering analysis, not certified. Force limit 90 kN is a what-if rating, not a measured one. Ranges below sample friction and roll radius (triangular, mode at nominal) and the material K and n ranges, 200 samples, fixed seed 7. 'Pass' means force within the limit AND the bite condition holds.
 
-| Material | Reduction % | 1 pass force kN | 1 pass bite | 1 pass ok | 2 pass peak force kN | 2 pass ok |
-|---|---|---|---|---|---|---|
-| copper | 10 | 17.9 | True | True | 15.8 | True |
-| copper | 20 | 40.2 | True | True | 34.6 | True |
-| copper | 30 | 66.8 | True | True | 55.9 | True |
-| copper | 40 | 98.2 | False | False | 80.2 | True |
-| copper | 50 | 135.7 | False | False | 108.0 | False |
-| silver | 10 | 21.4 | True | True | 17.9 | True |
-| silver | 20 | 43.3 | True | True | 35.3 | True |
-| silver | 30 | 67.3 | True | True | 53.4 | True |
-| silver | 40 | 94.2 | False | False | 72.8 | True |
-| silver | 50 | 124.7 | False | False | 94.0 | False |
+### Parameter provenance
+
+| Parameter | Nominal | Range | Kind | Source | Range basis | Confidence | Verification |
+|---|---|---|---|---|---|---|---|
+| width_mm (mm) | 50 | none | user_input | stated in the problem statement | none | high | unverified_no_network |
+| thickness_mm (mm) | 2 | none | user_input | stated in the problem statement | none | high | unverified_no_network |
+| reduction_percent (%) | 20 | none | user_input | demo default; change with --reduction on scripts/run_demo.py | none | high | unverified_no_network |
+| roll_radius_mm (mm) | 100 | 75 to 150 | assumption | analyst assumption of 150 to 300 mm diameter work rolls on a small laboratory mill | analyst_judgment | low | unverified_no_network |
+| friction (-) | 0.08 | 0.03 to 0.12 | handbook | recalled handbook-level range of about 0.03 to 0.12 for lubricated cold rolling; not checked against a source | analyst_judgment | low | unverified_no_network |
+| mill_modulus_kn_per_mm (kN/mm) | 200 | 100 to 500 | assumption | analyst assumption for a small laboratory mill; no handbook value is claimed | analyst_judgment | low | unverified_no_network |
+| roll_force_limit_kn (kN) | 90 | none | assumption | what-if machine rating; the user must supply the real rating | none | low | unverified_no_network |
+| tolerance_mm (mm) | 0.02 | none | user_input | stated in the problem statement | none | high | unverified_no_network |
+| copper K (MPa), n | K 315, n 0.54 | K 268 to 362, n 0.46 to 0.62 | material, annealed | recalled from the strength coefficient and strain hardening exponent tables in Dieter, Mechanical Metallurgy (annealed copper) | analyst_judgment | medium | unverified_no_network |
+| silver K (MPa), n | K 320, n 0.4 | K 250 to 450, n 0.3 to 0.5 | material, annealed fine silver | estimate derived from a recalled annealed fine silver ultimate tensile strength of about 125 to 170 MPa and n of about 0.4 | analyst_judgment | low | unverified_no_network |
+
+### Force range and pass fraction by reduction
+
+| Material | Reduction % | 1 pass force kN (p05 / median / p95) | 1 pass nominal verdict | 1 pass pass fraction | 2 pass peak force kN (p05 / median / p95) | 2 pass nominal verdict | 2 pass pass fraction |
+|---|---|---|---|---|---|---|---|
+| copper | 10 | 13.9 / 17.5 / 21.9 | ok | 94% | 12.5 / 15.6 / 19.3 | ok | 100% |
+| copper | 20 | 31.2 / 38.3 / 46.6 | ok | 70% | 27.7 / 33.4 / 39.9 | ok | 93% |
+| copper | 30 | 51.3 / 62.3 / 75.4 | ok | 42% | 44.7 / 53.6 / 62.9 | ok | 79% |
+| copper | 40 | 75.1 / 90.8 / 108.6 | not ok | 4% | 63.4 / 76.2 / 89.5 | ok | 57% |
+| copper | 50 | 102.3 / 124.7 / 146.8 | not ok | 0% | 83.9 / 101.6 / 118.7 | not ok | 2% |
+| silver | 10 | 21.0 / 28.2 / 38.0 | ok | 94% | 18.1 / 24.1 / 31.5 | ok | 100% |
+| silver | 20 | 42.3 / 56.1 / 73.0 | ok | 70% | 35.3 / 46.3 / 58.8 | ok | 93% |
+| silver | 30 | 64.8 / 85.9 / 111.2 | ok | 18% | 53.1 / 69.9 / 88.3 | ok | 76% |
+| silver | 40 | 89.3 / 117.9 / 151.6 | not ok | 0% | 71.6 / 93.6 / 118.6 | ok | 16% |
+| silver | 50 | 116.8 / 155.7 / 196.5 | not ok | 0% | 91.3 / 119.7 / 149.5 | not ok | 0% |
+
+Where a nominal verdict is 'ok' but the pass fraction is well below 100 percent, the verdict depends on the assumed friction and roll radius. Low friction is the usual cause: it makes the bite condition fail.
+
+### Copper at 20 percent reduction
+- Single pass force: min 28.6, p05 31.2, median 38.3, p95 46.6, max 55.1 kN (nominal 37.9 kN).
+- Single pass: force within limit and bite OK in 70% of samples (bite alone 70%).
+- Two passes: peak force min 25.8, median 33.4, max 46.9 kN; force and bite OK in 93% of samples (bite alone 93%).
+- Which parameter moves single pass force most (one at a time, low to high input):
+  - roll_radius_mm: 32.3 to 47.7 kN (swing 15.4 kN)
+  - material.n: 45.1 to 32.0 kN (swing 13.1 kN)
+  - material.K: 32.3 to 43.6 kN (swing 11.3 kN)
+  - friction: 35.0 to 40.2 kN (swing 5.3 kN)
+- Gauge control over mill modulus, friction and roll radius (60 samples, hardness disturbance as modelled): RMS deviation open loop median 0.0156 mm, feedback median 0.0076 mm. Feedback beats open loop in 100% of samples. Feedback meets the 0.02 mm tolerance in 100%, open loop in 77%.
+- Feedback advantage holds across the ranges. Two passes raise the pass fraction. The nominal single pass verdict agrees with the majority of samples.
+
+### Silver at 20 percent reduction
+- Single pass force: min 37.1, p05 42.3, median 56.1, p95 73.0, max 91.5 kN (nominal 52.3 kN).
+- Single pass: force within limit and bite OK in 70% of samples (bite alone 70%).
+- Two passes: peak force min 31.8, median 46.3, max 73.4 kN; force and bite OK in 93% of samples (bite alone 93%).
+- Which parameter moves single pass force most (one at a time, low to high input):
+  - material.K: 40.8 to 73.5 kN (swing 32.7 kN)
+  - material.n: 65.4 to 42.0 kN (swing 23.4 kN)
+  - roll_radius_mm: 44.5 to 65.8 kN (swing 21.3 kN)
+  - friction: 48.2 to 55.5 kN (swing 7.2 kN)
+- Gauge control over mill modulus, friction and roll radius (60 samples, hardness disturbance as modelled): RMS deviation open loop median 0.0174 mm, feedback median 0.0088 mm. Feedback beats open loop in 100% of samples. Feedback meets the 0.02 mm tolerance in 97%, open loop in 73%.
+- Feedback advantage holds across the ranges. Two passes raise the pass fraction. The nominal single pass verdict agrees with the majority of samples.
 
 ## 7. Limits of this report
-- The rolling model is a simplified plane strain pass model without roll flattening, tension or temperature rise.
-- Disturbance statistics, mill stiffness, friction and the force limit are stated assumptions in `data/demo/roller_problem.json`.
+- Analysis status: conceptual simplified model, not verified engineering analysis, not certified.
+- The rolling model is a simplified plane strain pass model without roll flattening, tension, temperature rise or roll deflection. The bite limit is the two roll estimate 2R(1 - cos(atan mu)).
+- Every parameter, its range and its confidence are in `data/demo/roller_problem.json` (`parameter_records`). All were written without network access and are `unverified_no_network`. Ranges for roll radius, friction and mill modulus are analyst judgment. The ranges are not confidence intervals. Sampling shape is a modelling choice.
+- Disturbance statistics for the gauge model are assumed and not measured. The force limit is a what-if value.
+- Verified engineering analysis would need a measured flow curve for the actual strip, measured friction for the actual lubricant and rolls, a calibrated mill stretch curve, and qualified engineering review.
 - Analog entries are qualitative abstractions of real systems. Cited references support the underlying system description, not the exact graph.
