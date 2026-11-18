@@ -1,0 +1,22 @@
+{
+ "id": "FEAT-003",
+ "type": "docs",
+ "description": "Document what changed, what is still unverified, and the roller score, then commit.",
+ "status": "completed",
+ "steps": [
+  "Update docs/verification-status.md with a 'Phase 7' section: what ran (counts, commands), the bite-limit correction and its direction, the parameter table (which are handbook-level recalled and unverified, which are assumptions, which are user inputs), and an UNVERIFIED list: no material value checked against a source (no network), silver is a low confidence estimate, friction range recalled, mill modulus and force limit are not sourced, model omits roll flattening, tension, temperature, roll deflection and edge effects, no comparison with any measured mill data, UI not rendered in a browser.",
+  "Update docs/benchmark-notes.md section 'Roller demo score and placeholder parameters': roller scores (37.5 and 36.5, matcher unchanged, not tuned); the parameter work does not affect matching because these numeric values are not part of the perceived text.",
+  "Update README.md where it describes the demo and its limits (short, no overclaiming). Update docs/demo-script.md if it quotes numbers that changed.",
+  "Mark task.json and feature files completed, then `git add` specific files (including .agents/tasks/task-isomorph-phase7) and commit on isomorph-phase7 with message 'feat: labelled parameter records, uncertainty analysis and bite limit fix for the roller demo'. Do not push. No em dashes."
+ ],
+ "acceptance_criteria": [
+  "Docs mention every UNVERIFIED item above and no document says certified without negation.",
+  "git log shows new commit(s) on isomorph-phase7 and git status is clean."
+ ],
+ "verification": [
+  "cd backend && python3 -m pytest tests -q",
+  "python3 scripts/run_demo.py then git status --short (clean)"
+ ],
+ "blocked_reason": null,
+ "findings": "Docs updated (verification-status Phase 7, benchmark-notes, README, demo-script). Committed on isomorph-phase7, not pushed."
+}

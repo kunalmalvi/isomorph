@@ -1,0 +1,11 @@
+{
+ "task_id": "task-isomorph-phase7",
+ "task_description": "Replace the roller demo's bare placeholder parameters with labelled parameter records (nominal, low, high, source, confidence, verification), add a general seeded sensitivity/uncertainty module, fix the bite-limit inconsistency, and report ranges and pass/fail probabilities instead of single numbers, clearly labelled as conceptual (not certified) analysis. No matcher changes.",
+ "status": "completed",
+ "feature_order": [
+  "FEAT-001",
+  "FEAT-002",
+  "FEAT-003"
+ ],
+ "blocked_reason": null
+}
