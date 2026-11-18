@@ -68,10 +68,17 @@ class App:
         if found is None:
             raise NotFound("upload not found")
         path, kind = found
-        with open(path, "rb") as f:
-            data = f.read()
-        ex = extract(kind, data)
-        rec = {"sha256": upload_id, "kind": kind, "size": len(data), **interpretation(kind, ex)}
+        cache = self.__dict__.setdefault("_extract_cache", {})
+        if upload_id in cache:  # content addressed, so the digest fully determines the result
+            ex, size = cache[upload_id]
+        else:
+            with open(path, "rb") as f:
+                data = f.read()
+            ex, size = extract(kind, data), len(data)
+            if len(cache) >= 16:
+                cache.pop(next(iter(cache)))
+            cache[upload_id] = (ex, size)
+        rec = {"sha256": upload_id, "kind": kind, "size": size, **interpretation(kind, ex)}
         if not ex.interpreted:
             raise ValidationFailed(rec["note"] or f"{kind} upload was not interpreted")
         return kind, ex, rec

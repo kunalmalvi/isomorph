@@ -174,3 +174,71 @@ def test_cli_upload(tmp_path, capsys):
     s = tmp_path / "scan.pdf"
     s.write_bytes(make_pdf([]))
     assert main(["upload", str(s), "--analyze", "--home", str(tmp_path / "h")]) == 1
+
+
+# ---- adversarial PDFs: bounded time, honest failure
+import time  # noqa: E402
+
+ADVERSARIAL_LIMIT = 6.0  # seconds; the extractor budget is 4 s
+
+
+def _bounded(data):
+    t0 = time.monotonic()
+    ex = extract_pdf(data)
+    assert time.monotonic() - t0 < ADVERSARIAL_LIMIT
+    return ex
+
+
+def test_pdf_many_obj_markers_without_endobj_is_bounded():
+    ex = _bounded(b"%PDF-1.4\n" + b"1 0 obj " * 250000)
+    assert not ex.interpreted and ex.text == ""
+
+
+def test_pdf_many_stream_markers_without_endstream_is_bounded():
+    ex = _bounded(b"%PDF-1.4\n1 0 obj\n<< >>\n" + b"stream\n" * 250000)
+    assert not ex.interpreted
+
+
+def test_pdf_unterminated_strings_in_content_is_bounded():
+    body = b"BT\n" + b"(" * 1500000 + b"\nET"
+    pdf = b"%PDF-1.4\n1 0 obj\n<< >>\nstream\n" + body + b"\nendstream\nendobj\n"
+    assert not _bounded(pdf).interpreted
+
+
+def test_pdf_many_objects_over_cap_fails():
+    pdf = b"%PDF-1.4\n" + b"".join(b"%d 0 obj\n<< >>\nendobj\n" % i for i in range(1, 6500))
+    ex = _bounded(pdf)
+    assert not ex.interpreted and "too large or complex" in ex.reason
+
+
+def test_pdf_many_streams_over_cap_fails():
+    one = zlib.compress(b"BT (a) Tj ET")
+    pdf = b"%PDF-1.4\n" + b"".join(
+        b"%d 0 obj\n<< /Filter /FlateDecode >>\nstream\n" % i + one + b"\nendstream\nendobj\n" for i in range(1, 400))
+    ex = _bounded(pdf)
+    assert not ex.interpreted and "too large or complex" in ex.reason
+
+
+def test_pdf_inflate_cap_is_a_failure_not_truncation():
+    big = zlib.compress(b"BT (hello world text) Tj ET\n" * 120000)  # about 3.4 MB inflated
+    pdf = b"%PDF-1.4\n1 0 obj\n<< /Filter /FlateDecode >>\nstream\n" + big + b"\nendstream\nendobj\n"
+    ex = _bounded(pdf)
+    assert not ex.interpreted and ex.text == "" and "too large or complex" in ex.reason
+
+
+def test_pdf_flate_bomb_streams_are_bounded():
+    one = zlib.compress(b"BT (a) Tj ET\n" * 150000)  # about 2 MB inflated, small compressed
+    pdf = b"%PDF-1.4\n" + b"".join(
+        b"%d 0 obj\n<< /Filter /FlateDecode >>\nstream\n" % i + one + b"\nendstream\nendobj\n" for i in range(1, 40))
+    assert not _bounded(pdf).interpreted
+
+
+def test_json_upload_id_rejected_and_extraction_cached(srv):
+    app, server, c, tmp = srv
+    st, r = post(c, "/api/v1/uploads?filename=a.json", b'{"a": 1}')
+    assert st == 201 and r["interpreted"] is False
+    st, _ = c.call("POST", "/api/v1/discoveries", {"upload_id": r["sha256"]})
+    assert st == 422
+    st, r = post(c, "/api/v1/uploads?filename=p.pdf", make_pdf(PROBLEM))
+    first = app._load_upload(r["sha256"])[1]
+    assert app._load_upload(r["sha256"])[1] is first  # second start reuses the cached extraction

@@ -21,7 +21,7 @@ Optional: `./install.sh` creates `.venv` and installs an `isomorph` command (`.v
 
 ## Honest limits
 - Perception is keyword and sentence-pattern based. Unusual wording can be missed, so check the extracted structure in the Progress tab and edit it.
-- Uploads: .txt, .md, .csv, .json and text PDFs (best effort, stdlib extractor tested only on generated PDFs) are read. Scanned or encrypted PDFs and images are stored but reported as not interpreted. Remote vision is UNVERIFIED.
+- Uploads: .txt, .md, .csv and text PDFs (best effort, stdlib extractor tested only on generated PDFs) are read. JSON, scanned or encrypted PDFs and images are stored but reported as not interpreted. Remote vision is UNVERIFIED.
 - Perception of unfamiliar words is better but weak: on a 25 problem held-out set written by the author, role coverage went from 0.22 to 0.44 and accuracy from 0.12 to 0.40, and about 1 in 7 assigned roles is wrong. See `docs/benchmark-notes.md`.
 - The roller demo scores about 36.5 out of 100 against its best analog, which is a weak match. Its material parameters are placeholders, so its simulations are capped at inconclusive.
 - Runs execute in the server process (thread pool). A restart marks interrupted runs failed and you can resume them.

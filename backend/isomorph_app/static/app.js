@@ -640,7 +640,7 @@ async function viewSettings() {
     h("h2", { text: "Honest limits" }),
     h("ul", { class: "plain" },
       h("li", { text: "Perception is keyword and pattern based. It does not deeply understand prose." }),
-      h("li", { text: "PDF and image files are not interpreted. Only .txt, .md and .json uploads are read." }),
+      h("li", { text: "Text PDFs, .txt, .md and .csv uploads are read. Scanned PDFs, images and .json are stored but not interpreted." }),
       h("li", { text: "Hypothesis simulations that use template parameters are capped at inconclusive." }),
       h("li", { text: "Runs execute in this server process. A restart marks interrupted runs as failed. Use Resume." }),
       h("li", { text: "This mode is single-user and local. Use ISOMORPH_TOKEN and a TLS proxy if you expose it." })),

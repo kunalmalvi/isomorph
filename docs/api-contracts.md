@@ -113,7 +113,7 @@ Base path: `/api/v1`. JSON only. Status: DESIGN, to be implemented with FastAPI.
 
 ## Zero-dependency server upload endpoint
 - `POST /api/v1/uploads?filename=<name>[&interpret=<provider>]` with the raw file as body, or a multipart body with one file part. Subject to `max_body_bytes`, auth and Host/Origin checks. Returns 201 with the provenance record: `sha256`, `kind`, `size`, `interpreted` (boolean), `note` (reason when not interpreted), and `extraction` (including a text preview). 422 for bad extension, bad magic bytes or invalid file, 413 for oversize.
-- `interpreted` is true for txt, md, csv, json and PDFs where text was extracted. It is false, with a reason, for scanned, encrypted or unreadable PDFs and for images unless `interpret` names a vision-capable provider. Unsupported providers raise an error; no content is invented.
+- `interpreted` is true for txt, md, csv and PDFs where text was extracted. It is false, with a reason, for JSON (stored, not read; a JSON `upload_id` is rejected with 422), scanned, encrypted or unreadable PDFs and for images unless `interpret` names a vision-capable provider. Unsupported providers raise an error; no content is invented.
 - CLI: `isomorph upload <file> [--analyze] [--title T] [--interpret PROVIDER]` stores and reads a file, and with `--analyze` starts a discovery from the extracted text.
 - The FastAPI route below is separate and still uses the old interpretation. UNVERIFIED.
 

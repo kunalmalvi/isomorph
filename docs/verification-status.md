@@ -38,7 +38,7 @@ What was actually run for the frontend:
 - Node 22 with type stripping executed the pure modules `lib/format.ts`, `lib/arena.ts`, `lib/graph-layout.ts`, `lib/commands.ts` and `services/sse.ts` against a small assertion script (weights total, CSV escaping and formula neutralisation, comparison limit of three, layout termination on cycles, SSE buffer parsing). All assertions passed. The vitest files were not run.
 
 Frontend behavior that is intentionally limited, and visible as such in the UI:
-- PDF and image uploads are accepted and validated by the API but not interpreted. The New Discovery page says so.
+- Image and scanned PDF uploads are accepted and validated but not interpreted; text PDFs are read since phase 5. The New Discovery page says so.
 - The Discovery Universe 3D view is a dependency free SVG projection added in phase 2 (UNVERIFIED, never rendered). The chart and table remain.
 - Hypothesis Arena decisions and notes are saved through new API endpoints in phase 2 (UNVERIFIED), with `localStorage` as fallback.
 - Stage progress and status badges come from the SSE endpoint (`fetch` based reader with an Authorization header). Counts on the Overview come from the `total` field of list endpoints. No metric is computed or invented in the browser.
@@ -116,7 +116,7 @@ Reruns at the end of phase 3: `python3 -m compileall -q backend scripts` passes.
 | Kiro specs and steering | Documentation only. Each spec has requirements, user stories, acceptance criteria, edge cases and a test traceability table pointing to real tests. Each steering file has concrete rules taken from the code. | Test names were checked against the files in `backend/tests`; skipped API tests are marked as such in the specs |
 | Frontend (all of it) | Nothing new this phase | No npm, tsc, vitest or Playwright. Docker is broken, no image was built. |
 
-Known open after phase 3: the SSE design still holds one thread per open stream. The rate limiter is per process. The OpenAI, Gemini and Anthropic adapters have never called a real endpoint. PDF and image uploads are stored but not read.
+Known open after phase 3: the SSE design still holds one thread per open stream. The rate limiter is per process. The OpenAI, Gemini and Anthropic adapters have never called a real endpoint. Images and scanned PDFs are stored but not read (text PDFs are read since phase 5).
 
 ## Phase 3 review round 1
 
@@ -196,3 +196,4 @@ Goal: reduce missed roles for unfamiliar words, and read uploaded text, CSV and 
 - **UI in a browser.** The new server-file input in the bundled UI was syntax checked only. It was never rendered or clicked.
 - **FastAPI upload route.** `POST /problems/{id}/uploads` in the older FastAPI stack still uses the old interpretation (PDF and images not read). It was not changed and cannot run here.
 - Held-out numbers come from a set the code author wrote, so they do not estimate performance on other people's text.
+- **PDF extractor limits (phase 5 review fix).** The parser scans linearly, and caps objects (5000), streams (200), inflated bytes (2 MB per stream, 4 MB total) and wall clock (4 s). Reaching any cap reports "not interpreted" instead of partial text. Extraction results are cached in memory per digest (16 entries), so repeated discoveries from one upload do not re-parse. Bounded time is asserted in `test_phase5_uploads.py` with adversarial PDFs. The 4 s budget is checked between objects and every 2048 tokens, not preemptively.

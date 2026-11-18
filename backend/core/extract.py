@@ -8,12 +8,17 @@ they are interpreted only by a provider that supports vision, and the stdlib pro
 from __future__ import annotations
 
 import re
+import time
 import zlib
 from dataclasses import dataclass
 from typing import List, Optional
 
 MAX_TEXT_CHARS = 50000          # matches the discovery text limit
-MAX_INFLATED_BYTES = 20 * 1024 * 1024
+MAX_STREAM_INFLATED = 2 * 1024 * 1024      # per stream; reaching it is a failure, never a silent cut
+MAX_TOTAL_INFLATED = 4 * 1024 * 1024       # across the whole file
+MAX_OBJECTS = 5000
+MAX_STREAMS = 200
+TIME_BUDGET_SECONDS = 4.0                  # wall clock for one PDF extraction
 MIN_READABLE_RATIO = 0.85
 
 
@@ -67,10 +72,9 @@ def extract_image(kind: str, data: bytes, provider=None) -> Extraction:
 
 
 # ------------------------------------------------------------------ PDF
-_OBJ = re.compile(rb"(\d+)\s+(\d+)\s+obj\b(.*?)endobj", re.S)
-_STREAM = re.compile(rb"stream\r?\n(.*?)\r?\n?endstream", re.S)
+_OBJ_HEAD = re.compile(rb"(\d{1,10})\s{1,8}(\d{1,5})\s{1,8}$")
 _ESC = {ord("n"): 10, ord("r"): 13, ord("t"): 9, ord("b"): 8, ord("f"): 12, ord("("): 40, ord(")"): 41, ord("\\"): 92}
-_TOKEN = re.compile(rb"\[|\]|<[0-9A-Fa-f\s]*>|\((?:\\.|[^\\()])*\)|[-+]?\d*\.?\d+|[A-Za-z'\"*]+|/[^\s/\[\]()<>]*|<<|>>", re.S)
+_TOKEN = re.compile(rb"\[|\]|<[0-9A-Fa-f\s]{0,4000}>|\((?:\\.|[^\\()]){0,4000}\)|[-+]?\d*\.?\d+|[A-Za-z'\"*]+|/[^\s/\[\]()<>]*|<<|>>", re.S)
 
 
 def _unescape(raw: bytes) -> bytes:
@@ -106,20 +110,30 @@ def _decode(b: bytes) -> str:
     return b.decode("cp1252", errors="replace")
 
 
-def _inflate(data: bytes) -> Optional[bytes]:
+class _Budget(Exception):
+    """A work or time limit was reached; extraction must fail rather than return partial text."""
+
+
+def _inflate(data: bytes, remaining: int) -> Optional[bytes]:
+    """Inflate one stream. None means corrupt. Raises _Budget when a size cap is reached (no silent truncation)."""
     d = zlib.decompressobj()
+    limit = min(MAX_STREAM_INFLATED, remaining)
     try:
-        out = d.decompress(data, MAX_INFLATED_BYTES)
+        out = d.decompress(data, limit + 1)
     except zlib.error:
         return None
+    if len(out) > limit:
+        raise _Budget("a compressed stream is larger than the inflate limit")
     return out
 
 
-def _content_text(content: bytes) -> str:
+def _content_text(content: bytes, deadline: float) -> str:
     """Text shown by one content stream, with a newline per line move or text object."""
     parts: List[str] = []
     stack: list = []
-    for m in _TOKEN.finditer(content):
+    for n, m in enumerate(_TOKEN.finditer(content)):
+        if n % 2048 == 0 and time.monotonic() > deadline:
+            raise _Budget("time budget exceeded")
         t = m.group(0)
         if t.startswith(b"("):
             stack.append(_decode(_unescape(t[1:-1])))
@@ -153,45 +167,96 @@ def _content_text(content: bytes) -> str:
     return re.sub(r"\n{3,}", "\n\n", re.sub(r"[ \t]+\n", "\n", text))
 
 
-def extract_pdf(data: bytes) -> Extraction:
+def _iter_objects(data: bytes):
+    """Yield object bodies with linear work: every search moves forward, and a missing endobj ends the scan."""
+    pos = 0
+    while True:
+        i = data.find(b"obj", pos)
+        if i < 0:
+            return
+        j = i + 3
+        head = _OBJ_HEAD.search(data[max(0, i - 30):i])
+        if head is None or (j < len(data) and data[j:j + 1].isalnum()):
+            pos = j
+            continue
+        end = data.find(b"endobj", j)
+        if end < 0:
+            return
+        yield data[j:end]
+        pos = end + 6
+
+
+def _first_stream(body: bytes):
+    i = body.find(b"stream")
+    while i >= 0:
+        k = i + 6
+        if body[k:k + 2] == b"\r\n":
+            k += 2
+        elif body[k:k + 1] == b"\n":
+            k += 1
+        else:
+            i = body.find(b"stream", i + 6)
+            continue
+        end = body.find(b"endstream", k)
+        raw = body[k:] if end < 0 else body[k:end]
+        return body[:i], raw.rstrip(b"\r\n") if end >= 0 else raw
+    return None
+
+
+def extract_pdf(data: bytes, time_budget: float = TIME_BUDGET_SECONDS) -> Extraction:
+    deadline = time.monotonic() + time_budget
+    try:
+        return _extract_pdf(data, deadline)
+    except _Budget as e:
+        return _fail("pdf", f"PDF is too large or complex to read safely ({e}); nothing was extracted")
+
+
+def _extract_pdf(data: bytes, deadline: float) -> Extraction:
     if not data.startswith(b"%PDF-"):
         return _fail("pdf", "content does not look like a PDF")
     if re.search(rb"/Encrypt\b", data):
         return _fail("pdf", "PDF is encrypted; text was not extracted")
-    objs = _OBJ.findall(data)
-    if not objs:
-        return _fail("pdf", "no PDF objects could be parsed (damaged or unsupported file structure)")
     chunks: List[str] = []
     unsupported_filter = False
     has_stream = False
     composite = False
-    for _num, _gen, body in objs:
-        if re.search(rb"/Subtype\s*/Type0\b|/Encoding\s*/Identity-H\b", body):
+    n_obj = n_stream = total = 0
+    for body in _iter_objects(data):
+        n_obj += 1
+        if n_obj > MAX_OBJECTS or time.monotonic() > deadline:
+            raise _Budget("too many objects or time budget exceeded")
+        if re.search(rb"/Subtype\s{0,8}/Type0\b|/Encoding\s{0,8}/Identity-H\b", body):
             composite = True
-        sm = _STREAM.search(body)
-        if not sm:
+        st = _first_stream(body)
+        if st is None:
             continue
         has_stream = True
-        head, raw = body[:sm.start()], sm.group(1)
-        if re.search(rb"/Subtype\s*/Image\b|/Type\s*/XRef\b", head):
+        n_stream += 1
+        if n_stream > MAX_STREAMS:
+            raise _Budget("too many streams")
+        head, raw = st
+        if re.search(rb"/Subtype\s{0,8}/Image\b|/Type\s{0,8}/XRef\b", head):
             continue
         filt = re.findall(rb"/(FlateDecode|Fl|LZWDecode|ASCII85Decode|ASCIIHexDecode|RunLengthDecode|DCTDecode|CCITTFaxDecode"
                           rb"|JBIG2Decode|JPXDecode|Crypt)\b", head)
         if filt in ([b"FlateDecode"], [b"Fl"]):
-            raw = _inflate(raw)
+            raw = _inflate(raw, MAX_TOTAL_INFLATED - total)
             if raw is None:
                 continue
+            total += len(raw)
         elif filt:
             unsupported_filter = True
             continue
-        if re.search(rb"/Type\s*/ObjStm\b", head):
+        if re.search(rb"/Type\s{0,8}/ObjStm\b", head):
             if re.search(rb"/Type0\b|/Identity-H\b", raw):
                 composite = True
             continue
-        if re.search(rb"\bBT\b", raw) and re.search(rb"\bET\b", raw):
-            t = _content_text(raw).strip()
+        if b"BT" in raw and re.search(rb"\bBT\b", raw) and re.search(rb"\bET\b", raw):
+            t = _content_text(raw, deadline).strip()
             if t:
                 chunks.append(t)
+    if n_obj == 0:
+        return _fail("pdf", "no PDF objects could be parsed (damaged or unsupported file structure)")
     if composite:
         return _fail("pdf", "PDF uses composite (CID or Type0) fonts, whose text needs font maps this reader does not "
                      "implement; nothing was extracted")
