@@ -260,7 +260,7 @@ def _strip_model(params: dict, seed: int) -> Dict[str, Any]:
     mat = _mat(params)
     h0 = params.get("thickness_mm", 2.0)
     h1 = h0 * (1.0 - params["reduction"])
-    r = roll_pass(h0, h1, params.get("width_mm", 50.0), params.get("roll_radius_mm", 100.0), params.get("friction", 0.12),
+    r = roll_pass(h0, h1, params.get("width_mm", 50.0), params.get("roll_radius_mm", 100.0), params.get("friction", 0.08),
                   mat["K"], mat["n"])
     return r
 
@@ -277,7 +277,7 @@ def _strip_passes(params: dict, seed: int) -> Dict[str, Any]:
     for _ in range(passes):
         h_next = h * ratio
         r = roll_pass(h, h_next, params.get("width_mm", 50.0), params.get("roll_radius_mm", 100.0),
-                      params.get("friction", 0.12), mat["K"], mat["n"], e)
+                      params.get("friction", 0.08), mat["K"], mat["n"], e)
         forces.append(r["roll_force_kn"])
         bite = bite and r["bite_ok"]
         e, h = r["strain_after"], h_next
@@ -290,7 +290,7 @@ def _strip_gauge(params: dict, seed: int) -> Dict[str, Any]:
     rng = random.Random(seed)
     mat = _mat(params)
     h0n = params.get("thickness_mm", 2.0)
-    width, R, mu = params.get("width_mm", 50.0), params.get("roll_radius_mm", 100.0), params.get("friction", 0.12)
+    width, R, mu = params.get("width_mm", 50.0), params.get("roll_radius_mm", 100.0), params.get("friction", 0.08)
     M = params.get("mill_modulus_kn_per_mm", 200.0)
     target = h0n * (1.0 - params["reduction"])
     n_coils = params.get("coils", 200)

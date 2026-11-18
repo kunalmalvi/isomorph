@@ -223,6 +223,15 @@ def fmt(x, nd=3):
     return f"{x:.{nd}f}" if isinstance(x, float) else str(x)
 
 
+def _two_pass_text(c, sp, tp):
+    a, b = sp["pass_fraction_force_and_bite"], tp["pass_fraction_force_and_bite"]
+    if c["two_pass_improves_pass_fraction"]:
+        return "Two passes raise the pass fraction."
+    if abs(a - b) < 1e-9:
+        return f"Two passes leave the pass fraction unchanged at {a:.0%}."
+    return "Two passes do not raise the pass fraction."
+
+
 def render_report(r, table):
     p, params, search = r["problem"], r["params"], r["search"]
     L = []
@@ -345,7 +354,7 @@ def render_report(r, table):
         w(f"| {t['material']} | {t['reduction_percent']} | {a1['p05']:.1f} / {a1['median']:.1f} / {a1['p95']:.1f} | {'ok' if t['within_limit_1'] else 'not ok'} | {t['pass_fraction_1']:.0%} | "
           f"{a2['p05']:.1f} / {a2['median']:.1f} / {a2['p95']:.1f} | {'ok' if t['within_limit_2'] else 'not ok'} | {t['pass_fraction_2']:.0%} |")
     w("")
-    w("Where a nominal verdict is 'ok' but the pass fraction is well below 100 percent, the verdict depends on the assumed friction and roll radius. Low friction is the usual cause: it makes the bite condition fail.")
+    w("Where a nominal verdict is 'ok' but the pass fraction is well below 100 percent, the verdict depends on the assumed parameters. Two limits can fail. The bite condition fails at low friction or small roll radius, because the bite limit 2R(1 - cos(atan mu)) grows with both. The force limit fails at high K, high n or a larger roll radius. The per material lines below give the bite alone fraction next to the combined pass fraction, which shows which limit dominates for that case.")
     w("")
     for mat in ("copper", "silver"):
         u = r["uncertainty"][mat]
@@ -360,7 +369,7 @@ def render_report(r, table):
         w(f"- Gauge control over mill modulus, friction and roll radius ({fb['samples']} samples, hardness disturbance as modelled): RMS deviation open loop median {fb['open_rms_mm']['median']:.4f} mm, feedback median {fb['feedback_rms_mm']['median']:.4f} mm. "
           f"Feedback beats open loop in {fb['fraction_feedback_beats_open']:.0%} of samples. Feedback meets the {fb['tolerance_mm']:g} mm tolerance in {fb['fraction_feedback_meets_tolerance']:.0%}, open loop in {fb['fraction_open_meets_tolerance']:.0%}.")
         c = u["conclusions"]
-        w(f"- Feedback advantage {'holds' if c['feedback_beats_open_across_ranges'] else 'does NOT hold'} across the ranges. Two passes {'raise' if c['two_pass_improves_pass_fraction'] else 'do not raise'} the pass fraction. "
+        w(f"- Feedback advantage {'holds' if c['feedback_beats_open_across_ranges'] else 'does NOT hold'} across the ranges. {_two_pass_text(c, sp, tp)} "
           + ("The nominal single pass verdict agrees with the majority of samples." if c["nominal_agrees_with_majority_single_pass"] else "The nominal single pass verdict disagrees with the majority of samples, so it depends on the assumptions."))
         w("")
     w("## 7. Limits of this report")

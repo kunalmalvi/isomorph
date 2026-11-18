@@ -217,7 +217,7 @@ Analysis status: conceptual simplified model, not verified engineering analysis,
 | silver | 40 | 89.3 / 117.9 / 151.6 | not ok | 0% | 71.6 / 93.6 / 118.6 | ok | 16% |
 | silver | 50 | 116.8 / 155.7 / 196.5 | not ok | 0% | 91.3 / 119.7 / 149.5 | not ok | 0% |
 
-Where a nominal verdict is 'ok' but the pass fraction is well below 100 percent, the verdict depends on the assumed friction and roll radius. Low friction is the usual cause: it makes the bite condition fail.
+Where a nominal verdict is 'ok' but the pass fraction is well below 100 percent, the verdict depends on the assumed parameters. Two limits can fail. The bite condition fails at low friction or small roll radius, because the bite limit 2R(1 - cos(atan mu)) grows with both. The force limit fails at high K, high n or a larger roll radius. The per material lines below give the bite alone fraction next to the combined pass fraction, which shows which limit dominates for that case.
 
 ### Copper at 20 percent reduction
 - Single pass force: min 28.6, p05 31.2, median 38.3, p95 46.6, max 55.1 kN (nominal 37.9 kN).

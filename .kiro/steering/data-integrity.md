@@ -12,6 +12,6 @@
 - Seed tables carry unique constraints. The SQL seed sink must tolerate conflicts so reseeding is idempotent. This is UNVERIFIED until it runs on PostgreSQL.
 - Uploads: allowed extensions and a size cap (`MAX_UPLOAD_BYTES`, 5 MiB default) are checked, file names are sanitized, and kinds that are not read (pdf, png, jpeg, json) are flagged `interpreted=false` with a note.
 - Template experiments are `illustrative` and cannot produce `supported`; validation caps them at `inconclusive` with a caveat.
-- Roller material parameters are placeholders and must be described that way.
+- Roller parameters are labelled ParameterRecords with ranges and `verification: unverified_no_network`. Some are still assumptions. Describe them that way, never as verified or as measured.
 - Orphaned annotation files must not outlive their project. Cleanup only touches files that match the annotation naming pattern.
 - Run `python3 scripts/validate_seed_data.py` and `python3 scripts/evaluate_benchmarks.py` after any seed or perception change.
