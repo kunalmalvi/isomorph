@@ -1,6 +1,6 @@
 # Flagship demo script
 
-Scenario: reduce the thickness of copper or silver strip by passing it between rolls. The scenario is demo only. Material parameters are assumed placeholders, and the simulation shows how the method works, not how to run a real mill.
+Scenario: reduce the thickness of copper or silver strip by passing it between rolls. The scenario is demo only. Material parameters are recalled, labelled and unverified (not checked against any source), and the simulation shows how the method works, not how to run a real mill.
 
 ## Offline check of the engine (works today)
 ```bash

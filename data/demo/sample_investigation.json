@@ -1,4 +1,5 @@
 {
+ "analysis_status": "conceptual simplified model, not verified engineering analysis, not certified",
  "concepts": [
   {
    "analog_id": "arch_vav_zone_control",
@@ -14,21 +15,21 @@
      {
       "constraint_id": "c_force",
       "description": "Roll force must not exceed 90.0 kN",
-      "detail": "roll_force_kn=40.2426 <= 90: True",
+      "detail": "roll_force_kn=37.9071 <= 90: True",
       "kind": "hard",
       "outcome": "satisfied"
      },
      {
       "constraint_id": "c_bite",
       "description": "Draft per pass must satisfy the bite condition",
-      "detail": "draft 0.400 mm vs maximum bite draft 0.712 mm",
+      "detail": "draft 0.400 mm vs maximum bite draft 0.637 mm",
       "kind": "hard",
       "outcome": "satisfied"
      },
      {
       "constraint_id": "c_tol",
       "description": "Thickness variation (RMS) must not exceed 0.02 mm",
-      "detail": "rms_dev_mm=0.0172691 <= 0.02: True",
+      "detail": "rms_dev_mm=0.0168866 <= 0.02: True",
       "kind": "soft",
       "outcome": "satisfied"
      }
@@ -112,21 +113,21 @@
      {
       "constraint_id": "c_force",
       "description": "Roll force must not exceed 90.0 kN",
-      "detail": "roll_force_kn=40.2426 <= 90: True",
+      "detail": "roll_force_kn=37.9071 <= 90: True",
       "kind": "hard",
       "outcome": "satisfied"
      },
      {
       "constraint_id": "c_bite",
       "description": "Draft per pass must satisfy the bite condition",
-      "detail": "draft 0.400 mm vs maximum bite draft 0.712 mm",
+      "detail": "draft 0.400 mm vs maximum bite draft 0.637 mm",
       "kind": "hard",
       "outcome": "satisfied"
      },
      {
       "constraint_id": "c_tol",
       "description": "Thickness variation (RMS) must not exceed 0.02 mm",
-      "detail": "rms_dev_mm=0.00942039 <= 0.02: True",
+      "detail": "rms_dev_mm=0.00903371 <= 0.02: True",
       "kind": "soft",
       "outcome": "satisfied"
      }
@@ -138,7 +139,7 @@
    "id": "close_feedback_loop:bio_thermoregulation",
    "name": "Close a measurement and correction loop",
    "parameter_overrides": {
-    "rms_dev_mm": 0.009420387665330392
+    "rms_dev_mm": 0.009033708634452627
    },
    "preconditions": [
     "a measurable output",
@@ -277,21 +278,21 @@
      {
       "constraint_id": "c_force",
       "description": "Roll force must not exceed 90.0 kN",
-      "detail": "roll_force_kn=40.2426 <= 90: True",
+      "detail": "roll_force_kn=37.9071 <= 90: True",
       "kind": "hard",
       "outcome": "satisfied"
      },
      {
       "constraint_id": "c_bite",
       "description": "Draft per pass must satisfy the bite condition",
-      "detail": "draft 0.400 mm vs maximum bite draft 0.712 mm",
+      "detail": "draft 0.400 mm vs maximum bite draft 0.637 mm",
       "kind": "hard",
       "outcome": "satisfied"
      },
      {
       "constraint_id": "c_tol",
       "description": "Thickness variation (RMS) must not exceed 0.02 mm",
-      "detail": "rms_dev_mm=0.0172691 <= 0.02: True",
+      "detail": "rms_dev_mm=0.0168866 <= 0.02: True",
       "kind": "soft",
       "outcome": "satisfied"
      }
@@ -375,21 +376,21 @@
      {
       "constraint_id": "c_force",
       "description": "Roll force must not exceed 90.0 kN",
-      "detail": "roll_force_kn=40.2426 <= 90: True",
+      "detail": "roll_force_kn=37.9071 <= 90: True",
       "kind": "hard",
       "outcome": "satisfied"
      },
      {
       "constraint_id": "c_bite",
       "description": "Draft per pass must satisfy the bite condition",
-      "detail": "draft 0.400 mm vs maximum bite draft 0.712 mm",
+      "detail": "draft 0.400 mm vs maximum bite draft 0.637 mm",
       "kind": "hard",
       "outcome": "satisfied"
      },
      {
       "constraint_id": "c_tol",
       "description": "Thickness variation (RMS) must not exceed 0.02 mm",
-      "detail": "rms_dev_mm=0.0172691 <= 0.02: True",
+      "detail": "rms_dev_mm=0.0168866 <= 0.02: True",
       "kind": "soft",
       "outcome": "satisfied"
      }
@@ -484,7 +485,7 @@
    "category": "robustness",
    "experiment": {
     "baseline": {
-     "friction": 0.12,
+     "friction": 0.08,
      "material": "copper",
      "mill_modulus_kn_per_mm": 200.0,
      "mode": "open",
@@ -503,7 +504,7 @@
      "Disturbance, drift and mill modulus values are assumptions, see runner limitations."
     ],
     "proposed": {
-     "friction": 0.12,
+     "friction": 0.08,
      "material": "copper",
      "mill_modulus_kn_per_mm": 200.0,
      "mode": "feedback",
@@ -552,24 +553,52 @@
  "material_assumptions": {
   "copper": {
    "K": 315.0,
+   "K_high": 362.0,
+   "K_low": 268.0,
+   "condition": "annealed",
    "confidence": "medium",
    "n": 0.54,
-   "source": "commonly tabulated annealed copper strength coefficient (Dieter, Mechanical Metallurgy)"
+   "n_high": 0.62,
+   "n_low": 0.46,
+   "notes": "Range is plus or minus 15 percent on K and n, an analyst judgment: temper, purity and prior cold work all shift the curve.",
+   "range_basis": "analyst_judgment",
+   "source": "recalled from the strength coefficient and strain hardening exponent tables in Dieter, Mechanical Metallurgy (annealed copper)",
+   "verification": "unverified_no_network"
   },
   "silver": {
-   "K": 250.0,
+   "K": 320.0,
+   "K_high": 450.0,
+   "K_low": 250.0,
+   "condition": "annealed fine silver",
    "confidence": "low",
    "n": 0.4,
-   "source": "ASSUMED placeholder, not taken from a verified table; supply measured data"
+   "n_high": 0.5,
+   "n_low": 0.3,
+   "notes": "At the onset of necking true strain equals n and true stress equals K * n^n. With UTS 125 to 170 MPa, true stress = UTS * exp(n) = about 187 to 254 MPa, and n^n = 0.693 for n = 0.4, so K = about 270 to 366 MPa; nominal K is set to 320 MPa. The range 250 to 450 MPa is widened for temper and purity. Supply measured tensile data.",
+   "range_basis": "analyst_judgment",
+   "source": "estimate derived from a recalled annealed fine silver ultimate tensile strength of about 125 to 170 MPa and n of about 0.4",
+   "verification": "unverified_no_network"
   }
  },
  "material_reduction_table": [
   {
    "bite_1_pass": true,
    "bite_2_pass": true,
-   "force_1_pass_kn": 17.884396394226446,
+   "force_1_pass_kn": 17.14667178479575,
+   "force_1_pass_range_kn": {
+    "median": 17.464686104945706,
+    "p05": 13.919283701763266,
+    "p95": 21.888401132476353
+   },
    "material": "copper",
-   "peak_force_2_pass_kn": 15.801471507862468,
+   "pass_fraction_1": 0.94,
+   "pass_fraction_2": 0.995,
+   "peak_force_2_pass_kn": 15.31710399388329,
+   "peak_force_2_pass_range_kn": {
+    "median": 15.624403740645198,
+    "p05": 12.535109766681357,
+    "p95": 19.31402942969036
+   },
    "reduction_percent": 10,
    "within_limit_1": true,
    "within_limit_2": true
@@ -577,9 +606,21 @@
   {
    "bite_1_pass": true,
    "bite_2_pass": true,
-   "force_1_pass_kn": 40.24263529350681,
+   "force_1_pass_kn": 37.907054757554356,
+   "force_1_pass_range_kn": {
+    "median": 38.337597151392444,
+    "p05": 31.239920969739913,
+    "p95": 46.55385383441199
+   },
    "material": "copper",
-   "peak_force_2_pass_kn": 34.57900549262514,
+   "pass_fraction_1": 0.7,
+   "pass_fraction_2": 0.93,
+   "peak_force_2_pass_kn": 33.04183805280204,
+   "peak_force_2_pass_range_kn": {
+    "median": 33.38806408582073,
+    "p05": 27.701658311695077,
+    "p95": 39.87275382152286
+   },
    "reduction_percent": 20,
    "within_limit_1": true,
    "within_limit_2": true
@@ -587,9 +628,21 @@
   {
    "bite_1_pass": true,
    "bite_2_pass": true,
-   "force_1_pass_kn": 66.77364498850206,
+   "force_1_pass_kn": 61.99503759088117,
+   "force_1_pass_range_kn": {
+    "median": 62.336459212443245,
+    "p05": 51.32413224614523,
+    "p95": 75.41520613766788
+   },
    "material": "copper",
-   "peak_force_2_pass_kn": 55.922710675777616,
+   "pass_fraction_1": 0.42,
+   "pass_fraction_2": 0.79,
+   "peak_force_2_pass_kn": 52.76259932479545,
+   "peak_force_2_pass_range_kn": {
+    "median": 53.62078631725913,
+    "p05": 44.71540665314741,
+    "p95": 62.88349942438865
+   },
    "reduction_percent": 30,
    "within_limit_1": true,
    "within_limit_2": true
@@ -597,9 +650,21 @@
   {
    "bite_1_pass": false,
    "bite_2_pass": true,
-   "force_1_pass_kn": 98.16772962594735,
+   "force_1_pass_kn": 89.9489172642021,
+   "force_1_pass_range_kn": {
+    "median": 90.76022334856634,
+    "p05": 75.11919374043785,
+    "p95": 108.62726692357293
+   },
    "material": "copper",
-   "peak_force_2_pass_kn": 80.16958368020332,
+   "pass_fraction_1": 0.045,
+   "pass_fraction_2": 0.57,
+   "peak_force_2_pass_kn": 74.6901031835636,
+   "peak_force_2_pass_range_kn": {
+    "median": 76.21641882222656,
+    "p05": 63.358713431189805,
+    "p95": 89.50705440546955
+   },
    "reduction_percent": 40,
    "within_limit_1": false,
    "within_limit_2": true
@@ -607,9 +672,21 @@
   {
    "bite_1_pass": false,
    "bite_2_pass": true,
-   "force_1_pass_kn": 135.67992853430022,
+   "force_1_pass_kn": 122.75803057865257,
+   "force_1_pass_range_kn": {
+    "median": 124.66178840738627,
+    "p05": 102.27364078339659,
+    "p95": 146.80143981880377
+   },
    "material": "copper",
-   "peak_force_2_pass_kn": 108.03171263828591,
+   "pass_fraction_1": 0.0,
+   "pass_fraction_2": 0.02,
+   "peak_force_2_pass_kn": 99.30389119803597,
+   "peak_force_2_pass_range_kn": {
+    "median": 101.57197136910969,
+    "p05": 83.93844197121997,
+    "p95": 118.69344752019622
+   },
    "reduction_percent": 50,
    "within_limit_1": false,
    "within_limit_2": false
@@ -617,9 +694,21 @@
   {
    "bite_1_pass": true,
    "bite_2_pass": true,
-   "force_1_pass_kn": 21.395454812532098,
+   "force_1_pass_kn": 26.256512469632277,
+   "force_1_pass_range_kn": {
+    "median": 28.2475619254499,
+    "p05": 20.956068588487508,
+    "p95": 38.02594249313712
+   },
    "material": "silver",
-   "peak_force_2_pass_kn": 17.893951436418465,
+   "pass_fraction_1": 0.94,
+   "pass_fraction_2": 0.995,
+   "peak_force_2_pass_kn": 22.202166364204007,
+   "peak_force_2_pass_range_kn": {
+    "median": 24.122800772350402,
+    "p05": 18.09214687721665,
+    "p95": 31.474025768365816
+   },
    "reduction_percent": 10,
    "within_limit_1": true,
    "within_limit_2": true
@@ -627,9 +716,21 @@
   {
    "bite_1_pass": true,
    "bite_2_pass": true,
-   "force_1_pass_kn": 43.34178018057566,
+   "force_1_pass_kn": 52.257706408727046,
+   "force_1_pass_range_kn": {
+    "median": 56.148519054564346,
+    "p05": 42.277696088605516,
+    "p95": 72.98393608442262
+   },
    "material": "silver",
-   "peak_force_2_pass_kn": 35.25285682340277,
+   "pass_fraction_1": 0.695,
+   "pass_fraction_2": 0.93,
+   "peak_force_2_pass_kn": 43.11773970687435,
+   "peak_force_2_pass_range_kn": {
+    "median": 46.296381377929734,
+    "p05": 35.313732169457865,
+    "p95": 58.77801006291588
+   },
    "reduction_percent": 20,
    "within_limit_1": true,
    "within_limit_2": true
@@ -637,9 +738,21 @@
   {
    "bite_1_pass": true,
    "bite_2_pass": true,
-   "force_1_pass_kn": 67.34557412024695,
+   "force_1_pass_kn": 80.03332739811306,
+   "force_1_pass_range_kn": {
+    "median": 85.88112066270784,
+    "p05": 64.8225243103783,
+    "p95": 111.22330899015118
+   },
    "material": "silver",
-   "peak_force_2_pass_kn": 53.38923232608535,
+   "pass_fraction_1": 0.18,
+   "pass_fraction_2": 0.76,
+   "peak_force_2_pass_kn": 64.47652373216842,
+   "peak_force_2_pass_range_kn": {
+    "median": 69.90480028822486,
+    "p05": 53.09809859418657,
+    "p95": 88.33301985607153
+   },
    "reduction_percent": 30,
    "within_limit_1": true,
    "within_limit_2": true
@@ -647,9 +760,21 @@
   {
    "bite_1_pass": false,
    "bite_2_pass": true,
-   "force_1_pass_kn": 94.15268567681821,
+   "force_1_pass_kn": 110.42562737278922,
+   "force_1_pass_range_kn": {
+    "median": 117.86383926924819,
+    "p05": 89.32040565354225,
+    "p95": 151.58509699649713
+   },
    "material": "silver",
-   "peak_force_2_pass_kn": 72.78385933617227,
+   "pass_fraction_1": 0.0,
+   "pass_fraction_2": 0.165,
+   "peak_force_2_pass_kn": 86.79575413002459,
+   "peak_force_2_pass_range_kn": {
+    "median": 93.58812971005752,
+    "p05": 71.55984622011754,
+    "p95": 118.60061142729113
+   },
    "reduction_percent": 40,
    "within_limit_1": false,
    "within_limit_2": true
@@ -657,37 +782,155 @@
   {
    "bite_1_pass": false,
    "bite_2_pass": true,
-   "force_1_pass_kn": 124.68728877446787,
+   "force_1_pass_kn": 144.39975538071707,
+   "force_1_pass_range_kn": {
+    "median": 155.72925256814665,
+    "p05": 116.75473452349962,
+    "p95": 196.45712997687937
+   },
    "material": "silver",
-   "peak_force_2_pass_kn": 93.97651218516275,
+   "pass_fraction_1": 0.0,
+   "pass_fraction_2": 0.0,
+   "peak_force_2_pass_kn": 110.57177920282943,
+   "peak_force_2_pass_range_kn": {
+    "median": 119.74776719856021,
+    "p05": 91.2931789762362,
+    "p95": 149.51915439824893
+   },
    "reduction_percent": 50,
    "within_limit_1": false,
    "within_limit_2": false
   }
  ],
  "model_values": {
-  "baseline_rms_dev_mm": 0.017269089377075456,
-  "feedback_rms_dev_mm": 0.009420387665330392,
+  "baseline_rms_dev_mm": 0.01688659931102533,
+  "feedback_rms_dev_mm": 0.009033708634452627,
   "single_pass": {
    "bite_ok": true,
    "contact_length_mm": 6.324555320336758,
    "draft_mm": 0.3999999999999999,
    "exit_thickness_mm": 1.6,
-   "max_bite_draft_mm": 0.7123161513077902,
-   "mean_pressure_mpa": 127.25838657496016,
-   "roll_force_kn": 40.24263529350681,
+   "max_bite_draft_mm": 0.6369442927750102,
+   "mean_pressure_mpa": 119.87263242259363,
+   "roll_force_kn": 37.907054757554356,
    "strain_after": 0.22314355131420976,
-   "torque_per_roll_nm": 127.25838657496014
+   "torque_per_roll_nm": 119.8726324225936
   },
   "two_pass": {
    "all_passes_bite_ok": true,
    "passes": 2,
-   "peak_roll_force_kn": 34.57900549262514,
-   "total_roll_force_kn": 53.60380880341093
+   "peak_roll_force_kn": 33.04183805280204,
+   "total_roll_force_kn": 51.26097484179904
   }
  },
+ "parameter_records": [
+  {
+   "confidence": "high",
+   "high": 50.0,
+   "kind": "user_input",
+   "low": 50.0,
+   "name": "width_mm",
+   "nominal": 50.0,
+   "notes": "Given by the user.",
+   "range_basis": "none",
+   "source": "stated in the problem statement",
+   "unit": "mm",
+   "verification": "unverified_no_network"
+  },
+  {
+   "confidence": "high",
+   "high": 2.0,
+   "kind": "user_input",
+   "low": 2.0,
+   "name": "thickness_mm",
+   "nominal": 2.0,
+   "notes": "Given by the user.",
+   "range_basis": "none",
+   "source": "stated in the problem statement",
+   "unit": "mm",
+   "verification": "unverified_no_network"
+  },
+  {
+   "confidence": "high",
+   "high": 20.0,
+   "kind": "user_input",
+   "low": 20.0,
+   "name": "reduction_percent",
+   "nominal": 20.0,
+   "notes": "Target set by the user, not a physical estimate.",
+   "range_basis": "none",
+   "source": "demo default; change with --reduction on scripts/run_demo.py",
+   "unit": "%",
+   "verification": "unverified_no_network"
+  },
+  {
+   "confidence": "low",
+   "high": 150.0,
+   "kind": "assumption",
+   "low": 75.0,
+   "name": "roll_radius_mm",
+   "nominal": 100.0,
+   "notes": "Not a handbook value. Replace with the actual roll diameter of the mill. Roll flattening is not modelled.",
+   "range_basis": "analyst_judgment",
+   "source": "analyst assumption of 150 to 300 mm diameter work rolls on a small laboratory mill",
+   "unit": "mm",
+   "verification": "unverified_no_network"
+  },
+  {
+   "confidence": "low",
+   "high": 0.12,
+   "kind": "handbook",
+   "low": 0.03,
+   "name": "friction",
+   "nominal": 0.08,
+   "notes": "Nominal 0.08 is a mid-range choice, not a measurement. The earlier demo value 0.12 is the top of the range. At 20 percent reduction of 2 mm with R = 100 mm the 0.4 mm draft needs friction of about 0.063 or more to bite, so the low end of the range fails the bite condition. Measure friction on the actual lubricant and rolls.",
+   "range_basis": "analyst_judgment",
+   "source": "recalled handbook-level range of about 0.03 to 0.12 for lubricated cold rolling; not checked against a source",
+   "unit": "-",
+   "verification": "unverified_no_network"
+  },
+  {
+   "confidence": "low",
+   "high": 500.0,
+   "kind": "assumption",
+   "low": 100.0,
+   "name": "mill_modulus_kn_per_mm",
+   "nominal": 200.0,
+   "notes": "Must come from the mill's measured stretch curve (force versus gap with rolls kissing).",
+   "range_basis": "analyst_judgment",
+   "source": "analyst assumption for a small laboratory mill; no handbook value is claimed",
+   "unit": "kN/mm",
+   "verification": "unverified_no_network"
+  },
+  {
+   "confidence": "low",
+   "high": 90.0,
+   "kind": "assumption",
+   "low": 90.0,
+   "name": "roll_force_limit_kn",
+   "nominal": 90.0,
+   "notes": "Clearly a what-if value for the demo. It is not varied in the uncertainty analysis.",
+   "range_basis": "none",
+   "source": "what-if machine rating; the user must supply the real rating",
+   "unit": "kN",
+   "verification": "unverified_no_network"
+  },
+  {
+   "confidence": "high",
+   "high": 0.02,
+   "kind": "user_input",
+   "low": 0.02,
+   "name": "tolerance_mm",
+   "nominal": 0.02,
+   "notes": "Given by the user.",
+   "range_basis": "none",
+   "source": "stated in the problem statement",
+   "unit": "mm",
+   "verification": "unverified_no_network"
+  }
+ ],
  "parameters": {
-  "friction": 0.12,
+  "friction": 0.08,
   "materials": [
    "copper",
    "silver"
@@ -1126,7 +1369,7 @@
      "name": "friction",
      "role": "parameter",
      "unit": null,
-     "value": 0.12
+     "value": 0.08
     },
     {
      "max": null,
@@ -1134,7 +1377,7 @@
      "name": "roll_force_kn",
      "role": "model_output",
      "unit": "kN",
-     "value": 40.24263529350681
+     "value": 37.907054757554356
     },
     {
      "max": null,
@@ -1142,7 +1385,7 @@
      "name": "rms_dev_mm",
      "role": "model_output",
      "unit": "mm",
-     "value": 0.017269089377075456
+     "value": 0.01688659931102533
     }
    ]
   },
@@ -1428,7 +1671,7 @@
     "name": "friction",
     "role": "parameter",
     "unit": null,
-    "value": 0.12
+    "value": 0.08
    },
    {
     "max": null,
@@ -1436,7 +1679,7 @@
     "name": "roll_force_kn",
     "role": "model_output",
     "unit": "kN",
-    "value": 40.24263529350681
+    "value": 37.907054757554356
    },
    {
     "max": null,
@@ -1444,7 +1687,7 @@
     "name": "rms_dev_mm",
     "role": "model_output",
     "unit": "mm",
-    "value": 0.017269089377075456
+    "value": 0.01688659931102533
    }
   ]
  },
@@ -4290,6 +4533,176 @@
   "node_count": 10,
   "positive_loops": 0
  },
+ "uncertainty": {
+  "copper": {
+   "conclusions": {
+    "feedback_beats_open_across_ranges": true,
+    "nominal_agrees_with_majority_single_pass": true,
+    "nominal_single_pass_ok": true,
+    "two_pass_improves_pass_fraction": true
+   },
+   "feedback_vs_open": {
+    "feedback_rms_mm": {
+     "max": 0.015715672973666214,
+     "median": 0.007567578503048462,
+     "min": 0.005026796299582673,
+     "p05": 0.005412697427004451,
+     "p95": 0.010688515677329896
+    },
+    "fraction_feedback_beats_open": 1.0,
+    "fraction_feedback_meets_tolerance": 1.0,
+    "fraction_open_meets_tolerance": 0.7666666666666667,
+    "open_rms_mm": {
+     "max": 0.0337950744148157,
+     "median": 0.015623393158620566,
+     "min": 0.00673327750837778,
+     "p05": 0.00888962304413121,
+     "p95": 0.027492740032380135
+    },
+    "samples": 60,
+    "tolerance_mm": 0.02
+   },
+   "force_limit_kn": 90.0,
+   "material": "copper",
+   "reduction_percent": 20.0,
+   "sampling": "triangular between low and high with mode at nominal; fixed seed 7; 200 samples (rolling), 60 (gauge)",
+   "single_pass": {
+    "bite_only_fraction": 0.7,
+    "force": {
+     "max": 55.10429527725962,
+     "median": 38.337597151392444,
+     "min": 28.646209726933126,
+     "p05": 31.239920969739913,
+     "p95": 46.55385383441199
+    },
+    "nominal_bite_ok": true,
+    "nominal_force_kn": 37.907054757554356,
+    "pass_fraction_force_and_bite": 0.7
+   },
+   "status": "conceptual simplified model, not verified engineering analysis, not certified",
+   "tornado_single_pass_force": [
+    {
+     "force_at_high_input": 47.712231945472624,
+     "force_at_low_input": 32.28649905317991,
+     "parameter": "roll_radius_mm",
+     "swing_kn": 15.425732892292714
+    },
+    {
+     "force_at_high_input": 31.960421346443756,
+     "force_at_low_input": 45.081790910745276,
+     "parameter": "material.n",
+     "swing_kn": 13.12136956430152
+    },
+    {
+     "force_at_high_input": 43.56302800709421,
+     "force_at_low_input": 32.2510815080145,
+     "parameter": "material.K",
+     "swing_kn": 11.31194649907971
+    },
+    {
+     "force_at_high_input": 40.24263529350681,
+     "force_at_low_input": 34.98757908761378,
+     "parameter": "friction",
+     "swing_kn": 5.255056205893027
+    }
+   ],
+   "two_pass": {
+    "bite_only_fraction": 0.93,
+    "pass_fraction_force_and_bite": 0.93,
+    "peak_force": {
+     "max": 46.94024304987519,
+     "median": 33.38806408582073,
+     "min": 25.786144415673267,
+     "p05": 27.701658311695077,
+     "p95": 39.87275382152286
+    }
+   }
+  },
+  "silver": {
+   "conclusions": {
+    "feedback_beats_open_across_ranges": true,
+    "nominal_agrees_with_majority_single_pass": true,
+    "nominal_single_pass_ok": true,
+    "two_pass_improves_pass_fraction": true
+   },
+   "feedback_vs_open": {
+    "feedback_rms_mm": {
+     "max": 0.12228049559218475,
+     "median": 0.008845506286007124,
+     "min": 0.0056266117268074164,
+     "p05": 0.006203064323548757,
+     "p95": 0.01321411794155088
+    },
+    "fraction_feedback_beats_open": 1.0,
+    "fraction_feedback_meets_tolerance": 0.9666666666666667,
+    "fraction_open_meets_tolerance": 0.7333333333333333,
+    "open_rms_mm": {
+     "max": 0.44698597753818736,
+     "median": 0.017389367344561205,
+     "min": 0.007871024388161044,
+     "p05": 0.009865371538778258,
+     "p95": 0.0284238644765871
+    },
+    "samples": 60,
+    "tolerance_mm": 0.02
+   },
+   "force_limit_kn": 90.0,
+   "material": "silver",
+   "reduction_percent": 20.0,
+   "sampling": "triangular between low and high with mode at nominal; fixed seed 7; 200 samples (rolling), 60 (gauge)",
+   "single_pass": {
+    "bite_only_fraction": 0.7,
+    "force": {
+     "max": 91.45699965210588,
+     "median": 56.148519054564346,
+     "min": 37.08523541251559,
+     "p05": 42.277696088605516,
+     "p95": 72.98393608442262
+    },
+    "nominal_bite_ok": true,
+    "nominal_force_kn": 52.257706408727046,
+    "pass_fraction_force_and_bite": 0.695
+   },
+   "status": "conceptual simplified model, not verified engineering analysis, not certified",
+   "tornado_single_pass_force": [
+    {
+     "force_at_high_input": 73.48739963727242,
+     "force_at_low_input": 40.826333131818004,
+     "parameter": "material.K",
+     "swing_kn": 32.661066505454414
+    },
+    {
+     "force_at_high_input": 41.980301689930315,
+     "force_at_low_input": 65.38476902897459,
+     "parameter": "material.n",
+     "swing_kn": 23.404467339044274
+    },
+    {
+     "force_at_high_input": 65.77487554911423,
+     "force_at_low_input": 44.50935054906845,
+     "parameter": "roll_radius_mm",
+     "swing_kn": 21.265525000045777
+    },
+    {
+     "force_at_high_input": 55.47747863113685,
+     "force_at_low_input": 48.232991130714794,
+     "parameter": "friction",
+     "swing_kn": 7.2444875004220535
+    }
+   ],
+   "two_pass": {
+    "bite_only_fraction": 0.93,
+    "pass_fraction_force_and_bite": 0.93,
+    "peak_force": {
+     "max": 73.40803188828795,
+     "median": 46.296381377929734,
+     "min": 31.83898142624392,
+     "p05": 35.313732169457865,
+     "p95": 58.77801006291588
+    }
+   }
+  }
+ },
  "validations": [
   {
    "caveats": "Not tested: no applicable experiment. No claim about this hypothesis is made.",
@@ -4303,44 +4716,44 @@
   {
    "caveats": "SUPPORTED IN SIMULATION ONLY under the stated model assumptions; not confirmed by real-world evidence. Simulation results come from simplified models with stated assumptions. They are not real-world validation. Elastic mill stretch plus power-law flow stress; disturbances are Gaussian with AR(1) persistence 0.95 and a random-walk gap drift; mill modulus (default 200 kN/mm, a small lab mill) is an ASSUMPTION; real mills have more dynamics. Simulation results come from simplified models with stated assumptions. They are not real-world validation. Fixed screw setting vs integral gauge feedback with 2 coil delay. Disturbance, drift and mill modulus values are assumptions, see runner limitations.",
    "evidence": {
-    "baseline_mean": 0.017269089377075456,
-    "ci95_half_width": 0.06605912455312833,
+    "baseline_mean": 0.01688659931102533,
+    "ci95_half_width": 0.06719098097447018,
     "code_version": "isomorph-experiments-0.1.0",
     "config_hashes": [
-     "2ed954359faba1d2",
-     "012af4fa955dcc6b"
+     "aa3bb80532031cd6",
+     "37448b2f326ec8b2"
     ],
     "direction": "lower",
     "experiment_kind": "strip_rolling_gauge",
     "illustrative": false,
-    "mean_relative_improvement": 0.41772486736686404,
+    "mean_relative_improvement": 0.4259881952818178,
     "metric": "rms_dev_mm",
     "min_effect": 0.05,
     "min_win_rate": 0.9,
     "n": 20,
     "other_metric_changes": [
      {
-      "baseline_mean": 0.0144205208820295,
+      "baseline_mean": 0.013999497085546767,
       "metric": "exit_std_mm",
-      "proposed_mean": 0.00940961693927016
+      "proposed_mean": 0.009023294026870975
      },
      {
-      "baseline_mean": 0.7342500000000001,
+      "baseline_mean": 0.74725,
       "metric": "fraction_within_tolerance",
-      "proposed_mean": 0.9652500000000002
+      "proposed_mean": 0.9720000000000001
      },
      {
-      "baseline_mean": 0.04045661639325464,
+      "baseline_mean": 0.03938666531740657,
       "metric": "max_abs_dev_mm",
-      "proposed_mean": 0.027158453020772032
+      "proposed_mean": 0.026039181426608705
      },
      {
-      "baseline_mean": 46.751327843445665,
+      "baseline_mean": 44.1448210846349,
       "metric": "peak_roll_force_kn",
-      "proposed_mean": 49.518892860952974
+      "proposed_mean": 46.583592517038014
      }
     ],
-    "proposed_mean": 0.009420387665330392,
+    "proposed_mean": 0.009033708634452627,
     "seeds": [
      0,
      1,
@@ -4387,5 +4800,11 @@
    "method": "none",
    "outcome": "untested"
   }
+ ],
+ "verified_analysis_would_need": [
+  "a measured flow curve for the actual strip",
+  "measured friction for the actual lubricant and rolls",
+  "a calibrated mill stretch curve",
+  "qualified engineering review"
  ]
 }
