@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>ISOMORPH</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0f17'/%3E%3Cpath d='M8 22L16 8l8 14z' fill='none' stroke='%237c9cff' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+  <header class="side">
+    <a class="brand" href="#/" aria-label="ISOMORPH home">
+      <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><path d="M8 22L16 8l8 14z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      <span>ISOMORPH</span>
+    </a>
+    <nav id="nav" aria-label="Main">
+      <a href="#/" data-nav="home">Investigations</a>
+      <a href="#/new" data-nav="new">New discovery</a>
+      <a href="#/knowledge" data-nav="knowledge">Knowledge library</a>
+      <a href="#/settings" data-nav="settings">Settings</a>
+    </nav>
+    <p class="side-note">Hypotheses from structural analogy. Not proof.</p>
+  </header>
+  <main id="main" tabindex="-1">
+    <noscript><p class="notice bad">ISOMORPH needs JavaScript enabled in the browser.</p></noscript>
+    <div id="app" aria-live="polite"></div>
+  </main>
+</div>
+<div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

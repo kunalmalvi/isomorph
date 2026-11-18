@@ -1,0 +1,17 @@
+# One container, no Postgres, no Node. Build context is the repository root.
+#   docker build -f Dockerfile.simple -t isomorph .
+#   docker run -p 8765:8765 -v isomorph-data:/data -e ISOMORPH_TOKEN=change-me isomorph
+# UNVERIFIED: Docker was not available where this file was written.
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 ISOMORPH_HOME=/data ISOMORPH_DATA_DIR=/app/data PYTHONPATH=/app/backend
+WORKDIR /app
+COPY backend /app/backend
+COPY data /app/data
+COPY isomorph /app/isomorph
+RUN useradd --create-home --uid 10001 isomorph && mkdir -p /data && chown -R isomorph /data
+USER isomorph
+VOLUME /data
+EXPOSE 8765
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD python -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8765/api/v1/health', timeout=2)" || exit 1
+# Binding 0.0.0.0 requires ISOMORPH_TOKEN; the server refuses to start without it.
+CMD ["python", "/app/isomorph", "serve", "--host", "0.0.0.0", "--port", "8765", "--strict-port", "--no-browser"]

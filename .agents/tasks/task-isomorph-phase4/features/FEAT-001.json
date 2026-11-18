@@ -1,0 +1,28 @@
+{
+ "id": "FEAT-001",
+ "type": "feat",
+ "description": "Zero-dependency runtime: SQLite-backed stores, stdlib HTTP server exposing the orchestrator, and an `isomorph` CLI for install/run/manage. Baseline first.",
+ "status": "completed",
+ "steps": [
+  "Run baseline tests and scripts, record counts; re-check pip/npm availability.",
+  "Add backend/services/sqlite_store.py: SqliteRunStore(RunStore) and SqliteAnnotationStore (same interface as AnnotationStore) using sqlite3 with WAL, schema versioning (PRAGMA user_version) and idempotent migration, thread-safe. Hypothesis annotations persist in SQLite.",
+  "Add backend/isomorph_app/ package: server.py (http.server ThreadingHTTPServer, JSON API under /api/v1 mirroring docs/api-contracts.md for runs, stages, edit/rerun, hypotheses annotations, knowledge, reports markdown export, SSE progress, health, settings), static file serving of the bundled UI with path traversal protection, request size limits, optional bearer token (ISOMORPH_TOKEN) for non-localhost binds, default bind 127.0.0.1. Use workers/job_runner.py for async runs.",
+  "Add backend/isomorph_app/cli.py with subcommands: serve (auto port fallback, opens browser unless --no-browser), doctor (python version, data dir, db writable, knowledge validation, port free, optional deps present), analyze (text or file to markdown/JSON report), seed/validate, backup and restore (SQLite online backup API), export, reset (with confirmation), version. Config via env and ~/.isomorph or ISOMORPH_HOME; one data directory for db, uploads, backups.",
+  "Add backend/tests/platform/test_sqlite_store.py, test_server.py (start server on port 0 in a thread, drive full flow with urllib: create run, wait done, edit stage, rerun, annotate, restart store and confirm persistence, report export, traversal and oversize rejection, token auth), test_cli.py (doctor, analyze, backup/restore round trip).",
+  "Keep existing FastAPI code untouched except imports if required."
+ ],
+ "acceptance_criteria": [
+  "cd backend && python3 -m pytest tests -q passes with more tests than baseline and no new failures",
+  "Server started via CLI answers /api/v1/health and completes a discovery run with only stdlib",
+  "Annotations and runs survive a server restart (tested)",
+  "doctor exits non-zero with a readable message on a broken setup (tested)"
+ ],
+ "verification": [
+  "cd backend && python3 -m pytest tests -q -rs",
+  "python3 -m compileall -q backend scripts",
+  "python3 scripts/run_demo.py && python3 scripts/evaluate_benchmarks.py && python3 scripts/validate_seed_data.py",
+  "Manually start the server on a free port and curl health plus one run"
+ ],
+ "blocked_reason": null,
+ "findings": "Baseline 181 passed, 2 skipped (same skips: fastapi, sqlalchemy missing; pip/npm still blocked). After: 203 passed, 2 skipped (22 new tests in test_sqlite_store, test_server, test_cli). run_demo, evaluate_benchmarks, validate_seed_data all run; run_demo output files unchanged. Added backend/services/sqlite_store.py, backend/isomorph_app/{config,app,server,cli,__main__}.py, root launcher ./isomorph (python3 ./isomorph serve). Live check: started via CLI on a free port, health OK, a discovery completed, report exported, SIGINT shut down cleanly. Server routes: health, settings, domains, knowledge-systems, mechanisms, discoveries (create, list, get, delete, stages, stage edit PUT, rerun, matches, cancel, resume, events SSE, report md/json, annotations). Projects, members and auth endpoints of docs/api-contracts.md are not implemented in this runtime (single user). Uploads dir is created but there is no upload endpoint yet. Web UI: backend/isomorph_app/static/ is empty; server shows a fallback page until FEAT-002 bundles the UI (doctor reports WARN). Static dir is served with realpath containment, SPA fallback for paths without extension. Gotchas: bash tool refuses to start servers directly and /tmp is not persistent, so use .scratch/ and subprocess-based tests. A one-off full-suite failure (sqlite3.DatabaseError on a junk restore file) was fixed by converting it to ValueError in SqliteDatabase.restore_from; 3 later full runs were green. Not tested: non-loopback serving with a token over a real network, browser auto-open, Windows, load/concurrency beyond 6 writer threads. FastAPI/SQLAlchemy/Next.js remain UNVERIFIED and untouched."
+}
