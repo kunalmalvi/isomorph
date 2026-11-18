@@ -35,7 +35,7 @@ Base path: `/api/v1`. JSON only. Status: DESIGN, to be implemented with FastAPI.
 - `POST /problems/{id}/evidence`
 
 ### /api/v1/discoveries
-- `POST /discoveries`
+- `POST /discoveries` (zero-dependency server) takes exactly one of `text`, `problem` or `upload_id` (64 character sha256 of a stored upload). With `upload_id` the extracted text feeds perception (CSV files use the CSV path). 404 when the upload is unknown, 422 when it was not interpreted.
 - `GET /discoveries`
 - `GET /discoveries/{id}`
 - `GET /discoveries/{id}/matches`
@@ -110,6 +110,12 @@ Base path: `/api/v1`. JSON only. Status: DESIGN, to be implemented with FastAPI.
 - `PATCH /settings`
 - `GET /settings/providers`
 - `PATCH /settings/weights`
+
+## Zero-dependency server upload endpoint
+- `POST /api/v1/uploads?filename=<name>[&interpret=<provider>]` with the raw file as body, or a multipart body with one file part. Subject to `max_body_bytes`, auth and Host/Origin checks. Returns 201 with the provenance record: `sha256`, `kind`, `size`, `interpreted` (boolean), `note` (reason when not interpreted), and `extraction` (including a text preview). 422 for bad extension, bad magic bytes or invalid file, 413 for oversize.
+- `interpreted` is true for txt, md, csv, json and PDFs where text was extracted. It is false, with a reason, for scanned, encrypted or unreadable PDFs and for images unless `interpret` names a vision-capable provider. Unsupported providers raise an error; no content is invented.
+- CLI: `isomorph upload <file> [--analyze] [--title T] [--interpret PROVIDER]` stores and reads a file, and with `--analyze` starts a discovery from the extracted text.
+- The FastAPI route below is separate and still uses the old interpretation. UNVERIFIED.
 
 ## Additional endpoints (implemented beyond the 66 listed)
 - `GET /health` liveness.

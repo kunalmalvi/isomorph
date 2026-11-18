@@ -21,7 +21,8 @@ Optional: `./install.sh` creates `.venv` and installs an `isomorph` command (`.v
 
 ## Honest limits
 - Perception is keyword and sentence-pattern based. Unusual wording can be missed, so check the extracted structure in the Progress tab and edit it.
-- PDF and image uploads are not interpreted. Only .txt, .md and .json are read.
+- Uploads: .txt, .md, .csv, .json and text PDFs (best effort, stdlib extractor tested only on generated PDFs) are read. Scanned or encrypted PDFs and images are stored but reported as not interpreted. Remote vision is UNVERIFIED.
+- Perception of unfamiliar words is better but weak: on a 25 problem held-out set written by the author, role coverage went from 0.22 to 0.44 and accuracy from 0.12 to 0.40, and about 1 in 7 assigned roles is wrong. See `docs/benchmark-notes.md`.
 - The roller demo scores about 36.5 out of 100 against its best analog, which is a weak match. Its material parameters are placeholders, so its simulations are capped at inconclusive.
 - Runs execute in the server process (thread pool). A restart marks interrupted runs failed and you can resume them.
 - Single user, local mode. Binding a non-local address requires `ISOMORPH_TOKEN`; put a TLS proxy in front if you expose it.
@@ -119,7 +120,7 @@ See [docs/deployment.md](docs/deployment.md) for configuration, security notes a
 - `docker-compose.yml`, `frontend/Dockerfile`, `backend/Dockerfile`: never built.
 
 **Known gaps (by design in this version)**
-- PDF and image uploads are validated but not interpreted (no OCR or vision dependency). The UI says so.
+- In the FastAPI stack, PDF and image uploads are validated but not interpreted. The zero-dependency app reads text PDFs (best effort) and reports scans and images as not interpreted (no OCR).
 - The 3D Discovery Universe view is a dependency free SVG projection and is UNVERIFIED (never rendered). Its layout math ran under Node.
 - Hypothesis decisions and notes are saved server side through phase 2 endpoints (UNVERIFIED, API not runnable here), with browser storage as fallback.
 - Saved default weights are used by the Advanced form and are not applied by the server on its own.
