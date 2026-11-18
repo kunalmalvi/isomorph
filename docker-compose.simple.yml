@@ -1,0 +1,16 @@
+# Single service, SQLite in a named volume, no Postgres or Node. UNVERIFIED: Docker was not available to run this.
+# Usage: ISOMORPH_TOKEN=$(python3 -c "import secrets;print(secrets.token_urlsafe(24))") docker compose -f docker-compose.simple.yml up --build
+services:
+  isomorph:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    ports:
+      - "127.0.0.1:8765:8765"
+    environment:
+      ISOMORPH_TOKEN: ${ISOMORPH_TOKEN:?set ISOMORPH_TOKEN, the server needs it to listen on 0.0.0.0}
+    volumes:
+      - isomorph-data:/data
+    restart: unless-stopped
+volumes:
+  isomorph-data:

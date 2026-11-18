@@ -1,6 +1,31 @@
 # Deployment
 
-Status: UNVERIFIED. The compose file and Dockerfiles were written in a sandbox where Docker could not run. Treat the first deployment as a test of these files.
+## Recommended: the zero-dependency app
+Run it on a laptop, a small server or one container. It needs Python 3.9+ and nothing else.
+
+| Setup | Command | Status |
+|---|---|---|
+| From a checkout | `python3 ./isomorph serve` | Run and tested over HTTP in the sandbox |
+| Installed command | `./install.sh` then `.venv/bin/isomorph serve` (`pip install -e .`, needs network for the build backend) | Metadata and editable install verified with `--no-deps --no-build-isolation`. `install.sh` itself not run |
+| One container | `ISOMORPH_TOKEN=... docker compose -f docker-compose.simple.yml up --build` | UNVERIFIED, Docker unavailable |
+
+Configuration is by environment variable or flag.
+| Variable | Default | Meaning |
+|---|---|---|
+| `ISOMORPH_HOME` | `~/.isomorph` | Data directory: `isomorph.db` (SQLite, WAL), `uploads/`, `backups/` |
+| `ISOMORPH_HOST`, `ISOMORPH_PORT` | `127.0.0.1`, `8765` | Bind address. Another free port is used if the default is busy, unless `--strict-port` |
+| `ISOMORPH_TOKEN` | unset | Bearer token. Required for any non-loopback bind, the server refuses to start without it. The UI asks for it once per tab |
+| `ISOMORPH_WORKERS` | `2` | Concurrent runs |
+| `ISOMORPH_MAX_BODY_BYTES` | 2 MiB | Request size limit |
+| `AI_PROVIDER` and provider keys | `local` | Optional remote perception, see README |
+
+Operations: `isomorph doctor` (health check, exits non-zero with a message when something is wrong), `isomorph backup` and `isomorph restore FILE` (SQLite online backup), `isomorph export`, `isomorph reset` (asks for confirmation, backs up first).
+
+Limits to plan for: single user, no accounts; runs execute in the server process; the server speaks plain HTTP, so put a TLS proxy (Caddy, nginx) in front for anything beyond localhost and disable response buffering for `/api/v1/discoveries/*/events`; run one process per data directory. Non-loopback serving with a token over a real network, Windows and the browser auto-open were not tested.
+
+## Optional advanced path: FastAPI, Next.js and PostgreSQL
+
+Status: UNVERIFIED. This stack was never run. The compose file and Dockerfiles were written in a sandbox where Docker could not run. Treat the first deployment as a test of these files.
 
 ## Components
 | Component | Image or process | Port | Notes |

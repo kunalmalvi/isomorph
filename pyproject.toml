@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "isomorph"
+version = "0.4.0"
+description = "Cross-domain structural reasoning: find analogous systems in other domains and generate testable hypotheses. Zero runtime dependencies."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+isomorph = "isomorph_app.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "backend" }
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+include = ["isomorph_app*", "intelligence*", "experiments*", "knowledge_base*", "services*", "core*", "workers*", "ai_providers*"]
+
+[tool.setuptools.package-data]
+isomorph_app = ["static/*"]

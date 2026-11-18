@@ -6,34 +6,53 @@ Everything it produces is a hypothesis from structural analogy. Nothing is prove
 
 Default mode is deterministic and offline. No API key and no network are needed. Remote AI providers are optional and only used for the perception stage.
 
-> **Read the status section first.** The intelligence engine and its tests run and pass. The API, database layer, migrations, frontend and Docker setup were written to specification in a sandbox that could not install their dependencies, so they have never run. See [What is complete, incomplete and unverified](#status).
+## Quick start (Python 3.9+ only)
+```bash
+git clone https://github.com/kunalmalvi/isomorph.git && cd isomorph
+python3 ./isomorph serve
+```
+The app opens in your browser at http://localhost:8765. It needs no install, no Docker, no Node and no Postgres. Data is kept in `~/.isomorph` (set `ISOMORPH_HOME` to move it). On a fresh start, click "Load the roller demo" to see a full run in seconds.
+
+Optional: `./install.sh` creates `.venv` and installs an `isomorph` command (`.venv/bin/isomorph serve`). `make run`, `make test`, `make doctor` and `make backup` are shortcuts. `python3 ./isomorph doctor` checks your setup, `backup` and `restore` manage the database, and `analyze "your problem text"` prints a report without the UI.
+
+> **Read the status section first.** The zero-dependency app (stdlib HTTP server, SQLite, bundled web UI, CLI) is tested by running it. The browser UI has been syntax checked and served over HTTP but never rendered in a real browser, because the authoring sandbox had none. The older FastAPI, Next.js and Postgres stack below is optional and still unverified. See [What is complete, incomplete and unverified](#status).
+
+## Honest limits
+- Perception is keyword and sentence-pattern based. Unusual wording can be missed, so check the extracted structure in the Progress tab and edit it.
+- PDF and image uploads are not interpreted. Only .txt, .md and .json are read.
+- The roller demo scores about 36.5 out of 100 against its best analog, which is a weak match. Its material parameters are placeholders, so its simulations are capped at inconclusive.
+- Runs execute in the server process (thread pool). A restart marks interrupted runs failed and you can resume them.
+- Single user, local mode. Binding a non-local address requires `ISOMORPH_TOKEN`; put a TLS proxy in front if you expose it.
 
 ## Repository layout
 | Path | Contents |
 |---|---|
 | `backend/intelligence`, `backend/experiments`, `backend/knowledge_base` | Pure standard library engine, seeded experiments, knowledge loader |
+| `backend/isomorph_app` | Zero-dependency server, CLI and bundled web UI (`static/`) |
 | `backend/api`, `backend/services`, `backend/database`, `backend/migrations` | FastAPI app, orchestrator and job runner, SQLAlchemy models, Alembic |
 | `backend/ai_providers` | Local deterministic provider plus OpenAI, Gemini and Anthropic adapters |
-| `frontend/` | Next.js App Router, TypeScript strict, Tailwind |
+| `frontend/` | Optional Next.js App Router, TypeScript strict, Tailwind |
 | `data/` | Seed domains, systems, mechanisms, benchmark problems, demo input and output |
 | `docs/` | Architecture, API contracts, schemas, database design, deployment, demo script, verification status |
 | `.kiro/` | Specs, steering and hooks used to build the project |
 
-## Quick start: engine only (works with plain Python 3.11+)
+## Developer quick start: engine scripts and tests
 ```bash
 python3 scripts/validate_seed_data.py
 python3 scripts/run_demo.py          # the flagship roller scenario, end to end, prints results
 cd backend && python3 -m pytest tests -q -rs
 ```
 
-## Run the full stack with Docker
+## Optional advanced path: full stack with Docker (UNVERIFIED)
+For a multi-user deployment with PostgreSQL. Most people want the quick start above. A single-container variant with SQLite is `docker compose -f docker-compose.simple.yml up --build` (also UNVERIFIED).
+
 ```bash
 cp .env.example .env                 # set POSTGRES_PASSWORD and ISOMORPH_SECRET_KEY
 docker compose up --build
 ```
 Open http://localhost:3000, register an account, and start with New Discovery. API docs are at http://localhost:8000/api/v1/docs. The backend container runs `alembic upgrade head` before starting. `NEXT_PUBLIC_API_URL` is baked into the frontend image at build time and must be reachable from your browser.
 
-## Run without Docker
+## Optional advanced path: full stack without Docker (UNVERIFIED)
 Backend (Python 3.12 recommended, PostgreSQL 16 with pgvector recommended):
 ```bash
 python -m venv .venv && . .venv/bin/activate
@@ -69,7 +88,8 @@ Behavior to know about:
 ## Tests
 | Suite | Command | Status |
 |---|---|---|
-| Backend engine and platform helpers | `cd backend && python3 -m pytest tests -q -rs` | Run and passing in the sandbox |
+| Everything runnable (engine, SQLite app, HTTP server, CLI, UI assets) | `cd backend && python3 -m pytest tests -q -rs` | 208 passed, 2 skipped (FastAPI and SQLAlchemy missing) |
+| UI helper functions | `node backend/tests/platform/ui_helpers.test.mjs` (also run by pytest) | Passing |
 | Backend API with FastAPI | same command, after installing `requirements-dev.txt` | Skipped in the sandbox, never run |
 | Frontend unit (vitest) | `cd frontend && npm test` | Written, never run |
 | Frontend type check and lint | `npm run typecheck`, `npm run lint` | Never run |
