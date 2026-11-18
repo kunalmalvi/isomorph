@@ -7,5 +7,12 @@
   "FEAT-002",
   "FEAT-003"
  ],
- "blocked_reason": null
+ "blocked_reason": null,
+ "verification": {
+  "build": "pass",
+  "tests": "pass",
+  "test_quality": "pass",
+  "docker_build": "skipped",
+  "summary": "288 passed 2 skipped; roller 37.5/36.5, MRR 0.9286/0.975 unchanged; seed data OK. serve health by hand and doctor under default home not run/failing due to read-only home (UNVERIFIED). Review v1 APPROVED with six minor non-blocking follow-ups."
+ }
 }
