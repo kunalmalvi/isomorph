@@ -113,8 +113,8 @@ def test_strip_rolling_model_physics_sanity():
     assert abs(wide["roll_force_kn"] / cu["roll_force_kn"] - 2.0) < 1e-9  # linear in width
     big = run_experiment("strip_rolling_model", {"reduction": 0.8, "material": "copper"}).metrics  # bite limit is 2R(1-cos(atan mu)); the earlier limit was half
     assert not big["bite_ok"]
-    two = run_experiment("strip_rolling_passes", {"reduction": 0.8, "passes": 2}).metrics
-    one = run_experiment("strip_rolling_passes", {"reduction": 0.8, "passes": 1}).metrics
+    two = run_experiment("strip_rolling_passes", {"reduction": 0.8, "passes": 2, "friction": 0.12}).metrics
+    one = run_experiment("strip_rolling_passes", {"reduction": 0.8, "passes": 1, "friction": 0.12}).metrics
     assert two["peak_roll_force_kn"] < one["peak_roll_force_kn"] and two["all_passes_bite_ok"] and not one["all_passes_bite_ok"]
 
 

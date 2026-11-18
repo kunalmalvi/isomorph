@@ -93,10 +93,12 @@ How to read this:
 - Textbook citations carry no edition, chapter or page. A reviewer can confirm a book exists but cannot check that it supports the specific graph under `claim_scope: description`. A human should spot-check the `medium` and `low` confidence entries first. `trans_nagel_jam` cites Lighthill-Whitham kinematic waves next to Nagel-Schreckenberg, which is a weaker fit for a cellular automaton model.
 - All 20 held-out lookalikes are existing knowledge base systems chosen by the author, so "0 lookalikes above the best strong analog" depends on how hard those were chosen. An independent reviewer should re-grade the lookalikes first.
 
-## Roller demo score and placeholder parameters
+## Roller demo score and unverified parameters
 - Before phase 6 KB growth, the flagship roller demo (`python3 scripts/run_demo.py`) ranked "Human core temperature regulation" first with a score of about 36.5 (after growth the top match is Variable air volume zone control at 37.5, see above) out of 100 (roughly 37). This is a low absolute number. Scores are heuristic and only meaningful as a ranking, and the weights sum over six components that rarely all match for distant domains.
 - Results were not tuned to look better. The best cross-domain score for the roller problem is about 36.5/100 and is reported as is. Weights, lexicon and seed graphs were not adjusted to raise it, and any future change that does so must be recorded here.
 - The roller experiment parameters are now labelled records (phase 7) with source, range, confidence and `unverified_no_network` status. They are recalled, not measured or checked against a source. Silver is a low confidence estimate. The seeded rolling simulation is illustrative: a "supported" result means the proposed controller beat the baseline inside that simplified model, not in a real mill.
+- Known limit: K and n are sampled independently in the uncertainty analysis, although they are anti-correlated in real flow-curve fits. This was not fixed. The sampled force range may be wider than a joint fit would give.
+- The default friction in `backend/experiments/runners.py` is now 0.08, matching the demo's nominal in `data/demo/roller_problem.json` (it was 0.12).
 - Phase 7 roller scores: top 37.5 (arch_vav_zone_control), second 36.5 (Human core temperature regulation). The matcher was not changed and not tuned. The parameter work does not affect matching, because these numeric values are not part of the perceived text. Benchmark MRR 0.9286 and held-out MRR 0.975 are unchanged.
 
 ## Dependency lock file
