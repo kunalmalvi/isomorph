@@ -90,6 +90,17 @@ async function api(method, path, body, raw) {
   return parsed;
 }
 
+async function uploadFile(f) {
+  let res;
+  try {
+    res = await fetch(API + "/uploads?filename=" + encodeURIComponent(f.name), { method: "POST", headers: authHeaders(), body: f });
+  } catch (e) { throw new ApiError(0, null); }
+  let parsed = null;
+  try { parsed = await res.json(); } catch (e) { /* not json */ }
+  if (!res.ok) throw new ApiError(res.status, parsed);
+  return parsed;
+}
+
 function tokenForm(retry) {
   const input = h("input", { type: "password", id: "tok", autocomplete: "off", style: "max-width:360px" });
   mount(
@@ -211,6 +222,24 @@ function viewNew() {
       text.dispatchEvent(new Event("input"));
     } catch (e) { msg.append(notice(e.message, "warn")); }
   });
+  const serverFile = h("input", { type: "file", id: "serverfile", accept: ".pdf,.csv,.png,.jpg,.jpeg", "aria-label": "Upload a PDF, CSV or image to be read by the server" });
+  const serverMsg = h("div");
+  serverFile.addEventListener("change", async () => {
+    clear(serverMsg);
+    const f = serverFile.files[0];
+    if (!f) return;
+    try {
+      const rec = await uploadFile(f);
+      if (!rec.interpreted) return serverMsg.append(notice("Not interpreted: " + (rec.note || "this file was not read") + " Nothing was taken from it.", "warn"));
+      serverMsg.append(notice("Read " + rec.extraction.chars + " characters via " + rec.extraction.method + ". Preview: " + rec.extraction.preview, "info"),
+        h("p", {}, h("button", { type: "button", class: "primary", text: "Run analysis from this file", onclick: async () => {
+          try {
+            const res = await api("POST", "/discoveries", { upload_id: rec.sha256, title: title.value.trim() || f.name.replace(/\.[^.]+$/, "") });
+            location.hash = "#/run/" + res.id + "/progress";
+          } catch (err) { serverMsg.append(notice(err.message, "bad")); }
+        } })));
+    } catch (e) { serverMsg.append(notice(e.message || String(e), "bad")); }
+  });
   const examples = h("div", { class: "row" }, EXAMPLES.map((ex) => h("button", { type: "button", class: "small", text: ex.title, onclick: () => {
     text.value = ex.text; title.value = ex.title; text.dispatchEvent(new Event("input")); text.focus();
   } })));
@@ -226,7 +255,9 @@ function viewNew() {
     h("div", { class: "row spread" }, h("span", { class: "hint", text: "The default engine reads keywords and sentence patterns. It does not understand free-form prose deeply." }), count),
     h("h3", { text: "Try an example" }), examples,
     h("h3", { text: "Or upload a file" }), file,
-    h("p", { class: "hint", text: ".txt, .md or .json (a \"statement\" or \"text\" field), up to 200 KB. PDF and images are not interpreted." }),
+    h("p", { class: "hint", text: ".txt, .md or .json (a \"statement\" or \"text\" field), up to 200 KB. Use the server option below for PDF and CSV." }),
+    h("h3", { text: "Or let the server read a PDF, CSV or image" }), serverFile,
+    h("p", { class: "hint", text: "Text PDFs and CSV files are read. Scanned PDFs and images are not interpreted (no OCR). The result says what was read." }), serverMsg,
     msg, h("p", {}, go));
   mount(h("h1", { text: "New discovery" }), h("p", { class: "sub", text: "Describe a problem. ISOMORPH extracts its structure and searches other domains for similar systems." }), form, disclaimer());
   text.focus();

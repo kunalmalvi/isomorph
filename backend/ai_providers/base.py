@@ -207,6 +207,10 @@ class Provider:
     def describe(self) -> dict:
         return {"name": self.name, "model": self.model, "provenance": self.provenance, "usage": self.usage.snapshot()}
 
+    def describe_image(self, data: bytes, media_type: str) -> str:
+        """Text description of an image. No adapter implements vision yet, so this always raises rather than inventing."""
+        raise ProviderUnsupported(f"provider '{self.name}' does not support image input")
+
 
 class HttpProvider(Provider):
     """Shared retry, rate limit, usage tracking and schema validation for remote adapters."""

@@ -5,8 +5,11 @@ import os
 from typing import Optional
 
 from ai_providers import get_provider
+from ai_providers.base import ProviderError
 from core.config import load_settings
-from core.errors import Conflict, NotFound, ValidationFailed
+from core.errors import AppError, Conflict, NotFound, ValidationFailed
+from core.extract import extract
+from core.uploads import find_stored, interpretation, store_upload, validate_upload
 from services.knowledge import KnowledgeBase, default_knowledge
 from services.orchestrator import STAGES, Orchestrator
 from services.reports import build_report, report_markdown
@@ -36,6 +39,54 @@ class App:
     # ------------------------------------------------------------------ runs
     def start_run(self, text=None, problem=None, title: str = "", config: Optional[dict] = None) -> dict:
         run = self.orch.create_run(text=text, problem=problem, title=title, config=config)
+        self.jobs.submit(run.id)
+        return {"id": run.id, "status": run.status}
+
+    # ------------------------------------------------------------------ uploads
+    UPLOAD_SCOPE = "local"
+
+    def _extract(self, kind: str, data: bytes, vision_provider: Optional[str] = None):
+        provider = None
+        if vision_provider and kind in ("png", "jpeg"):
+            try:
+                provider = get_provider(self.settings, vision_provider)
+                return extract(kind, data, provider)
+            except ProviderError as e:  # never fall back or invent: surface the failure
+                raise AppError(f"image interpretation failed: {e}", code="provider_error", status=502)
+        return extract(kind, data)
+
+    def upload(self, filename: str, data: bytes, vision_provider: Optional[str] = None) -> dict:
+        """Validate, store and read an uploaded file. Returns provenance, an honest `interpreted` flag and a text preview."""
+        up = validate_upload(filename, data, self.config.max_body_bytes)
+        ex = self._extract(up.kind, up.data, vision_provider)
+        rec = store_upload(self.config.uploads_dir, self.UPLOAD_SCOPE, up, ex)
+        rec.update(kind=up.kind, extraction=ex.to_dict())
+        return rec
+
+    def _load_upload(self, upload_id: str):
+        found = find_stored(self.config.uploads_dir, self.UPLOAD_SCOPE, upload_id)
+        if found is None:
+            raise NotFound("upload not found")
+        path, kind = found
+        with open(path, "rb") as f:
+            data = f.read()
+        ex = extract(kind, data)
+        rec = {"sha256": upload_id, "kind": kind, "size": len(data), **interpretation(kind, ex)}
+        if not ex.interpreted:
+            raise ValidationFailed(rec["note"] or f"{kind} upload was not interpreted")
+        return kind, ex, rec
+
+    def start_run_from_upload(self, upload_id: str, title: str = "", config: Optional[dict] = None) -> dict:
+        from intelligence.perception.service import perceive_csv
+        kind, ex, rec = self._load_upload(upload_id)
+        if kind == "csv":
+            per = perceive_csv(ex.text, title or "csv data")
+            run = self.orch.create_run(problem=per.problem.to_dict(), title=title, config=config)
+        else:
+            run = self.orch.create_run(text=ex.text, title=title, config=config)
+        run.input["source_upload"] = {"sha256": upload_id, "kind": kind, "method": ex.method, "chars": len(ex.text),
+                                      "truncated": ex.truncated}
+        self.store.save(run)
         self.jobs.submit(run.id)
         return {"id": run.id, "status": run.status}
 

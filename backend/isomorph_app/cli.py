@@ -314,6 +314,32 @@ def cmd_analyze(args) -> int:
     return 0
 
 
+def cmd_upload(args) -> int:
+    from core.errors import AppError
+    try:
+        with open(args.file, "rb") as f:
+            data = f.read(64 * 1024 * 1024)
+    except OSError as e:
+        _err(f"error: cannot read {args.file}: {e}")
+        return 2
+    app = _open_app(args, synchronous=True)
+    try:
+        rec = app.upload(os.path.basename(args.file), data, args.interpret)
+        _out(json.dumps(rec, indent=2, sort_keys=True))
+        if args.analyze:
+            if not rec["interpreted"]:
+                _err(f"not analyzing: {rec['note']}")
+                return 1
+            run = app.start_run_from_upload(rec["sha256"], title=args.title or "", config=None)
+            _err(f"run {run['id']} {app.require_run(run['id']).status}; see `isomorph export` or the report endpoint")
+    except AppError as e:
+        _err(f"error: {e.message}")
+        return 2
+    finally:
+        app.close()
+    return 0
+
+
 def cmd_seed(args) -> int:
     """Store the bundled demo discovery so a fresh install has something to look at. Idempotent."""
     from core.errors import AppError
@@ -465,6 +491,13 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--format", choices=("md", "json"), default="md")
     a.add_argument("--out", "-o", help="write the report to this file")
     a.set_defaults(fn=cmd_analyze)
+
+    u = sub.add_parser("upload", parents=[common], help="validate, store and read a file (txt, md, csv, pdf, png, jpeg)")
+    u.add_argument("file")
+    u.add_argument("--analyze", action="store_true", help="start a discovery from the extracted text when it was read")
+    u.add_argument("--title", help="discovery title with --analyze")
+    u.add_argument("--interpret", metavar="PROVIDER", help="vision capable provider for images (raises if unsupported)")
+    u.set_defaults(fn=cmd_upload)
 
     sub.add_parser("seed", parents=[common], help="store the bundled demo discovery").set_defaults(fn=cmd_seed)
     sub.add_parser("validate", parents=[common], help="validate the seed knowledge base").set_defaults(fn=cmd_validate)
