@@ -197,3 +197,23 @@ Goal: reduce missed roles for unfamiliar words, and read uploaded text, CSV and 
 - **FastAPI upload route.** `POST /problems/{id}/uploads` in the older FastAPI stack still uses the old interpretation (PDF and images not read). It was not changed and cannot run here.
 - Held-out numbers come from a set the code author wrote, so they do not estimate performance on other people's text.
 - **PDF extractor limits (phase 5 review fix).** The parser scans linearly, and caps objects (5000), streams (200), inflated bytes (2 MB per stream, 4 MB total) and wall clock (4 s). Reaching any cap reports "not interpreted" instead of partial text. Extraction results are cached in memory per digest (16 entries), so repeated discoveries from one upload do not re-parse. Bounded time is asserted in `test_phase5_uploads.py` with adversarial PDFs. The 4 s budget is checked between objects and every 2048 tokens, not preemptively.
+
+## Phase 6: KB growth, source metadata and held-out benchmark
+
+Goal: grow the knowledge base to 111 systems with per-source confidence, and add a held-out benchmark with labels a reviewer can re-grade.
+
+### What ran (sandbox: Python 3.11, no browser, no network, no FastAPI or SQLAlchemy)
+| Check | Command | Result |
+|---|---|---|
+| Full test suite | `cd backend && python3 -m pytest tests -q -rs` | 276 passed, 2 skipped (the skips need FastAPI and SQLAlchemy) |
+| Compile | `python3 -m compileall -q backend scripts` | Pass |
+| Tuning benchmarks | `python3 scripts/evaluate_benchmarks.py` | 7 of 7 positives beat all negatives, MRR 0.9286, hit@1 1.0 |
+| Held-out benchmark | `python3 scripts/evaluate_heldout.py` | 20 queries: strong hit@1 0.95, hit@3 1.0, MRR 0.975, nDCG@10 0.8324, 0 lookalikes above the best strong analog. Banner printed. See `docs/benchmark-notes.md` |
+| Seed data | `python3 scripts/validate_seed_data.py` | seed data OK (111 systems) |
+| Demo | `python3 scripts/run_demo.py` | Runs. Roller top match Variable air volume zone control 37.5; tracked output files unchanged by this feature |
+
+### UNVERIFIED
+- **Citations.** No citation was checked online (no network; doi.org returned 403). All are recalled from memory and carry `verification: unverified_no_network`.
+- **No independent review.** All held-out labels are `author_labelled` with `independent_review: none`. The label author also wrote the matcher. `scripts/compare_reviews.py` has only run on a synthetic file.
+- **No browser.** The bundled UI was not rendered in a real browser in this phase.
+- The held-out set was never tuned against, but it is small (20 queries) and mostly close to structures already in the knowledge base.
