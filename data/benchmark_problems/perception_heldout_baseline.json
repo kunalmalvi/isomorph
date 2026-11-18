@@ -1,0 +1,9 @@
+{
+ "problems": 25,
+ "gold_entities": 104,
+ "detection_recall": 0.7885,
+ "role_coverage": 0.2199,
+ "role_accuracy": 0.1154,
+ "precision_when_assigned": 1.0,
+ "perceived_entities": 191
+}

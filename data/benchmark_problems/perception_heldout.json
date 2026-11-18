@@ -1,0 +1,597 @@
+{
+ "description": "Held-out perception set. Hand-labelled roles for entities in short statements using vocabulary outside ROLE_LEXICON and SYNONYMS where possible. Written before the phase 5 perception changes; do not edit to fit the code.",
+ "roles_from": "intelligence.schemas.ROLES",
+ "problems": [
+  {
+   "id": "ho01",
+   "domain": "brewing",
+   "text": "The mash tun heats the wort. The thermowell reports the wort temperature to the brewmaster. The brewmaster adjusts the steam jacket.",
+   "entities": [
+    {
+     "phrase": "mash tun",
+     "role": "transformer"
+    },
+    {
+     "phrase": "thermowell",
+     "role": "sensor"
+    },
+    {
+     "phrase": "brewmaster",
+     "role": "controller"
+    },
+    {
+     "phrase": "steam jacket",
+     "role": "actuator"
+    }
+   ]
+  },
+  {
+   "id": "ho02",
+   "domain": "hospital",
+   "text": "The triage nurse assigns each patient to a ward. The ward bed census limits admissions. The ambulance bay delivers patients to the emergency department.",
+   "entities": [
+    {
+     "phrase": "triage nurse",
+     "role": "controller"
+    },
+    {
+     "phrase": "ward",
+     "role": "buffer"
+    },
+    {
+     "phrase": "ambulance bay",
+     "role": "conduit"
+    },
+    {
+     "phrase": "emergency department",
+     "role": "consumer"
+    }
+   ]
+  },
+  {
+   "id": "ho03",
+   "domain": "water treatment",
+   "text": "The intake screen feeds the clarifier. The clarifier converts turbid water into settled water. The turbidimeter monitors the clarifier outlet. The dosing pump raises the coagulant level.",
+   "entities": [
+    {
+     "phrase": "intake screen",
+     "role": "regulator"
+    },
+    {
+     "phrase": "clarifier",
+     "role": "transformer"
+    },
+    {
+     "phrase": "turbidimeter",
+     "role": "sensor"
+    },
+    {
+     "phrase": "dosing pump",
+     "role": "actuator"
+    }
+   ]
+  },
+  {
+   "id": "ho04",
+   "domain": "software",
+   "text": "The load shedder limits incoming requests. The message broker stores the pending jobs. The worker pool consumes the jobs. The latency probe measures the response time.",
+   "entities": [
+    {
+     "phrase": "load shedder",
+     "role": "regulator"
+    },
+    {
+     "phrase": "message broker",
+     "role": "buffer"
+    },
+    {
+     "phrase": "worker pool",
+     "role": "consumer"
+    },
+    {
+     "phrase": "latency probe",
+     "role": "sensor"
+    }
+   ]
+  },
+  {
+   "id": "ho05",
+   "domain": "farming",
+   "text": "The irrigation sprinkler delivers moisture to the crop rows. The soil moisture probe monitors the topsoil. The agronomist sets the watering schedule. The cistern holds the rainwater.",
+   "entities": [
+    {
+     "phrase": "irrigation sprinkler",
+     "role": "actuator"
+    },
+    {
+     "phrase": "soil moisture probe",
+     "role": "sensor"
+    },
+    {
+     "phrase": "agronomist",
+     "role": "controller"
+    },
+    {
+     "phrase": "cistern",
+     "role": "buffer"
+    }
+   ]
+  },
+  {
+   "id": "ho06",
+   "domain": "bakery",
+   "text": "The proofing cabinet warms the dough. The baker adjusts the humidifier. The hygrometer reads the cabinet humidity. The dough rises in the cabinet.",
+   "entities": [
+    {
+     "phrase": "proofing cabinet",
+     "role": "transformer"
+    },
+    {
+     "phrase": "baker",
+     "role": "controller"
+    },
+    {
+     "phrase": "humidifier",
+     "role": "actuator"
+    },
+    {
+     "phrase": "hygrometer",
+     "role": "sensor"
+    }
+   ]
+  },
+  {
+   "id": "ho07",
+   "domain": "airport",
+   "text": "The gate agent assigns each passenger to a boarding queue. The jet bridge carries passengers to the aircraft. The baggage carousel delivers luggage to the arrivals hall.",
+   "entities": [
+    {
+     "phrase": "gate agent",
+     "role": "controller"
+    },
+    {
+     "phrase": "boarding queue",
+     "role": "buffer"
+    },
+    {
+     "phrase": "jet bridge",
+     "role": "conduit"
+    },
+    {
+     "phrase": "baggage carousel",
+     "role": "conduit"
+    }
+   ]
+  },
+  {
+   "id": "ho08",
+   "domain": "electronics",
+   "text": "The rectifier converts alternating current into direct current. The smoothing choke reduces the ripple. The bleeder discharges the filter bank. The voltmeter reads the bus level.",
+   "entities": [
+    {
+     "phrase": "rectifier",
+     "role": "transformer"
+    },
+    {
+     "phrase": "smoothing choke",
+     "role": "regulator"
+    },
+    {
+     "phrase": "bleeder",
+     "role": "dissipater"
+    },
+    {
+     "phrase": "filter bank",
+     "role": "buffer"
+    },
+    {
+     "phrase": "voltmeter",
+     "role": "sensor"
+    }
+   ]
+  },
+  {
+   "id": "ho09",
+   "domain": "fishery",
+   "text": "The trawler harvests the cod stock. The quota board limits the annual catch. The hatchery restocks the cod. The sonar buoy detects the shoal.",
+   "entities": [
+    {
+     "phrase": "trawler",
+     "role": "consumer"
+    },
+    {
+     "phrase": "quota board",
+     "role": "regulator"
+    },
+    {
+     "phrase": "hatchery",
+     "role": "producer"
+    },
+    {
+     "phrase": "sonar buoy",
+     "role": "sensor"
+    }
+   ]
+  },
+  {
+   "id": "ho10",
+   "domain": "hvac",
+   "text": "The air handler pushes conditioned air through the ductwork. The damper actuator adjusts the vent opening. The occupancy beacon signals the building manager. The chiller removes heat from the loop.",
+   "entities": [
+    {
+     "phrase": "air handler",
+     "role": "actuator"
+    },
+    {
+     "phrase": "damper actuator",
+     "role": "actuator"
+    },
+    {
+     "phrase": "occupancy beacon",
+     "role": "sensor"
+    },
+    {
+     "phrase": "building manager",
+     "role": "controller"
+    },
+    {
+     "phrase": "chiller",
+     "role": "transformer"
+    }
+   ]
+  },
+  {
+   "id": "ho11",
+   "domain": "retail",
+   "text": "The replenishment planner decides the reorder quantity. The stockroom shelf holds the unsold goods. The checkout lane delivers sales data to the planner. Shoplifting reduces the shelf count.",
+   "entities": [
+    {
+     "phrase": "replenishment planner",
+     "role": "controller"
+    },
+    {
+     "phrase": "stockroom shelf",
+     "role": "buffer"
+    },
+    {
+     "phrase": "checkout lane",
+     "role": "conduit"
+    },
+    {
+     "phrase": "shoplifting",
+     "role": "dissipater"
+    }
+   ]
+  },
+  {
+   "id": "ho12",
+   "domain": "telecom",
+   "text": "The base station transmits the radio signal. The antenna array carries the signal to handsets. The congestion monitor detects overload. The spectrum auctioneer limits the channel width.",
+   "entities": [
+    {
+     "phrase": "base station",
+     "role": "producer"
+    },
+    {
+     "phrase": "antenna array",
+     "role": "conduit"
+    },
+    {
+     "phrase": "congestion monitor",
+     "role": "sensor"
+    },
+    {
+     "phrase": "spectrum auctioneer",
+     "role": "regulator"
+    }
+   ]
+  },
+  {
+   "id": "ho13",
+   "domain": "metallurgy",
+   "text": "The blast stove heats the blast air. The tuyere feeds the air into the hearth. The pyrometer measures the hearth temperature. The slag notch drains the molten waste.",
+   "entities": [
+    {
+     "phrase": "blast stove",
+     "role": "actuator"
+    },
+    {
+     "phrase": "tuyere",
+     "role": "conduit"
+    },
+    {
+     "phrase": "pyrometer",
+     "role": "sensor"
+    },
+    {
+     "phrase": "slag notch",
+     "role": "sink"
+    }
+   ]
+  },
+  {
+   "id": "ho14",
+   "domain": "school",
+   "text": "The timetabler assigns each class to a classroom. The classroom capacity limits enrolment. The enrolment office reports the headcount to the timetabler. The pupils consume the lessons.",
+   "entities": [
+    {
+     "phrase": "timetabler",
+     "role": "controller"
+    },
+    {
+     "phrase": "classroom",
+     "role": "buffer"
+    },
+    {
+     "phrase": "enrolment office",
+     "role": "sensor"
+    },
+    {
+     "phrase": "pupils",
+     "role": "consumer"
+    }
+   ]
+  },
+  {
+   "id": "ho15",
+   "domain": "wind farm",
+   "text": "The turbine nacelle converts wind into torque. The pitch servo adjusts the blade angle. The anemometer measures the gust speed. The substation transformer feeds the grid.",
+   "entities": [
+    {
+     "phrase": "turbine nacelle",
+     "role": "transformer"
+    },
+    {
+     "phrase": "pitch servo",
+     "role": "actuator"
+    },
+    {
+     "phrase": "anemometer",
+     "role": "sensor"
+    },
+    {
+     "phrase": "substation transformer",
+     "role": "transformer"
+    }
+   ]
+  },
+  {
+   "id": "ho16",
+   "domain": "pharmacy",
+   "text": "The compounding robot produces the doses. The dispensary shelf stores the vials. The pharmacist approves each prescription. The barcode scanner reads the vial label.",
+   "entities": [
+    {
+     "phrase": "compounding robot",
+     "role": "producer"
+    },
+    {
+     "phrase": "dispensary shelf",
+     "role": "buffer"
+    },
+    {
+     "phrase": "pharmacist",
+     "role": "controller"
+    },
+    {
+     "phrase": "barcode scanner",
+     "role": "sensor"
+    }
+   ]
+  },
+  {
+   "id": "ho17",
+   "domain": "rail",
+   "text": "The signal box controls the points. The marshalling yard holds the wagons. The axle counter detects each train. The freight locomotive hauls the wagons to the terminal.",
+   "entities": [
+    {
+     "phrase": "signal box",
+     "role": "controller"
+    },
+    {
+     "phrase": "marshalling yard",
+     "role": "buffer"
+    },
+    {
+     "phrase": "axle counter",
+     "role": "sensor"
+    },
+    {
+     "phrase": "freight locomotive",
+     "role": "actuator"
+    },
+    {
+     "phrase": "terminal",
+     "role": "sink"
+    }
+   ]
+  },
+  {
+   "id": "ho18",
+   "domain": "pond",
+   "text": "The algal bloom consumes the dissolved nitrogen. The aerator raises the oxygen level. The secchi disk measures the water clarity. The runoff ditch carries fertiliser to the pond.",
+   "entities": [
+    {
+     "phrase": "algal bloom",
+     "role": "consumer"
+    },
+    {
+     "phrase": "aerator",
+     "role": "actuator"
+    },
+    {
+     "phrase": "secchi disk",
+     "role": "sensor"
+    },
+    {
+     "phrase": "runoff ditch",
+     "role": "conduit"
+    }
+   ]
+  },
+  {
+   "id": "ho19",
+   "domain": "printing",
+   "text": "The inking unit transfers ink to the plate cylinder. The press operator adjusts the ink fountain. The densitometer reads the ink density. The paper reel feeds the web press.",
+   "entities": [
+    {
+     "phrase": "inking unit",
+     "role": "actuator"
+    },
+    {
+     "phrase": "press operator",
+     "role": "controller"
+    },
+    {
+     "phrase": "ink fountain",
+     "role": "buffer"
+    },
+    {
+     "phrase": "densitometer",
+     "role": "sensor"
+    },
+    {
+     "phrase": "paper reel",
+     "role": "source"
+    }
+   ]
+  },
+  {
+   "id": "ho20",
+   "domain": "bank",
+   "text": "The credit committee sets the lending ceiling. The loan book holds the outstanding balances. The default tracker reports the arrears to the committee. Depositors supply the funds.",
+   "entities": [
+    {
+     "phrase": "credit committee",
+     "role": "controller"
+    },
+    {
+     "phrase": "loan book",
+     "role": "buffer"
+    },
+    {
+     "phrase": "default tracker",
+     "role": "sensor"
+    },
+    {
+     "phrase": "depositors",
+     "role": "source"
+    }
+   ]
+  },
+  {
+   "id": "ho21",
+   "domain": "kitchen",
+   "text": "The sous chef allocates orders to the stations. The ticket rail holds the pending orders. The fryer converts raw potatoes into chips. The heat lamp warms the plated dishes.",
+   "entities": [
+    {
+     "phrase": "sous chef",
+     "role": "controller"
+    },
+    {
+     "phrase": "ticket rail",
+     "role": "buffer"
+    },
+    {
+     "phrase": "fryer",
+     "role": "transformer"
+    },
+    {
+     "phrase": "heat lamp",
+     "role": "actuator"
+    }
+   ]
+  },
+  {
+   "id": "ho22",
+   "domain": "spacecraft",
+   "text": "The star tracker measures the attitude. The reaction wheel adjusts the spin rate. The flight computer commands the reaction wheel. The propellant bladder stores the hydrazine.",
+   "entities": [
+    {
+     "phrase": "star tracker",
+     "role": "sensor"
+    },
+    {
+     "phrase": "reaction wheel",
+     "role": "actuator"
+    },
+    {
+     "phrase": "flight computer",
+     "role": "controller"
+    },
+    {
+     "phrase": "propellant bladder",
+     "role": "buffer"
+    }
+   ]
+  },
+  {
+   "id": "ho23",
+   "domain": "library",
+   "text": "The catalogue clerk assigns each loan to a borrower. The returns chute delivers books to the sorting room. The overdue ledger records the late fines. The readers consume the books.",
+   "entities": [
+    {
+     "phrase": "catalogue clerk",
+     "role": "controller"
+    },
+    {
+     "phrase": "returns chute",
+     "role": "conduit"
+    },
+    {
+     "phrase": "overdue ledger",
+     "role": "sensor"
+    },
+    {
+     "phrase": "readers",
+     "role": "consumer"
+    }
+   ]
+  },
+  {
+   "id": "ho24",
+   "domain": "sewer",
+   "text": "The stormwater weir limits the overflow. The detention basin holds the surge. The flow logger measures the trunk sewer level. The outfall discharges the effluent to the estuary.",
+   "entities": [
+    {
+     "phrase": "stormwater weir",
+     "role": "regulator"
+    },
+    {
+     "phrase": "detention basin",
+     "role": "buffer"
+    },
+    {
+     "phrase": "flow logger",
+     "role": "sensor"
+    },
+    {
+     "phrase": "outfall",
+     "role": "sink"
+    }
+   ]
+  },
+  {
+   "id": "ho25",
+   "domain": "glassworks",
+   "text": "The batch hopper feeds the sand to the melting tank. The regenerator recovers waste heat. The lehr cools the glass sheet. The gob cutter divides the molten glass.",
+   "entities": [
+    {
+     "phrase": "batch hopper",
+     "role": "source"
+    },
+    {
+     "phrase": "regenerator",
+     "role": "transformer"
+    },
+    {
+     "phrase": "lehr",
+     "role": "actuator"
+    },
+    {
+     "phrase": "gob cutter",
+     "role": "actuator"
+    }
+   ]
+  }
+ ]
+}
