@@ -107,7 +107,8 @@ def test_serve_subprocess_end_to_end(tmp_path):
         url = re.search(r"http://\S+", line).group(0)
         with urllib.request.urlopen(url + "api/v1/health", timeout=10) as r:
             assert json.loads(r.read())["status"] == "ok"
-        req = urllib.request.Request(url + "api/v1/discoveries", data=json.dumps({"text": TEXT}).encode(), method="POST")
+        req = urllib.request.Request(url + "api/v1/discoveries", data=json.dumps({"text": TEXT}).encode(), method="POST",
+                                     headers={"Content-Type": "application/json"})
         rid = json.loads(urllib.request.urlopen(req, timeout=10).read())["id"]
         for _ in range(100):
             with urllib.request.urlopen(url + f"api/v1/discoveries/{rid}", timeout=10) as r:

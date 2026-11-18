@@ -13,6 +13,8 @@ python3 ./isomorph serve
 ```
 The app opens in your browser at http://localhost:8765. It needs no install, no Docker, no Node and no Postgres. Data is kept in `~/.isomorph` (set `ISOMORPH_HOME` to move it). On a fresh start, click "Load the roller demo" to see a full run in seconds.
 
+Run it from a checkout. A plain `pip install .` (wheel) ships the code but not the `data/` knowledge files, so `serve` and `doctor` report an error; use `pip install -e .` (what `./install.sh` does) or set `ISOMORPH_DATA_DIR`. `restore` and `reset` refuse to run while a server uses the same data directory; stop the server first. Without a token the server only answers requests addressed to localhost and rejects cross-origin and non-JSON writes.
+
 Optional: `./install.sh` creates `.venv` and installs an `isomorph` command (`.venv/bin/isomorph serve`). `make run`, `make test`, `make doctor` and `make backup` are shortcuts. `python3 ./isomorph doctor` checks your setup, `backup` and `restore` manage the database, and `analyze "your problem text"` prints a report without the UI.
 
 > **Read the status section first.** The zero-dependency app (stdlib HTTP server, SQLite, bundled web UI, CLI) is tested by running it. The browser UI has been syntax checked and served over HTTP but never rendered in a real browser, because the authoring sandbox had none. The older FastAPI, Next.js and Postgres stack below is optional and still unverified. See [What is complete, incomplete and unverified](#status).

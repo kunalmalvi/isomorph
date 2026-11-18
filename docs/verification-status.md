@@ -1,6 +1,6 @@
 # Verification status
 
-This file states what was executed in the authoring sandbox and what was only written to specification. The sandbox has Python 3.11 and pytest. It has no FastAPI, Pydantic, SQLAlchemy, Alembic, httpx, NumPy, NetworkX or PostgreSQL, and no package index access.
+This file states what was executed in the authoring sandbox and what was only written to specification. The authoring sandbox has Python 3.11 and pytest (phase 4 also used pip and Node, see below). It has no FastAPI, Pydantic, SQLAlchemy, Alembic, httpx, NumPy, NetworkX or PostgreSQL, and `npm install` for the old frontend is blocked. Phase 1 to 3 results below were produced without a package index.
 
 Command run: `cd backend && python3 -m pytest tests -q -rs`
 
@@ -139,14 +139,24 @@ Goal: make ISOMORPH easy to run, install and manage. `python3 ./isomorph serve` 
 ### What ran (sandbox: Python 3.11.15, Node 22.23, pip 26.2, no Docker, no browser)
 | Check | Command | Result |
 |---|---|---|
-| Full test suite | `cd backend && python3 -m pytest tests -q -rs` | 208 passed, 2 skipped (baseline before phase 4: 181 passed, 2 skipped; the skips need FastAPI and SQLAlchemy) |
+| Full test suite | `cd backend && python3 -m pytest tests -q -rs` | 218 passed, 2 skipped after the phase 4 review fixes (208 passed before them; 181 passed before phase 4; the skips need FastAPI and SQLAlchemy) |
 | JS syntax | `node --check backend/isomorph_app/static/app.js` and `lib.js` | Pass (also run inside pytest) |
 | UI helper tests | `node backend/tests/platform/ui_helpers.test.mjs` | 11 groups pass: upload checks, SSE parser with split chunks, error messages, score formatting, mapping layout, filtering, hypothesis merge, routing |
 | Compile | `python3 -m compileall -q backend scripts` | Pass |
 | Engine scripts | `python3 scripts/run_demo.py`, `evaluate_benchmarks.py`, `validate_seed_data.py` | Run, seed data OK |
 | Real HTTP | Started `python3 ./isomorph serve --no-browser --port 8799`, requested `/`, `/app.js`, `/api/v1/health` | 200 for all, clean shutdown. `tests/platform/test_ui_bundle.py` also serves the UI from a live server thread |
 | Static safety | `test_ui_bundle.py` | No external URLs or CDN, no `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write` or `eval` in `app.js` or `lib.js`; the demo example text equals `data/demo/roller_problem.json`; every API path the UI calls exists in `server.py` |
-| Packaging | `python3 -m venv --system-site-packages .scratch/venv && .scratch/venv/bin/python -m pip install --no-deps --no-build-isolation -e .`, then `isomorph version` and `isomorph doctor` from another directory; `pip wheel --no-deps --no-build-isolation .` | Editable install and wheel build succeeded, wheel contains the `static/` files, doctor passes. The wheel carries code only; the knowledge data is read from the checkout's `data/` (or `ISOMORPH_DATA_DIR`), so use an editable install from a checkout |
+| Packaging | `python3 -m venv --system-site-packages .scratch/venv && .scratch/venv/bin/python -m pip install --no-deps --no-build-isolation -e .`, then `isomorph version` and `isomorph doctor` from another directory; `pip wheel --no-deps --no-build-isolation .` | Editable install and wheel build succeeded, wheel contains the `static/` files, doctor passes. The wheel carries code only; the knowledge data is read from the checkout's `data/` (or `ISOMORPH_DATA_DIR`), so use an editable install from a checkout. `serve` and `doctor` now fail with a clear message when `data/` is missing |
+
+### Phase 4 review fixes (executed in `tests/platform/test_phase4_review.py`)
+| Review issue | Change | Status |
+|---|---|---|
+| No CSRF or DNS-rebinding defence | Without a token, `Host` must be localhost, 127.0.0.1, ::1 or the configured host (403 otherwise). A browser `Origin` must equal `Host` (403 otherwise). Request bodies need `Content-Type: application/json` (415 otherwise) | Tested over raw HTTP. Not tested with a real browser |
+| Wheel lacks knowledge data | Not packaged. `serve` exits 2 and `doctor` fails with a message naming `ISOMORPH_DATA_DIR` and editable install. README notes it | Tested with a missing data directory |
+| Restore or reset under a live server | `serve` writes `server.lock` (pid, host, port) in the data directory and removes it on exit. `restore` and `reset` refuse while the pid is alive unless `--force`. A second `serve` on the same directory refuses. Stale locks are ignored | Tested with in-process and real server processes. On Windows liveness uses a port probe, not tested |
+| No security headers | `Content-Security-Policy`, `X-Frame-Options: DENY` and `Referrer-Policy` on every response | Tested. CSP effect on the real UI in a browser was not observed, so an inline style or script would only show up when rendering |
+| Token brute force and cleartext | 10 failed bearer attempts per minute per client address, then 429. `serve` warns on a non-loopback bind about plain HTTP | Throttle tested. Warning text not tested. No TLS is provided |
+| UI never rendered | Not fixed. No browser or Playwright exists in the sandbox | Still UNVERIFIED |
 
 ### UNVERIFIED
 - **Rendering in a real browser.** No browser or Playwright exists in the sandbox. Layout, CSS, SVG mapping graph, keyboard behavior, focus handling, responsive breakpoints and the `fetch` based live progress stream in an actual browser were never observed. The JS was only syntax checked and its pure helpers executed under Node. Runtime errors in DOM code are possible.

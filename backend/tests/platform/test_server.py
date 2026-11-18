@@ -24,6 +24,8 @@ class Client:
         tok = self.token if token == "default" else token
         if tok:
             req.add_header("Authorization", "Bearer " + tok)
+        if data is not None:
+            req.add_header("Content-Type", "application/json")
         for k, v in (headers or {}).items():
             req.add_header(k, v)
         try:

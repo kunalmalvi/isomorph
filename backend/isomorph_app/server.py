@@ -20,7 +20,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Optional
 from urllib.parse import parse_qs, unquote, urlsplit
 
-from core.errors import AppError, NotFound, PayloadTooLarge, Unauthorized, ValidationFailed, error_envelope
+from core.errors import AppError, Forbidden, NotFound, PayloadTooLarge, Unauthorized, ValidationFailed, error_envelope
+from core.rate_limit import RateLimiter
 from core.sse import format_sse, parse_last_event_id, progress_stream
 from services.annotations import DECISIONS
 
@@ -35,6 +36,19 @@ _FALLBACK_PAGE = b"""<!doctype html><meta charset="utf-8"><title>ISOMORPH</title
 <body style="font-family:system-ui;max-width:40rem;margin:4rem auto"><h1>ISOMORPH</h1>
 <p>The API is running. The bundled web UI was not found in this install.</p>
 <p>Try <a href="/api/v1/health">/api/v1/health</a>.</p></body>"""
+
+
+CSP = "default-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
+LOCAL_HOSTS = ("localhost", "127.0.0.1", "::1")
+AUTH_FAILURES_PER_MINUTE = 10
+
+
+def _host_only(value: str) -> str:
+    """Host name from a Host header value: drops the port and IPv6 brackets, lower case."""
+    v = (value or "").strip().lower()
+    if v.startswith("["):
+        return v[1:].split("]", 1)[0]
+    return v.rsplit(":", 1)[0] if v.count(":") == 1 else v
 
 
 class InsecureBind(RuntimeError):
@@ -66,6 +80,9 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Content-Security-Policy", CSP)
+        self.send_header("Referrer-Policy", "no-referrer")
         self.send_header("Cache-Control", "no-store" if ctype.startswith("application/json") else "no-cache")
         for k, v in (extra or {}).items():
             self.send_header(k, v)
@@ -98,6 +115,10 @@ class Handler(BaseHTTPRequestHandler):
             raise PayloadTooLarge(f"request body exceeds {self.app.config.max_body_bytes} bytes")
         if n == 0:
             return {}
+        ctype = (self.headers.get("Content-Type") or "").split(";", 1)[0].strip().lower()
+        if ctype != "application/json":
+            self.close_connection = True  # body is not read
+            raise AppError("Content-Type must be application/json", code="unsupported_media_type", status=415)
         raw = self.rfile.read(n)
         try:
             body = json.loads(raw.decode("utf-8"))
@@ -107,15 +128,35 @@ class Handler(BaseHTTPRequestHandler):
             raise ValidationFailed("request body must be a JSON object")
         return body
 
+    def _check_origin(self) -> None:
+        """Defence against DNS rebinding and cross-site requests to a local server.
+
+        Without a token, only loopback names and the configured host are accepted in Host. A browser Origin header
+        must always match the Host the request was sent to (the bundled UI is same origin).
+        """
+        host = self.headers.get("Host") or ""
+        if not self.app.config.token:
+            allowed = set(LOCAL_HOSTS) | {self.app.config.host.lower()}
+            if _host_only(host) not in allowed:
+                raise Forbidden("Host header not allowed; use localhost or set ISOMORPH_TOKEN")
+        origin = self.headers.get("Origin")
+        if origin is not None and urlsplit(origin).netloc.lower() != host.strip().lower():
+            raise Forbidden("cross-origin requests are not allowed")
+
     def _check_auth(self) -> None:
         token = self.app.config.token
         if not token:
             return
+        ip = self.client_address[0]
+        limiter = self.server.auth_limiter  # type: ignore[attr-defined]
+        if limiter.remaining(ip) == 0:
+            raise AppError("too many failed attempts, try again later", code="rate_limited", status=429)
         h = self.headers.get("Authorization") or ""
         given = h[7:] if h.lower().startswith("bearer ") else ""
         if not given:
             raise Unauthorized("missing bearer token")
         if not hmac.compare_digest(given.encode(), token.encode()):
+            limiter.check(ip)  # only failures are counted
             raise Unauthorized("invalid bearer token")
 
     # ------------------------------------------------------------------ dispatch
@@ -141,6 +182,7 @@ class Handler(BaseHTTPRequestHandler):
         parts = urlsplit(self.path)
         path, query = parts.path, {k: v[-1] for k, v in parse_qs(parts.query).items()}
         try:
+            self._check_origin()
             if path == API or path.startswith(API + "/"):
                 sub = path[len(API):] or "/"
                 if sub != "/health":
@@ -313,6 +355,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream; charset=utf-8")
         self.send_header("Cache-Control", "no-cache")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Content-Security-Policy", CSP)
         self.send_header("Connection", "close")
         self.send_header("X-Accel-Buffering", "no")
         self.end_headers()
@@ -364,6 +408,7 @@ class IsomorphServer(ThreadingHTTPServer):
     def __init__(self, app: App, host: str, port: int, quiet: bool = True):
         self.app = app
         self.quiet = quiet
+        self.auth_limiter = RateLimiter(AUTH_FAILURES_PER_MINUTE, 60.0)
         super().__init__((host, port), Handler)
 
     @property
