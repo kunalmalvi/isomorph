@@ -18,7 +18,9 @@ LIMITS = ("Learning is limited to two things: a lexicon overlay (words the user 
           "cannot place a word) and conditional priors (small nudges of at most 0.1 that apply only under the recorded "
           "conditions). A gate on frozen sets (perception held-out, retrieval held-out, tuning benchmarks) rejects any "
           "candidate that lowers a metric. The gate cannot detect harm that those sets do not cover, and a pass on "
-          "metrics that did not change is not evidence that a change helps.")
+          "metrics that did not change is not evidence that a change helps. Conditional priors are stored and versioned "
+          "but only the investigate pipeline reads them; the app's orchestrator does not, so a prior does not change "
+          "an orchestrator run today. Learned words do apply to local perception.")
 
 
 def normalize_term(label: str) -> str:
@@ -57,12 +59,16 @@ class LearningService:
         with self._lock:
             active = self.registry.active()
             hist = self.registry.history()
-            cand, report, _ = build_candidate(self.evidence, active["config"])
-            pending = cand != active["config"]
+            cand, report, used_ids = build_candidate(self.evidence, active["config"])
+            repeat = pending = False
+            if cand != active["config"]:
+                repeat = self.registry.last_rejected_for(cand, used_ids) is not None
+                pending = not repeat
             last_gate = next((self.summarize(v) for v in reversed(hist) if v["gate"]), None)
             return {"active": self.summarize(active), "evidence": self.counts(), "pending": {
                         "would_change": pending, "report": report,
                         "lexicon_terms": cand["lexicon_overlay"] if pending else {},
+                        "already_rejected": repeat,
                         "note": "Preview from the recorded evidence only. Nothing changes until a cycle passes the gate."},
                     "last_gate": last_gate, "versions": len(hist), "limits": LIMITS}
 
@@ -113,6 +119,11 @@ class LearningService:
                 return dict(base, changed=False, accepted=None, after=before["id"], metrics=None,
                             message="Nothing changed: the recorded evidence does not support any new lexicon term or prior "
                                     "(a term needs corrections from 2 distinct runs that agree, a prior needs 3 matching decisions).")
+            prior = self.registry.last_rejected_for(cand, used)
+            if prior is not None:
+                return dict(base, changed=False, accepted=False, candidate=prior["id"], after=before["id"], metrics=None,
+                            message=f"Skipped: the same candidate was already rejected as {prior['id']} on this evidence "
+                                    f"({prior['gate']['note']}). Record new evidence to try again.")
             v = self.registry.propose(cand, used, reason=f"improvement cycle from {len(used)} evidence events")
             gate = v["gate"]
             if v["status"] == "active":

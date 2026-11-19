@@ -8,10 +8,16 @@ are written to an append-only audit log. Time is injected (no hidden clock) so t
 """
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import re
 from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover (non-POSIX)
+    fcntl = None
 
 from ..schemas import ROLES
 
@@ -103,6 +109,20 @@ def _append_jsonl(path: str, obj: dict) -> None:
         f.write(json.dumps(obj, sort_keys=True) + "\n")
 
 
+@contextlib.contextmanager
+def _file_lock(path: str):
+    """Exclusive inter-process lock on path + '.lock' (no-op where fcntl is unavailable)."""
+    if fcntl is None:
+        yield
+        return
+    with open(path + ".lock", "a") as lf:
+        fcntl.flock(lf, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lf, fcntl.LOCK_UN)
+
+
 # ------------------------------------------------------------------ evidence log
 
 class EvidenceLog:
@@ -111,7 +131,14 @@ class EvidenceLog:
     def __init__(self, path: Optional[str] = None, clock: Callable[[], int] = lambda: 0):
         self.path = path
         self.clock = clock
-        self.events: List[dict] = _read_jsonl(path) if path else []
+        self._events: List[dict] = _read_jsonl(path) if path else []
+
+    @property
+    def events(self) -> List[dict]:
+        """All events. With a file, re-read each time so events written by another process are visible."""
+        if self.path:
+            self._events = _read_jsonl(self.path)
+        return self._events
 
     def append(self, kind: str, payload: dict, provenance: Optional[str] = None) -> dict:
         if kind not in EVIDENCE_KINDS:
@@ -122,11 +149,17 @@ class EvidenceLog:
         if not isinstance(payload, dict):
             raise ValueError("payload must be a dict")
         clean = self._clean(kind, payload)
-        ev = {"id": f"ev-{len(self.events) + 1}", "timestamp": self.clock(), "kind": kind, "payload": clean,
-              "provenance": expected}
-        self.events.append(ev)
-        if self.path:
+        if not self.path:
+            ev = {"id": f"ev-{len(self._events) + 1}", "timestamp": self.clock(), "kind": kind, "payload": clean,
+                  "provenance": expected}
+            self._events.append(ev)
+            return ev
+        with _file_lock(self.path):  # re-read under the lock so ids stay unique across processes
+            existing = _read_jsonl(self.path)
+            ev = {"id": f"ev-{len(existing) + 1}", "timestamp": self.clock(), "kind": kind, "payload": clean,
+                  "provenance": expected}
             _append_jsonl(self.path, ev)
+            self._events = existing + [ev]
         return ev
 
     @staticmethod
@@ -381,10 +414,20 @@ class ModelRegistry:
         return _read_jsonl(self._audit_path)
 
     def _log(self, action: str, version: str, reason: str, detail: Optional[dict] = None) -> dict:
-        entry = {"seq": len(self.audit()) + 1, "timestamp": self.clock(), "action": action, "version": version,
-                 "reason": reason, "detail": detail or {}}
-        _append_jsonl(self._audit_path, entry)
+        with _file_lock(self._audit_path):
+            entry = {"seq": len(self.audit()) + 1, "timestamp": self.clock(), "action": action, "version": version,
+                     "reason": reason, "detail": detail or {}}
+            _append_jsonl(self._audit_path, entry)
         return entry
+
+    def last_rejected_for(self, config: dict, evidence_ids: List[str]) -> Optional[dict]:
+        """The latest rejected version with exactly this config and evidence, or None."""
+        config = validate_config(config)
+        ids = sorted(evidence_ids)
+        for v in reversed(self.history()):
+            if v["status"] == "rejected" and v["config"] == config and v["evidence_ids"] == ids:
+                return v
+        return None
 
     def propose(self, config: dict, evidence_ids: Optional[List[str]] = None, reason: str = "",
                 gate_fn: Optional[Callable[..., dict]] = None) -> Optional[dict]:

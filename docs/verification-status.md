@@ -302,6 +302,8 @@ Every quality metric is identical. **No accuracy improvement is claimed from thi
 - The browser UI (Learning page, role-correction control) was never rendered. Only the JS helper tests and server-side asset serving ran.
 - FastAPI and SQLAlchemy paths were not run. The learning loop is wired only into the zero-dependency server and CLI.
 - The orchestrator applies only the lexicon overlay. Conditional priors are recorded and versioned but only `pipeline.investigate` applies them.
+- The Learning page and status now say priors are stored only. Evidence ids stay unique across the CLI and the server (file lock, re-read before append, POSIX only; tested with two logs on one file, not with two real processes). A cycle skips a candidate already rejected on the same evidence.
+- A correction without a run id still counts as its own vote, so one caller can satisfy the 2-run rule by repeating a request. This is accepted for a local single-user app and the evidence is not meant to resist one actor.
 - Remote AI perception ignores the overlay and records no learned version.
 - Perception labels, held-out retrieval labels and the tuning set are author written and not independently reviewed. The tuning set has n=7 and overlaps matcher development.
 - No real user corrections exist in this repository, so the end to end tests use synthetic words.

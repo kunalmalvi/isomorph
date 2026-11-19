@@ -187,6 +187,11 @@ def test_rejected_cycle_leaves_active_version_unchanged(tmp_path, monkeypatch):
         # the next run still sees an unknown word
         _, run = discover(c, TEXT)
         assert node(run, "zorblat")[0]["role"] is None
+        # repeated cycle on unchanged evidence does not store another rejected version
+        assert s["pending"]["would_change"] is False and s["pending"]["already_rejected"] is True
+        st, again = c.call("POST", "/api/v1/learning/cycle", {})
+        assert again["accepted"] is False and again["candidate"] == "v1" and "Skipped" in again["message"]
+        assert len(c.call("GET", "/api/v1/learning/versions")[1]["items"]) == 2
     finally:
         stop(app, server)
 

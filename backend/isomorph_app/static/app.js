@@ -681,7 +681,7 @@ async function viewLearning() {
             if (!confirm("Make the previous version active again? The current version stays in the history.")) return;
             try { const r = await api("POST", "/learning/rollback", {}); toast(r.message, "ok"); await draw(); } catch (e) { toast(e.message, "bad"); }
           } })),
-        h("p", { class: "muted", text: a.lexicon_terms + " learned words, " + a.priors + " conditional priors. " + (a.id === "v0" ? "This is the built-in behaviour with nothing learned." : a.reason) }),
+        h("p", { class: "muted", text: a.lexicon_terms + " learned words, " + a.priors + " conditional priors (stored only: the app does not apply priors yet). " + (a.id === "v0" ? "This is the built-in behaviour with nothing learned." : a.reason) }),
         overlay.length ? h("ul", { class: "plain" }, overlay.map(([t, r]) => h("li", {}, h("b", { text: t }), " is treated as ", pill(r)))) : null,
         h("p", { class: "muted", text: "Evidence recorded: " + ev.total + " (" + ev.role_correction + " role corrections, " + ev.hypothesis_feedback + " hypothesis decisions, " + ev.experiment_outcome + " experiment outcomes)." })),
       h("div", { class: "card", style: "margin-top:14px" },

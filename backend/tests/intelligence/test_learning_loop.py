@@ -337,3 +337,28 @@ def test_determinism():
     a, b = build(), build()
     assert json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
     assert json.dumps(run_gate(a[0], empty_config()), sort_keys=True) == json.dumps(run_gate(a[0], empty_config()), sort_keys=True)
+
+
+# ---------------------------------------------------------------- review fixes
+
+def test_two_evidence_logs_on_one_file_keep_ids_unique_and_visible(tmp_path):
+    path = str(tmp_path / "evidence.jsonl")
+    a, b = EvidenceLog(path, clock=Clock()), EvidenceLog(path, clock=Clock())
+    e1 = corr(a, "flumox", "regulator", "r1")
+    e2 = corr(b, "flumox", "regulator", "r2")
+    e3 = corr(a, "zorb", "regulator", "r3")
+    assert [e1["id"], e2["id"], e3["id"]] == ["ev-1", "ev-2", "ev-3"]
+    assert len(a.events) == len(b.events) == 3
+
+
+def test_registry_finds_last_rejected_candidate_for_same_evidence(tmp_path):
+    reg = ModelRegistry(str(tmp_path / "reg"), clock=Clock())
+    cfg = {"lexicon_overlay": {"flumox": "regulator"}, "priors": []}
+
+    def reject(c, a, cv=None, av=None):
+        return {"accepted": False, "sensitive": True, "regressions": ["x"], "note": "stub reject", "metrics": {}}
+
+    v = reg.propose(cfg, ["ev-1", "ev-2"], gate_fn=reject)
+    assert v["status"] == "rejected"
+    assert reg.last_rejected_for(cfg, ["ev-2", "ev-1"])["id"] == v["id"]
+    assert reg.last_rejected_for(cfg, ["ev-1", "ev-2", "ev-3"]) is None
