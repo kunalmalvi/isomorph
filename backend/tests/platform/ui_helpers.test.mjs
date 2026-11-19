@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   checkUpload, textFromUpload, errorMessage, parseSse, progressFraction, scoreBand, fmtScore, fmtPercent, relTime,
   breakdownRows, layoutMapping, filterSystems, mergeHypotheses, parseRoute, STAGES, EXAMPLES,
+  gateRows, versionStatusText, correctableEntities, learnableTerm, LEARNING_LIMITS,
 } from "../../isomorph_app/static/lib.js";
 
 let n = 0;
@@ -82,5 +83,22 @@ t("stages match the engine order and examples exist", () => {
   assert.equal(STAGES.length, 9);
   assert.equal(STAGES[0][0], "perception");
   assert.ok(EXAMPLES[0].text.includes("copper or silver"));
+});
+t("learning helpers", () => {
+  const rows = gateRows({ a: { before: 0.4, after: 0.4, delta: 0 }, b: { before: 0.4, after: 0.3, delta: -0.1 }, c: { before: 0.1, after: 0.2, delta: 0.1 } });
+  assert.deepEqual(rows.map((r) => r.verdict), ["unchanged", "dropped", "improved"]);
+  assert.deepEqual(gateRows(null), []);
+  assert.match(versionStatusText("rejected"), /gate/);
+  const out = { problem: { graph: { nodes: [
+    { id: "a", label: "pump", role: "actuator", attrs: {} },
+    { id: "b", label: "zorblat", role: null, attrs: {} },
+    { id: "c", label: "gizmo", role: "buffer", attrs: { role_source: "head_noun" } }] } } };
+  assert.deepEqual(correctableEntities(out).map((e) => e.id), ["b", "c"]);
+  assert.deepEqual(correctableEntities(null), []);
+  assert.equal(learnableTerm("  Zorblat   Unit "), "zorblat unit");
+  assert.equal(learnableTerm("pump-2"), null);
+  assert.equal(learnableTerm("a b c d e"), null);
+  assert.deepEqual(parseRoute("#/learning"), { name: "learning" });
+  assert.match(LEARNING_LIMITS, /cannot detect harm/);
 });
 console.log(`ui helper tests passed: ${n}`);

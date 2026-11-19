@@ -147,6 +147,11 @@ class EvidenceLog:
                 if p.get("decision") not in DECISIONS:
                     raise ValueError(f"decision must be one of {list(DECISIONS)}")
                 out["decision"] = p["decision"]
+                hid = p.get("hypothesis_id")
+                if hid is not None:
+                    if not isinstance(hid, str) or not hid:
+                        raise ValueError("hypothesis_id must be a non-empty string")
+                    out["hypothesis_id"] = hid
             else:
                 if p.get("outcome") not in OUTCOMES:
                     raise ValueError(f"outcome must be one of {list(OUTCOMES)}")
@@ -229,13 +234,16 @@ def propose_lexicon(events: List[dict], base: Optional[dict] = None,
     """Candidate config plus a report. A term needs >= 2 distinct runs/events and >= 80% agreement on one role."""
     base = validate_config(base or empty_config())
     vocab = vocab if vocab is not None else heldout_vocabulary()
-    support: Dict[str, Dict[str, Set[str]]] = {}
+    # one vote per (run or event, term); a later correction in the same run replaces the earlier one
+    votes: Dict[Tuple[str, str], str] = {}
     for ev in events:
         if ev["kind"] != "role_correction":
             continue
         p = ev["payload"]
-        distinct = p.get("run_id") or ev["id"]
-        support.setdefault(p["term"], {}).setdefault(p["role"], set()).add(distinct)
+        votes[(p.get("run_id") or ev["id"], p["term"])] = p["role"]
+    support: Dict[str, Dict[str, Set[str]]] = {}
+    for (distinct, term), role in votes.items():
+        support.setdefault(term, {}).setdefault(role, set()).add(distinct)
     overlay = dict(base["lexicon_overlay"])
     learned, skipped = [], []
     for term in sorted(support):
@@ -260,8 +268,17 @@ def propose_priors(events: List[dict], base: Optional[dict] = None) -> Tuple[dic
     """Conditional priors from hypothesis feedback and experiment outcomes, grouped by (concept_type, conditions)."""
     base = validate_config(base or empty_config())
     groups: Dict[Tuple[str, str], dict] = {}
+    # feedback on the same hypothesis of the same run counts once: the latest decision wins
+    latest: Dict[Tuple[str, str], str] = {}
     for ev in events:
         p = ev["payload"]
+        if ev["kind"] == "hypothesis_feedback" and p.get("run_id") and p.get("hypothesis_id"):
+            latest[(p["run_id"], p["hypothesis_id"])] = ev["id"]
+    for ev in events:
+        p = ev["payload"]
+        if ev["kind"] == "hypothesis_feedback" and p.get("run_id") and p.get("hypothesis_id") \
+                and latest[(p["run_id"], p["hypothesis_id"])] != ev["id"]:
+            continue
         if ev["kind"] == "hypothesis_feedback":
             if p["decision"] == "none":
                 continue

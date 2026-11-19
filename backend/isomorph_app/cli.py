@@ -1,6 +1,6 @@
 """`isomorph` command line: run, check and manage the app. Stdlib only.
 
-Subcommands: serve, doctor, analyze, seed, validate, backup, restore, export, reset, list, version.
+Subcommands: serve, doctor, analyze, seed, validate, backup, restore, export, reset, list, learn, version.
 Every command takes --home (or ISOMORPH_HOME) so one data directory holds the database, uploads and backups.
 """
 from __future__ import annotations
@@ -459,6 +459,74 @@ def cmd_reset(args) -> int:
     return 0
 
 
+# ------------------------------------------------------------------ learning loop
+def _metric_table(metrics: Optional[dict]) -> List[str]:
+    if not metrics:
+        return []
+    rows = [f"  {'metric':<38}{'before':>9}{'after':>9}{'delta':>9}"]
+    for name, r in metrics.items():
+        rows.append(f"  {name:<38}{r['before']:>9.4f}{r['after']:>9.4f}{r['delta']:>+9.4f}")
+    return rows
+
+
+def _learning_limits() -> str:
+    from services.learning import LIMITS
+    return LIMITS
+
+
+def cmd_learn(args) -> int:
+    from core.errors import AppError
+    app = _open_app(args, synchronous=True)
+    try:
+        lr = app.learning
+        if args.learn_cmd == "status":
+            st = lr.status()
+            a = st["active"]
+            _out(f"active learned version: {a['id']} ({a['lexicon_terms']} lexicon terms, {a['priors']} priors)")
+            ev = st["evidence"]
+            _out("evidence: " + ", ".join(f"{k} {v}" for k, v in ev.items()))
+            if a["config"]["lexicon_overlay"]:
+                _out("learned terms: " + ", ".join(f"{t} -> {r}" for t, r in a["config"]["lexicon_overlay"].items()))
+            pend = st["pending"]
+            _out("a cycle would change the config" if pend["would_change"] else "a cycle would change nothing with the current evidence")
+            for sk in pend["report"]["lexicon"]["skipped"]:
+                _out(f"  not learned: {sk['term']} ({sk['reason']})")
+            if st["last_gate"]:
+                g = st["last_gate"]
+                _out(f"last gate report ({g['id']}, {g['status']}): {g['gate']['note']}")
+                for row in _metric_table(g["gate"]["metrics"]):
+                    _out(row)
+            _out("")
+            _out(_learning_limits())
+        elif args.learn_cmd == "correct":
+            res = app.correct_role(args.run, args.term, args.role, "")
+            _out(res["clarification"])
+        elif args.learn_cmd == "cycle":
+            res = lr.cycle()
+            _out(res["message"])
+            for row in _metric_table(res["metrics"]):
+                _out(row)
+            if res["metrics"] and not res["sensitive"]:
+                _out("note: no metric changed, so the gate gives no evidence that this change helps.")
+            _out(f"active version: {res['after']}")
+        elif args.learn_cmd == "history":
+            vs = lr.versions()
+            for v in vs["items"]:
+                note = v["gate"]["note"] if v["gate"] else v["reason"]
+                _out(f"{v['id']:<5}{v['status']:<12}parent {v['parent'] or '-':<4}{v['lexicon_terms']} terms, {v['priors']} priors  {note}")
+            for e in vs["audit"]:
+                _out(f"  audit #{e['seq']} {e['action']} {e['version']}: {e['reason']}")
+            _out(f"active: {vs['active']}")
+        elif args.learn_cmd == "rollback":
+            _out(lr.rollback(args.to)["message"])
+    except AppError as e:
+        _err(f"error: {e.message}")
+        return 2
+    finally:
+        app.close()
+    return 0
+
+
 def cmd_version(args) -> int:
     _out(f"isomorph {__version__} (python {sys.version.split()[0]})")
     return 0
@@ -522,6 +590,19 @@ def build_parser() -> argparse.ArgumentParser:
     x.add_argument("--no-backup", action="store_true")
     x.add_argument("--force", action="store_true", help="skip the check for a running server")
     x.set_defaults(fn=cmd_reset)
+
+    ln = sub.add_parser("learn", help="self-improving loop: evidence, gated improvement cycles, versions, rollback")
+    lsub = ln.add_subparsers(dest="learn_cmd", metavar="action", required=True)
+    lsub.add_parser("status", parents=[common], help="active version, evidence counts, pending proposal, last gate report")
+    lc = lsub.add_parser("correct", parents=[common], help="record that a word has a given role")
+    lc.add_argument("--term", required=True, help="1 to 4 lowercase words, for example 'zorblat'")
+    lc.add_argument("--role", required=True, help="a role from the fixed role set")
+    lc.add_argument("--run", help="discovery id the correction comes from (corrections from distinct runs count separately)")
+    lsub.add_parser("cycle", parents=[common], help="build a candidate from evidence, run the gate, activate or reject")
+    lsub.add_parser("history", parents=[common], help="list versions and the audit log")
+    lr = lsub.add_parser("rollback", parents=[common], help="make the previous (or --to) version active again")
+    lr.add_argument("--to", help="version id (default: the parent of the active version)")
+    ln.set_defaults(fn=cmd_learn)
 
     sub.add_parser("version", help="print the version").set_defaults(fn=cmd_version)
     return p

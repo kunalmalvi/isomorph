@@ -22,7 +22,7 @@
   "ISOMORPH_HOME=$(mktemp -d) python3 ./isomorph learn status",
   "python3 scripts/run_demo.py"
  ],
- "status": "pending",
+ "status": "completed",
  "blocked_reason": null,
- "findings": ""
+ "findings": "321 passed, 2 skipped (8 new in tests/platform/test_learning_app.py). node exists (v22), ui_helpers.test.mjs passes (12 tests) and runs inside test_ui_bundle; the browser UI itself (Learning page, role-correction control) was never rendered and is UNVERIFIED. Added: config.learning_dir (<home>/learning), services/learning.py (LearningService: status, versions, record_correction, record_feedback, cycle, rollback, LIMITS text), App.learning/set_annotation/correct_role/edit_stage, Orchestrator(learned_source=...) uses the active overlay in the perception stage for the local provider only (no AI call) and writes learned_version into the perception output (also v0); reports include learned_version (markdown line only when not v0). API: GET /learning, GET /learning/versions, POST /learning/corrections, /learning/cycle, /learning/rollback; /settings now lists roles. CLI: learn status|correct|cycle|history|rollback. UI: Learning page plus role-correction card on the run Progress tab. Engine tweaks in loop.py: hypothesis_feedback accepts optional hypothesis_id; propose_priors counts the latest decision per (run, hypothesis); propose_lexicon counts one vote per (run or event, term), latest wins. Limits: the orchestrator applies only the lexicon overlay. Conditional priors are recorded and versioned but are not applied in the staged orchestrator (only pipeline.investigate uses them). Remote AI perception ignores the overlay and records no learned_version. Perception stage edits count as role_correction evidence only for nodes whose id existed before and whose role changed. A 'none' decision or delete is not evidence and does not retract earlier feedback. No data/benchmark_problems changes; run_demo.py leaves data/demo unchanged."
 }
