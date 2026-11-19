@@ -18,7 +18,7 @@
   "python3 scripts/run_demo.py && python3 scripts/evaluate_benchmarks.py && python3 scripts/evaluate_heldout.py && python3 scripts/evaluate_perception.py && python3 scripts/validate_seed_data.py",
   "python3 -m compileall -q backend scripts"
  ],
- "status": "pending",
+ "status": "completed",
  "blocked_reason": null,
- "findings": ""
+ "findings": "336 passed, 2 skipped (15 new in tests/intelligence/test_phase9_sensitivity.py). monte_carlo(correlations={(a,b):rho}) uses a Gaussian copula (Cholesky, erf, closed-form inverse CDFs); default path unchanged and no 'correlations' key without input; result echoes correlations used. Rejects rho outside (-1,1), unknown paths, self pairs, non positive definite sets. ParameterRecord.correlations (optional, empty default, omitted from to_dict when empty so data/demo is unchanged) and correlations_from_records helper; roller demo supplies none. Docs updated: verification-status (Phase 9 section, before/after table: all quality metrics identical to baseline), benchmark-notes, README (loop section, test count), api-contracts (learning endpoints). All scripts and compileall ran. UNVERIFIED items listed in docs."
 }

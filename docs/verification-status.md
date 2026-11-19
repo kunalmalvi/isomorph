@@ -261,3 +261,48 @@ The maximum single-pass draft for a two roll mill is `2R(1 - 1/sqrt(1+mu^2))`. T
 - **Held-out labels** are still author labelled with no independent review.
 - **`python3 ./isomorph doctor`** fails under the default home here because `/root/.isomorph` is read-only (same on the base commit). It passes with `ISOMORPH_HOME` set to a writable directory.
 - **`serve` health request by hand** was not run in this phase. The pytest live-server tests cover serving.
+
+## Phase 9: self-improving loop and correlated sampling
+
+### What ran (sandbox: Python 3.11, Node 22, no browser, no network, no FastAPI or SQLAlchemy)
+- `cd backend && python3 -m pytest tests -q`: 336 passed, 2 skipped (FastAPI and SQLAlchemy missing). Before phase 9 (`baseline.json`): 288 passed, 2 skipped.
+- `python3 scripts/run_demo.py`, `evaluate_benchmarks.py`, `evaluate_heldout.py`, `evaluate_perception.py`, `validate_seed_data.py` and `python3 -m compileall -q backend scripts` all ran and passed. `data/demo/sample_investigation.json` is unchanged by the demo run.
+- Executed: evidence log, versioned registry with audit log, regression gate, lexicon overlay, conditional priors, the app wiring (HTTP server and CLI end to end in a temp home, including rollback), and optional correlated Monte Carlo sampling.
+
+### Before and after (real runs, `baseline.json` against this phase, no learned data active)
+| Metric | Before | After |
+|---|---|---|
+| Tuning set MRR (7 pairs) | 0.9286 | 0.9286 |
+| Tuning set hit@1 | 1.0 | 1.0 |
+| Tuning set mean margin | 13.0658 | 13.0658 |
+| Held-out retrieval MRR, strong (20 queries) | 0.975 | 0.975 |
+| Held-out retrieval nDCG@10 | 0.8324 | 0.8324 |
+| Held-out hit@1 strong | 0.95 | 0.95 |
+| Perception detection recall | 0.846 | 0.846 |
+| Perception role coverage | 0.44 | 0.44 |
+| Perception role accuracy | 0.404 | 0.404 |
+| Perception precision when assigned | 0.857 | 0.857 |
+| Roller demo best score | 37.5 | 37.5 |
+| Seed systems, validation | 111, OK | 111, OK |
+| Tests | 288 passed, 2 skipped | 336 passed, 2 skipped |
+
+Every quality metric is identical. **No accuracy improvement is claimed from this phase.** With no learned data, perception role accuracy stays 0.404. The phase adds the machinery to learn from user corrections and to refuse harmful changes. Whether it improves results for a given user depends on the corrections that user supplies, and no such improvement has been measured here.
+
+### What the gate does and does not guarantee
+- The gate compares perception role accuracy, precision when assigned, detection recall, held-out MRR and nDCG, and tuning MRR for the active and candidate configs, and rejects the candidate if any drops.
+- It only guards those metrics on those frozen sets. A change that harms something outside them is not detected.
+- It is insensitive to words absent from the frozen sets: a lexicon term that none of those texts contain cannot change the metrics, so the gate passes it as metric-neutral.
+- It is not sensitive to priors. Priors do not enter the frozen retrieval metrics, so a prior candidate is reported as "gate not sensitive to this change". The bounded size (within plus or minus 0.1) and the n >= 3 and matching-conditions rules are the only protection for priors.
+- A leak guard quarantines terms that appear in the held-out files, so the gate is not trivially satisfied by learning the test vocabulary.
+
+### Correlated sampling
+`monte_carlo(..., correlations={(path_a, path_b): rho})` uses a Gaussian copula (stdlib: Cholesky, `math.erf`, closed-form inverse CDFs of the triangular and uniform marginals). It is opt in. The caller or a `ParameterRecord.correlations` field must supply rho, nothing is defaulted, and the roller demo declares none, so the demo still samples K and n independently. Tests (`tests/intelligence/test_phase9_sensitivity.py`) check that default output is unchanged, that the sample Pearson and Spearman correlation of 4000 draws is within 0.08 of rho for rho 0.8 and -0.6, that samples stay inside [low, high], that invalid rho raises, and determinism by seed. The result echoes the correlations used. Sampled correlation is close to rho, not equal to it.
+
+### UNVERIFIED and limits
+- The browser UI (Learning page, role-correction control) was never rendered. Only the JS helper tests and server-side asset serving ran.
+- FastAPI and SQLAlchemy paths were not run. The learning loop is wired only into the zero-dependency server and CLI.
+- The orchestrator applies only the lexicon overlay. Conditional priors are recorded and versioned but only `pipeline.investigate` applies them.
+- Remote AI perception ignores the overlay and records no learned version.
+- Perception labels, held-out retrieval labels and the tuning set are author written and not independently reviewed. The tuning set has n=7 and overlaps matcher development.
+- No real user corrections exist in this repository, so the end to end tests use synthetic words.
+- Roller material values remain recalled and unverified. No correlation between K and n has been entered for them.

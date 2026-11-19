@@ -28,6 +28,27 @@ Optional: `./install.sh` creates `.venv` and installs an `isomorph` command (`.v
 - Runs execute in the server process (thread pool). A restart marks interrupted runs failed and you can resume them.
 - Single user, local mode. Binding a non-local address requires `ISOMORPH_TOKEN`; put a TLS proxy in front if you expose it.
 
+## Self-improving loop
+ISOMORPH can learn from your corrections without changing its frozen benchmark data. Learning is limited to two things: a lexicon overlay (word to role, used by perception) and conditional priors (small bounded score adjustments tied to recorded conditions and a minimum count). It does not retrain the matcher, and no AI call is involved.
+
+- **Evidence** is an append-only log: role corrections, accept/reject decisions on hypotheses (with query domain and concept type), experiment outcomes and mapping edits. Each item records who supplied it. Simulation results are never stored as real world evidence.
+- **Proposals** use only that log. A word enters the lexicon only after at least 2 corrections from distinct runs with at least 80 percent agreement. Conflicting corrections are not learned. Words that occur in the held-out benchmark files are quarantined. A prior needs at least 3 matching records and stays within plus or minus 0.1.
+- **Versions and gate.** Each candidate becomes a numbered version. The gate re-runs the perception, held-out retrieval and tuning metrics and rejects any candidate that lowers one. The before/after table is stored with the version and in `audit.jsonl`. Versions live under `<ISOMORPH_HOME>/learning`.
+- **Rollback** makes the parent (or a chosen) version active again and is audited.
+- **Limits.** The gate guards only the metrics in the frozen sets. It cannot detect harm outside them, is not sensitive to priors, and does not notice words absent from those sets. On the current data nothing is learned, perception role accuracy stays 0.404, and no accuracy improvement is claimed. The orchestrator applies only the lexicon overlay, and remote AI perception ignores it. The Learning page in the browser UI was never rendered (UNVERIFIED).
+
+CLI:
+```
+python3 ./isomorph learn status
+python3 ./isomorph learn correct --term zorblat --role buffer --run <discovery id>
+python3 ./isomorph learn cycle
+python3 ./isomorph learn history
+python3 ./isomorph learn rollback [--to v1]
+```
+API (all under `/api/v1`): `GET /learning`, `POST /learning/corrections` with `{run_id?, term, role}`, `POST /learning/cycle`, `GET /learning/versions`, `POST /learning/rollback` with `{to?}`. Invalid input returns 422.
+
+Sensitivity analysis can also take an optional, user supplied correlation between two sampled parameters (`correlations` in `experiments.sensitivity.monte_carlo`, or `ParameterRecord.correlations`). It is never defaulted.
+
 ## Repository layout
 | Path | Contents |
 |---|---|
@@ -92,7 +113,7 @@ Behavior to know about:
 ## Tests
 | Suite | Command | Status |
 |---|---|---|
-| Everything runnable (engine, SQLite app, HTTP server, CLI, UI assets) | `cd backend && python3 -m pytest tests -q -rs` | 208 passed, 2 skipped (FastAPI and SQLAlchemy missing) |
+| Everything runnable (engine, SQLite app, HTTP server, CLI, UI assets) | `cd backend && python3 -m pytest tests -q -rs` | 336 passed, 2 skipped (FastAPI and SQLAlchemy missing) |
 | UI helper functions | `node backend/tests/platform/ui_helpers.test.mjs` (also run by pytest) | Passing |
 | Backend API with FastAPI | same command, after installing `requirements-dev.txt` | Skipped in the sandbox, never run |
 | Frontend unit (vitest) | `cd frontend && npm test` | Written, never run |

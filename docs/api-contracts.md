@@ -142,3 +142,12 @@ Base path: `/api/v1`. JSON only. Status: DESIGN, to be implemented with FastAPI.
 - `POST /mappings` body: `{"match_id": uuid}`. Returns node pairs, edge pairs, `unmapped_source`, `unmapped_target`, `confidence`.
 - `POST /transformations` body: `{"mapping_id": uuid}`. Returns steps, `constraint_report`, `status` in ok or blocked.
 - `POST /experiments/{id}/runs` body: `{"seed": int}`. Identical seed and configuration yield identical results.
+
+## Learning loop endpoints (zero-dependency server)
+Under `/api/v1`. No AI call is made. Validation errors are 422 with the standard error envelope.
+- `GET /learning`: active version, evidence counts, pending candidate, last gate report, limits text.
+- `GET /learning/versions`: versions with status and gate reports, plus the audit log.
+- `POST /learning/corrections` with `{run_id?, term, role, note?}`: records a role correction (201). `role` must be one of the fixed roles.
+- `POST /learning/cycle`: builds a candidate from evidence, runs the gate, activates or rejects, returns the before/after table.
+- `POST /learning/rollback` with `{to?}`: activates the parent or the named version.
+The gate guards only the frozen benchmark metrics. Status: executed by pytest against the stdlib server. Not part of the FastAPI design (UNVERIFIED there).
