@@ -1,0 +1,10 @@
+{
+ "branch": "isomorph-phase9",
+ "tests": {"passed": 288, "skipped": 2},
+ "benchmarks_tuning": {"pairs": 7, "mrr_primary": 0.9286, "hit_at_1": 1.0, "mean_margin": 13.0658, "mrr_lexical_only_baseline": 0.2123},
+ "heldout": {"queries": 20, "mrr_strong": 0.975, "ndcg_at_10": 0.8324, "hit_at_1_strong": 0.95, "hit_at_3_strong": 1.0, "lookalike_beats_best_strong": 0, "lexical_only_mrr_strong": 0.2602},
+ "perception": {"detection_recall": 0.846, "role_coverage": 0.44, "role_accuracy": 0.404, "precision_when_assigned": 0.857, "perceived_entities": 184},
+ "roller_demo": {"query": "mechanical_engineering copper 20% reduction", "best_score": 37.5, "best_match": "Variable air volume zone control (architecture)", "distinct_transformation_concepts": 4},
+ "seed_data": {"systems": 111, "validation": "OK"},
+ "caveats": "heldout labels author-labelled, not independently reviewed; tuning n=7 overlaps tuning set; perception set small and code-author labelled"
+}

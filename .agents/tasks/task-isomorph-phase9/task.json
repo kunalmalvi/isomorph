@@ -1,0 +1,12 @@
+{
+ "task_id": "task-isomorph-phase9",
+ "task_description": "Make ISOMORPH a self-improving system: evidence-driven, versioned, reversible, gated learning of perception lexicon and conditional priors, wired into the app, with honest measured reporting. Plus correlated sensitivity sampling.",
+ "status": "in_progress",
+ "feature_order": [
+  "FEAT-001",
+  "FEAT-002",
+  "FEAT-003",
+  "FEAT-004"
+ ],
+ "blocked_reason": null
+}

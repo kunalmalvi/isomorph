@@ -1,0 +1,19 @@
+{
+ "id": "FEAT-001",
+ "type": "chore",
+ "description": "Baseline: confirm branch isomorph-phase9, run tests and all evaluation scripts, save measured numbers to .agents/tasks/task-isomorph-phase9/baseline.json.",
+ "steps": [
+  "cd backend && python3 -m pytest tests -q",
+  "python3 scripts/run_demo.py, evaluate_benchmarks.py, evaluate_heldout.py, evaluate_perception.py, validate_seed_data.py",
+  "Write parsed headline metrics (tests passed, bench MRR, heldout MRR/ndcg/hit@1, perception detection_recall/role_accuracy/precision/coverage, roller best score) into baseline.json"
+ ],
+ "acceptance_criteria": [
+  "baseline.json exists with numbers copied from real runs"
+ ],
+ "verification": [
+  "python3 -m json.tool .agents/tasks/task-isomorph-phase9/baseline.json"
+ ],
+ "status": "completed",
+ "blocked_reason": null,
+ "findings": "All numbers match orchestrator cross-check. 288 passed, 2 skipped. run_demo left git tree clean (outputs unchanged). Roller best score taken as demo top match 37.5."
+}

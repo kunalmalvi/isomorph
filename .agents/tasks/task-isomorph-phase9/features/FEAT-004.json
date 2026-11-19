@@ -1,0 +1,24 @@
+{
+ "id": "FEAT-004",
+ "type": "feat",
+ "description": "Sensitivity analysis: optional declared correlation between sampled parameters (e.g. material.K and n) via Gaussian copula with stdlib only; plus docs and honest before/after measurement. Independent of FEAT-002/003 in code but docs depend on all.",
+ "steps": [
+  "backend/experiments/sensitivity.py monte_carlo: add optional `correlations: Dict[Tuple[str,str], float]` (rho in (-1,1), default None keeps sampling byte-identical to today). Implement a Gaussian copula: draw correlated standard normals via Cholesky for the declared pairs, map through the normal CDF (math.erf) to uniforms, then through the inverse CDF of each marginal (triangular and uniform have closed forms). Validate rho and that paths exist in ranges. Never invent a correlation: it must be supplied by the caller/parameter record, and the result must echo the correlations used.",
+  "Where the roller demo parameters (backend/experiments/parameters.py, data/demo/roller_problem.json) already label K and n, expose correlation only as an optional user supplied field in the parameter records; do NOT set a default correlation value for the demo and do not special-case the roller. Report both independent and correlated results only if a correlation is supplied.",
+  "Tests in backend/tests/intelligence/test_phase9_sensitivity.py: default call output unchanged vs a stored value computed on the old code path; empirical Spearman/Pearson correlation of samples approaches rho within tolerance for n=4000 with fixed seed; marginals stay inside [low, high]; invalid rho raises; determinism by seed.",
+  "Docs: update docs/verification-status.md (new Phase 9 section: what ran, what is UNVERIFIED, before/after table from baseline.json vs final runs), docs/benchmark-notes.md (gate semantics, which sets are frozen, what the loop can and cannot claim, that perception accuracy with no learned data is unchanged at 0.404 and is NOT improved by this phase unless a measured change exists), README.md (self-improving loop section: evidence sources, versioning, gate, rollback, CLI and API usage). No claims of AGI, no invented numbers; every number must come from a run. Re-run all commands and paste real outputs."
+ ],
+ "acceptance_criteria": [
+  "Full pytest suite passes",
+  "Correlated sampling test passes and default sampling is unchanged",
+  "Docs list real before and after numbers and mark UNVERIFIED items"
+ ],
+ "verification": [
+  "cd backend && python3 -m pytest tests -q",
+  "python3 scripts/run_demo.py && python3 scripts/evaluate_benchmarks.py && python3 scripts/evaluate_heldout.py && python3 scripts/evaluate_perception.py && python3 scripts/validate_seed_data.py",
+  "python3 -m compileall -q backend scripts"
+ ],
+ "status": "pending",
+ "blocked_reason": null,
+ "findings": ""
+}
