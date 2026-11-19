@@ -19,11 +19,13 @@ import uuid
 from typing import Callable, Dict, List, Optional
 
 from ai_providers import CompletionRequest, LocalProvider, Provider, ProviderError
+from ai_providers.base import ProviderSchemaError, validate_schema
 from core.errors import AppError, Conflict, NotFound, ValidationFailed
 from intelligence.constraint_engine import ConstraintReport  # noqa: F401  (re-exported for type reference)
 from intelligence.fingerprint import compute_fingerprint, vector_similarity
 from intelligence.hypothesis_engine import generate
 from intelligence.mapping_engine import Mapping, map_graphs
+from intelligence.perception import perceive_text
 from intelligence.schemas import (Fingerprint, Graph, Hypothesis, Problem, Provenance, SchemaError, ScoreWeights)
 from intelligence.structural_model import StructuralModel, build_model
 from intelligence.transformation_engine import Concept, derive_concepts, select_distinct
@@ -100,8 +102,10 @@ def validate_config(config: Optional[dict]) -> dict:
 
 class Orchestrator:
     def __init__(self, store: RunStore, knowledge: Optional[KnowledgeBase] = None, provider: Optional[Provider] = None,
-                 clock: Callable[[], float] = time.time, provider_factory: Optional[Callable[[str], Provider]] = None):
+                 clock: Callable[[], float] = time.time, provider_factory: Optional[Callable[[str], Provider]] = None,
+                 learned_source: Optional[Callable[[], Optional[dict]]] = None):
         self.store = store
+        self.learned_source = learned_source  # returns the active learned version dict (id, config) or None
         self.kb = knowledge or default_knowledge()
         self.provider = provider or LocalProvider()
         self.provider_factory = provider_factory
@@ -279,6 +283,18 @@ class Orchestrator:
                     "clarification_questions": [], "flags": ["structured input supplied by the user, perception skipped"],
                     "limitations": "", "available": True, "provider": "user"}, "user"
         provider = self._provider_for(run)
+        learned = self.learned_source() if self.learned_source else None
+        overlay = ((learned or {}).get("config") or {}).get("lexicon_overlay") or None
+        if overlay and provider.name == "local":
+            # deterministic local perception with the active learned lexicon overlay; no AI call
+            parsed = perceive_text(inp["text"], inp.get("title") or "", overlay=overlay, overlay_version=learned["id"]).to_dict()
+            errs = validate_schema(parsed, PERCEPTION_SCHEMA)
+            if errs:
+                raise ProviderSchemaError("; ".join(errs[:5]))
+            out = dict(parsed)
+            out["provider"] = {"name": provider.name, "model": provider.model, "usage": {}}
+            out["learned_version"] = learned["id"]
+            return out, "computation"
         res = provider.complete(CompletionRequest(prompt=inp["text"], task="extract_structure", system=inp.get("title") or None,
                                                   schema=PERCEPTION_SCHEMA))
         out = dict(res.parsed)
@@ -290,6 +306,8 @@ class Orchestrator:
                 e.provenance = Provenance.AI_HYPOTHESIS
             out["problem"] = problem.to_dict()
         out["provider"] = {"name": res.provider, "model": res.model, "usage": res.usage}
+        if learned and provider.name == "local":
+            out["learned_version"] = learned["id"]
         return out, res.provenance
 
     def _extraction(self, run, ctx):

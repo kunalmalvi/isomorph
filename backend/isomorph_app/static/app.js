@@ -3,7 +3,7 @@
 import {
   STAGES, TERMINAL, PROVENANCE, DISCLAIMER, EXAMPLES, checkUpload, textFromUpload, errorMessage, parseSse, stageLabel,
   progressFraction, statusTone, scoreBand, fmtScore, fmtPercent, fmtTime, relTime, breakdownRows, layoutMapping,
-  filterSystems, mergeHypotheses, parseRoute,
+  filterSystems, mergeHypotheses, parseRoute, LEARNING_LIMITS, gateRows, versionStatusText, correctableEntities, learnableTerm,
 } from "./lib.js";
 
 const API = "/api/v1";
@@ -132,6 +132,7 @@ async function route() {
     else if (r.name === "run") await viewRun(r);
     else if (r.name === "knowledge") await viewKnowledge(r);
     else if (r.name === "settings") await viewSettings();
+    else if (r.name === "learning") await viewLearning();
     else mount(h("h1", { text: "Page not found" }), h("p", {}, h("a", { href: "#/", text: "Back to investigations" })));
   } catch (e) {
     if (e instanceof ApiError && e.status === 401) return tokenForm(route);
@@ -393,6 +394,35 @@ async function tabProgress(body, state, ctx) {
   }
   body.append(pipe);
   if (state.selected) body.append(inspector(state, ctx));
+  await entityCorrections(body, state, ctx);
+}
+
+// Role correction on perceived entities whose role is a guess or unknown. Each correction is evidence for the learning loop.
+async function entityCorrections(body, state, ctx) {
+  const ents = correctableEntities(ctx.stageOut("perception"));
+  if (!ents.length) return;
+  const roles = (await api("GET", "/settings")).roles || [];
+  const card = h("div", { class: "card", style: "margin-top:16px" },
+    h("h3", { style: "margin-top:0", text: "Roles the engine guessed or could not place" }),
+    h("p", { class: "muted", text: "Tell ISOMORPH the right role. A correction is recorded as evidence. A word is learned only after agreeing corrections from 2 different investigations pass the gate on the Learning page." }));
+  for (const e of ents) {
+    const sel = h("select", { "aria-label": "Role of " + e.label }, h("option", { value: "", text: "Choose a role" }),
+      roles.map((r) => h("option", { value: r, text: r, selected: r === e.role ? "" : null })));
+    const term = learnableTerm(e.label);
+    const msg = h("span", { class: "muted", "aria-live": "polite" });
+    const btn = h("button", { type: "button", class: "small", text: "Record correction", disabled: term ? null : "", onclick: async () => {
+      if (!sel.value) return (msg.textContent = "Pick a role first.");
+      try {
+        const res = await api("POST", "/learning/corrections", { run_id: ctx.id, term: e.label, role: sel.value });
+        msg.textContent = res.clarification;
+      } catch (err) { msg.textContent = ""; toast(err.message, "bad"); }
+    } });
+    card.append(h("div", { class: "row spread", style: "margin:8px 0" },
+      h("span", {}, h("b", { text: e.label }), " ", e.role ? pill(e.role + " (guessed by " + e.source.replace(/_/g, " ") + ")", "warn") : pill("role unknown", "bad"),
+        term ? null : h("span", { class: "muted", text: " cannot be learned (not 1 to 4 plain words)" })),
+      h("span", { class: "row" }, sel, btn)), h("div", {}, msg));
+  }
+  body.append(card);
 }
 
 function inspector(state, ctx) {
@@ -624,6 +654,64 @@ async function viewKnowledge(r) {
       h("h3", { text: "Sources" }),
       h("ul", { class: "plain" }, (s.sources || []).map((x) => h("li", {}, provLabel("source"), " ", x.citation || "", x.note ? " " : "", h("span", { class: "muted", text: x.note || "" }))))));
   }
+}
+
+// ---------------------------------------------------------------- learning
+function gateTable(metrics) {
+  const rows = gateRows(metrics).map((r) => h("tr", {}, h("td", { class: "mono", text: r.name }), h("td", { class: "mono", text: fmtScore(r.before, 4) }),
+    h("td", { class: "mono", text: fmtScore(r.after, 4) }), h("td", { class: "mono", text: (r.delta > 0 ? "+" : "") + fmtScore(r.delta, 4) }),
+    h("td", {}, pill(r.verdict, r.verdict === "dropped" ? "bad" : r.verdict === "improved" ? "ok" : "mute"))));
+  return h("div", { class: "tablewrap" }, h("table", {}, h("thead", {}, h("tr", {}, ["Metric", "Before", "After", "Change", "Result"].map((t) => h("th", { text: t })))), h("tbody", {}, rows)));
+}
+
+async function viewLearning() {
+  document.title = "Learning | ISOMORPH";
+  const out = h("div");
+  const result = h("div");
+  async function draw() {
+    const [st, vs] = await Promise.all([api("GET", "/learning"), api("GET", "/learning/versions")]);
+    clear(out);
+    const a = st.active;
+    const ev = st.evidence;
+    const overlay = Object.entries(a.config.lexicon_overlay);
+    out.append(
+      h("div", { class: "card" },
+        h("div", { class: "row spread" }, h("h2", { style: "margin:0", text: "Active version " + a.id }),
+          h("button", { class: "danger", disabled: a.parent ? null : "", text: "Roll back", onclick: async () => {
+            if (!confirm("Make the previous version active again? The current version stays in the history.")) return;
+            try { const r = await api("POST", "/learning/rollback", {}); toast(r.message, "ok"); await draw(); } catch (e) { toast(e.message, "bad"); }
+          } })),
+        h("p", { class: "muted", text: a.lexicon_terms + " learned words, " + a.priors + " conditional priors (stored only: the app does not apply priors yet). " + (a.id === "v0" ? "This is the built-in behaviour with nothing learned." : a.reason) }),
+        overlay.length ? h("ul", { class: "plain" }, overlay.map(([t, r]) => h("li", {}, h("b", { text: t }), " is treated as ", pill(r)))) : null,
+        h("p", { class: "muted", text: "Evidence recorded: " + ev.total + " (" + ev.role_correction + " role corrections, " + ev.hypothesis_feedback + " hypothesis decisions, " + ev.experiment_outcome + " experiment outcomes)." })),
+      h("div", { class: "card", style: "margin-top:14px" },
+        h("h3", { style: "margin-top:0", text: "Improvement cycle" }),
+        h("p", { class: "muted", text: st.pending.would_change ? "The recorded evidence supports a change. Running a cycle tests it against the gate." : "With the current evidence a cycle would change nothing." }),
+        (st.pending.report.lexicon.skipped || []).length ? h("ul", { class: "plain" }, st.pending.report.lexicon.skipped.map((s) => h("li", { text: s.term + ": not learned (" + s.reason.replace(/_/g, " ") + ")" }))) : null,
+        h("p", {}, h("button", { class: "primary", id: "cycle", text: "Run improvement cycle", onclick: async (e) => {
+          e.target.disabled = true;
+          try {
+            const r = await api("POST", "/learning/cycle", {});
+            clear(result);
+            result.append(notice(r.message, r.accepted === false ? "warn" : r.changed ? "info" : ""));
+            if (r.metrics) result.append(gateTable(r.metrics));
+            if (r.metrics && !r.sensitive) result.append(notice("No metric changed, so the gate gives no evidence that this change helps.", "warn"));
+            await draw();
+          } catch (err) { toast(err.message, "bad"); e.target.disabled = false; }
+        } })), result),
+      h("h2", { text: "History" }));
+    for (const v of vs.items.slice().reverse()) {
+      out.append(h("details", { class: "card", style: "margin-bottom:10px", open: v.id === a.id ? "" : null },
+        h("summary", {}, h("b", { text: v.id }), " ", pill(versionStatusText(v.status), v.status === "rejected" ? "bad" : v.status === "active" ? "ok" : "mute"), " ",
+          h("span", { class: "muted", text: v.lexicon_terms + " words, " + v.priors + " priors, " + v.evidence_count + " evidence events" })),
+        h("p", { class: "muted", text: v.gate ? v.gate.note : v.reason }),
+        v.gate ? gateTable(v.gate.metrics) : null));
+    }
+    if (vs.items.length === 1) out.append(h("div", { class: "empty" }, "No improvement has been proposed yet. Correct roles in an investigation, then run a cycle."));
+    out.append(h("h2", { text: "Honest limits" }), notice(LEARNING_LIMITS, ""));
+  }
+  mount(h("h1", { text: "Learning" }), h("p", { class: "sub", text: "ISOMORPH improves only from evidence you record. Every change is a version you can inspect and roll back." }), out, disclaimer());
+  await draw();
 }
 
 // ---------------------------------------------------------------- settings

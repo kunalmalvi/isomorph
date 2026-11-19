@@ -12,6 +12,7 @@ import importlib.util
 import io
 import json
 import math
+import contextvars
 import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
@@ -198,12 +199,13 @@ def _verb_stem(tok: str) -> Optional[str]:
 # ------------------------------------------------------------------ role resolution beyond the lexicon
 # Each mechanism below is an INFERENCE with its own lower confidence and a recorded source; none is a stated fact.
 ROLE_SOURCE_CONFIDENCE = {"lexicon": 0.7, "head_noun": 0.5, "morphology": 0.45, "knowledge_index": 0.35,
-                          "context": 0.25, "ai_provider": 0.4}
+                          "context": 0.25, "ai_provider": 0.4, "learned": 0.6}
 ROLE_SOURCE_TEXT = {
     "head_noun": "the last word of the phrase matches a lexicon or synonym term",
     "morphology": "a hyphenated part or compound tail matches a lexicon or synonym term",
     "knowledge_index": "word overlap with role-labelled entities in the seed knowledge base",
     "context": "the verb that links it to other entities",
+    "learned": "a term confirmed by repeated user role corrections in the active learned config",
     "ai_provider": "classification by the configured AI provider (a hypothesis)",
 }
 INDEX_MIN_SCORE = 1.2
@@ -316,13 +318,43 @@ def _index_role(words: List[str]) -> Optional[str]:
     return None
 
 
+# Learned lexicon overlay for the current perceive_text call (term -> role) and the config version that supplied it.
+# A ContextVar is set and reset inside perceive_text, so nothing leaks between calls or threads.
+_OVERLAY: contextvars.ContextVar[Optional[Dict[str, str]]] = contextvars.ContextVar("perception_overlay", default=None)
+_OVERLAY_VERSION: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar("perception_overlay_version", default=None)
+
+
+def _same_term(a: List[str], b: List[str]) -> bool:
+    """Word by word match where plural and singular forms of either side may meet ('flumoxes' = 'flumox')."""
+    return len(a) == len(b) and all(set(_singulars(x)) & set(_singulars(y)) for x, y in zip(a, b))
+
+
+def _overlay_role(words: List[str]) -> Optional[str]:
+    overlay = _OVERLAY.get()
+    if not overlay:
+        return None
+    terms = sorted(overlay.items())
+    for term, role in terms:
+        if _same_term(term.lower().split(), words):
+            return role
+    for term, role in terms:
+        if _same_term(term.lower().split(), words[-1:]):
+            return role
+    return None
+
+
 def resolve_unknown_role(words: List[str]) -> Optional[Tuple[str, str]]:
-    """Role for a phrase the lexicon missed: head noun, then morphology, then the seed knowledge index.
-    Returns (role, source) or None. None means nothing matched; the caller must leave the role unknown."""
+    """Role for a phrase the lexicon missed: learned overlay, head noun, then morphology, then the seed knowledge index.
+    Returns (role, source) or None. None means nothing matched; the caller must leave the role unknown.
+    The learned overlay never overrides a head word that the lexicon or synonyms already resolve."""
     words = [w.lower() for w in words if w]
     if not words:
         return None
     head = words[-1]
+    if _lex_role(head) is None:
+        r = _overlay_role(words)
+        if r:
+            return r, "learned"
     r = _lex_role(head)
     if r:
         return r, ("head_noun" if len(words) > 1 else "morphology")
@@ -512,7 +544,19 @@ def _quantities(sentence: str, base: int) -> List[dict]:
     return out
 
 
-def perceive_text(text: str, title: str = "") -> PerceptionResult:
+def perceive_text(text: str, title: str = "", overlay: Optional[Dict[str, str]] = None,
+                  overlay_version: Optional[str] = None) -> PerceptionResult:
+    """Perceive free text. overlay (term -> role, from a learned config) is optional; None keeps the built-in behaviour."""
+    tok = _OVERLAY.set(dict(overlay) if overlay else None)
+    tok_v = _OVERLAY_VERSION.set(overlay_version)
+    try:
+        return _perceive_text(text, title)
+    finally:
+        _OVERLAY.reset(tok)
+        _OVERLAY_VERSION.reset(tok_v)
+
+
+def _perceive_text(text: str, title: str = "") -> PerceptionResult:
     pid = _slug(title) or "problem"
     problem = Problem(id=pid, title=title or "Untitled problem", statement=text)
     res = PerceptionResult(problem)
@@ -557,6 +601,8 @@ def perceive_text(text: str, title: str = "") -> PerceptionResult:
                                            "provenance": "computation", "confidence": 0.7})
                 elif known:
                     note = f" ({e['role_note']})" if e.get("role_note") else ""
+                    if src == "learned":
+                        note += f" (learned config version {_OVERLAY_VERSION.get() or 'unversioned'})"
                     res.inferences.append({"statement": f"Role of '{e['key']}' inferred as {e['role']}: {ROLE_SOURCE_TEXT[src]}{note}. "
                                                         "This is a guess, not a stated fact.",
                                            "provenance": "computation", "confidence": ROLE_SOURCE_CONFIDENCE[src],

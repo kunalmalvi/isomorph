@@ -10,6 +10,7 @@ from core.config import load_settings
 from core.errors import AppError, Conflict, NotFound, ValidationFailed
 from core.extract import extract
 from core.uploads import find_stored, interpretation, store_upload, validate_upload
+from services.learning import LearningService, normalize_term
 from services.knowledge import KnowledgeBase, default_knowledge
 from services.orchestrator import STAGES, Orchestrator
 from services.reports import build_report, report_markdown
@@ -31,7 +32,9 @@ class App:
         self.annotations = SqliteAnnotationStore(self.db)
         self.settings = load_settings()
         self.kb = knowledge or default_knowledge()
-        self.orch = Orchestrator(self.store, self.kb, provider_factory=lambda name: get_provider(self.settings, name))
+        self.learning = LearningService(config.learning_dir)
+        self.orch = Orchestrator(self.store, self.kb, provider_factory=lambda name: get_provider(self.settings, name),
+                                 learned_source=self.learning.active)
         # a process that died mid run leaves queued/running rows no worker will finish
         self.recovered = recover_interrupted_runs(self.store)
         self.jobs = JobRunner(self.orch, max_workers=config.worker_threads, synchronous=synchronous)
@@ -171,6 +174,57 @@ class App:
         """Notes are keyed by positional hypothesis id, so hide those whose hypothesis no longer exists."""
         current = self.hypothesis_ids(run_id)
         return {k: v for k, v in self.annotations.list(run_id).items() if k in current}
+
+    # ------------------------------------------------------------------ learning
+    def set_annotation(self, run_id: str, hypothesis_id: str, decision: str, note: str) -> dict:
+        """Store a reviewer decision and, for a real decision, record it as hypothesis feedback evidence."""
+        rec = self.annotations.set(run_id, hypothesis_id, decision, note)
+        if decision != "none":
+            run = self.require_run(run_id)
+            stages = {n: s.output or {} for n, s in run.stages.items()}
+            domain = stages["structural_extraction"].get("query_domain")
+            concept_type = None
+            for h in stages["hypothesis_generation"].get("hypotheses", []):
+                if h.get("id") == hypothesis_id:
+                    for cid in h.get("based_on") or []:
+                        concept_type = str(cid).split(":", 1)[0]
+                        break
+            if concept_type:
+                self.learning.record_feedback(run_id, hypothesis_id, decision, concept_type, domain)
+        return rec
+
+    def correct_role(self, run_id: Optional[str], entity_label: str, role: str, note: str = "") -> dict:
+        """Record a role correction as evidence. Returns the evidence and what is still needed before it is learned."""
+        if run_id:
+            self.require_run(run_id)
+        term = normalize_term(entity_label)
+        ev = self.learning.record_correction(term, role, run_id or None)
+        support = self.learning.term_support(term)
+        agreeing = support.get(role, 0)
+        if agreeing >= 2:
+            clar = (f"'{term}' now has {agreeing} corrections to {role}. Run an improvement cycle to test it against the gate.")
+        else:
+            clar = (f"Recorded '{term}' as {role}. It becomes a learned term after corrections from 2 distinct runs agree, "
+                    f"then an improvement cycle must pass the gate (now {agreeing}).")
+        return {"evidence": ev, "term": term, "role": role, "note": note, "support": support, "clarification": clar}
+
+    def edit_stage(self, run_id: str, stage: str, output: dict):
+        """Edit a stage output. A user changed role in the perception stage counts as role correction evidence."""
+        before = {}
+        if stage == "perception":
+            old = self.require_run(run_id).stages["perception"].output or {}
+            before = {n.get("id"): n.get("role") for n in ((old.get("problem") or {}).get("graph") or {}).get("nodes", [])}
+        run = self.orch.edit_stage(run_id, stage, output)
+        if stage == "perception":
+            from intelligence.schemas import ROLES
+            for n in ((output.get("problem") or {}).get("graph") or {}).get("nodes", []):
+                role = n.get("role")
+                if n.get("id") in before and role in ROLES and role != before[n.get("id")]:
+                    try:
+                        self.learning.record_correction(normalize_term(str(n.get("label", ""))), role, run_id)
+                    except ValidationFailed:
+                        pass  # a label that is not a plain lowercase term cannot be learned
+        return run
 
     # ------------------------------------------------------------------ misc
     def health(self) -> dict:

@@ -11,7 +11,7 @@ from .analogy_engine import AnalogyEngine
 from .transformation_engine import derive_concepts, select_distinct
 from .hypothesis_engine import generate
 from .validation_engine import validate
-from .learning_engine import MemoryStore
+from .learning_engine import MemoryStore, learned_prior
 
 
 def investigate(problem_or_text, systems: Sequence[System], domains: DomainRegistry, title: str = "",
@@ -20,17 +20,21 @@ def investigate(problem_or_text, systems: Sequence[System], domains: DomainRegis
                 problem_hook: Optional[Callable[[Problem], Problem]] = None,
                 concept_overrides: Optional[Dict[str, Dict[str, float]]] = None,
                 experiment_context: Optional[dict] = None, memory: Optional[MemoryStore] = None,
-                seeds: Sequence[int] = tuple(range(20))) -> dict:
+                seeds: Sequence[int] = tuple(range(20)), learned: Optional[dict] = None) -> dict:
     """Run perception, matching, transformation, hypotheses, validation and learning.
 
     problem_or_text: a free text string or a Problem. problem_hook may enrich the perceived Problem
     (for example with user supplied parameters and checked constraints).
+    learned: an active learned version dict (id and config from the ModelRegistry). Its lexicon overlay is passed to
+    perception and its priors are applied only when their recorded conditions match this run (query_domain).
     """
     if isinstance(problem_or_text, Problem):
         perception = None
         problem = problem_or_text
     else:
-        perception: PerceptionResult = perceive_text(problem_or_text, title)
+        perception: PerceptionResult = perceive_text(
+            problem_or_text, title, overlay=(learned["config"]["lexicon_overlay"] or None) if learned else None,
+            overlay_version=learned["id"] if learned else None)
         problem = perception.problem
     if problem_hook:
         problem = problem_hook(problem)
@@ -48,8 +52,15 @@ def investigate(problem_or_text, systems: Sequence[System], domains: DomainRegis
         concepts_all += derive_concepts(problem, pmodel, analog, engine.models[m.system_id], m.mapping, m.score,
                                         concept_overrides)
     concepts = select_distinct(concepts_all)
-    if memory is not None:  # past simulation outcomes nudge order only among close scores
-        concepts.sort(key=lambda c: (-(round(c.analog_score / 100.0 + memory.prior_adjustment(c.concept_type), 6)), c.id))
+    if memory is not None or learned is not None:  # priors nudge order only among close scores
+        run_conditions = {"query_domain": qd}
+
+        def adjust(c) -> float:
+            a = memory.prior_adjustment(c.concept_type) if memory is not None else 0.0
+            if learned is not None:
+                a = max(-0.1, min(0.1, a + learned_prior(learned["config"], c.concept_type, run_conditions)))
+            return a
+        concepts.sort(key=lambda c: (-(round(c.analog_score / 100.0 + adjust(c), 6)), c.id))
     hypotheses = generate(concepts, problem, experiment_context)
     validations = [validate(h, seeds) for h in hypotheses]
     for h, v in zip(hypotheses, validations):
@@ -57,4 +68,5 @@ def investigate(problem_or_text, systems: Sequence[System], domains: DomainRegis
         if memory is not None:
             memory.record_validation(h, v, h.based_on[0].split(":")[0], {"query_domain": qd})
     return {"problem": problem, "perception": perception, "query_domain": qd, "model": pmodel, "search": report,
+            "learned_version": learned["id"] if learned else None,
             "concepts": concepts, "hypotheses": hypotheses, "validations": validations, "engine": engine}

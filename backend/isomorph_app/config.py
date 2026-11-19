@@ -1,7 +1,7 @@
 """One data directory for everything the app writes. Stdlib only.
 
 Resolution order for the directory: explicit argument, ISOMORPH_HOME, then ~/.isomorph.
-Layout: isomorph.db (runs and notes), uploads/, backups/.
+Layout: isomorph.db (runs and notes), uploads/, backups/, learning/ (evidence log, learned versions, audit).
 """
 from __future__ import annotations
 
@@ -36,8 +36,12 @@ class AppConfig:
     def backups_dir(self) -> str:
         return os.path.join(self.home, "backups")
 
+    @property
+    def learning_dir(self) -> str:
+        return os.path.join(self.home, "learning")
+
     def ensure_dirs(self) -> None:
-        for d in (self.home, self.uploads_dir, self.backups_dir):
+        for d in (self.home, self.uploads_dir, self.backups_dir, self.learning_dir):
             os.makedirs(d, exist_ok=True)
 
 

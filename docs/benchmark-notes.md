@@ -103,3 +103,11 @@ How to read this:
 
 ## Dependency lock file
 `frontend/package-lock.json` cannot be generated here because `npm install` is blocked (no registry access). Builds are therefore not reproducible until someone runs `npm install` on a networked machine and commits the lock file.
+
+## Self-improving loop and the regression gate (phase 9)
+- **Gate semantics.** A candidate learned config is run against the active one on: perception role accuracy, precision when assigned and detection recall (25 problem set), held-out retrieval MRR (strong) and nDCG@10 (20 queries), and tuning MRR (7 pairs). It is rejected if any metric is lower than the active one by more than 1e-9, and the before/after table is stored in the version and the audit log.
+- **Frozen sets.** `data/benchmark_problems/` (perception held-out phrases, held-out labels, tuning benchmarks). They are never edited by the loop. They are read only by the gate and by the leak guard that quarantines learned terms found in them.
+- **Real numbers with no learned data** (from this phase's runs): tuning MRR 0.9286, held-out MRR 0.975, nDCG@10 0.8324, perception role accuracy 0.404, precision when assigned 0.857, detection recall 0.846. They equal the phase 9 baseline.
+- **What the loop can claim.** A config version was accepted because none of the frozen metrics dropped. Nothing more. A neutral candidate is reported as neutral.
+- **What it cannot claim.** Perception accuracy is not improved by this phase. A version that adds learned terms is not shown to be better, only not shown to be worse on these sets. The gate does not see words absent from the frozen sets, does not test priors, and does not cover the staged orchestrator's other stages.
+- **Roller K and n correlation.** The earlier known limit (K and n sampled independently) can now be handled by supplying a correlation in the parameter records. The demo supplies none, so its numbers did not change. Any value a user supplies is theirs, it is not a measured fit.

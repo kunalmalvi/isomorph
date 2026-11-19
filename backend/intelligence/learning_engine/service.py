@@ -12,6 +12,7 @@ from typing import Dict, List, Optional
 
 from ..schemas import Hypothesis, Validation
 
+MIN_CONDITIONAL_RECORDS = 3
 EVIDENCE_LEVELS = ("none", "simulation", "expert_review", "real_world")
 
 
@@ -72,11 +73,23 @@ class MemoryStore:
                 stats[r["outcome"]] += 1
         return stats
 
-    def prior_adjustment(self, concept_type: str) -> float:
-        """Small ranking nudge in [-0.1, 0.1] from past simulation outcomes. Never overrides scoring evidence."""
-        s = self.strategy_stats(concept_type)
-        n = s["supported"] + s["refuted"] + s["inconclusive"]
-        if n == 0:
+    def prior_adjustment(self, concept_type: str, conditions: Optional[dict] = None) -> float:
+        """Small ranking nudge in [-0.1, 0.1] from past simulation outcomes. Never overrides scoring evidence.
+
+        Without conditions every record for the concept type counts (original behaviour). With conditions only
+        records whose own conditions equal the requested values are used, and fewer than MIN_CONDITIONAL_RECORDS
+        matching records return 0.0, so a prior is never applied outside the conditions it was recorded under."""
+        s = {"supported": 0, "refuted": 0, "inconclusive": 0}
+        total_matching = 0
+        for r in self.records:
+            if r["key"] != f"strategy:{concept_type}" or r["outcome"] not in s:
+                continue
+            if conditions is not None and not all(r["conditions"].get(k) == v for k, v in conditions.items()):
+                continue
+            s[r["outcome"]] += 1
+            total_matching += 1
+        n = total_matching
+        if n == 0 or (conditions is not None and n < MIN_CONDITIONAL_RECORDS):
             return 0.0
         return round(0.1 * (s["supported"] - s["refuted"]) / n, 6)
 

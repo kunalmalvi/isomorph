@@ -1,0 +1,28 @@
+{
+ "id": "FEAT-003",
+ "type": "feat",
+ "description": "Wire the loop into the app so it closes: record user evidence, run improvement cycles, show versions, roll back. Orchestrator uses the active learned config. Surface in API, CLI and UI.",
+ "steps": [
+  "config.py: add learning_dir (home/learning). app.py: App owns EvidenceLog and ModelRegistry; the orchestrator perception stage (services/orchestrator.py _perception and the reports) uses the active overlay and records the learned version id in the run's stage output so a run states which version produced it. Existing runs and tests without learning must behave identically (empty config).",
+  "Annotations: when a hypothesis decision (accept/reject etc.) is set via app.annotations in server.py, also append hypothesis_feedback evidence with conditions {query_domain, concept_type} read from the run record; decision 'none' or delete is not evidence. Add App.correct_role(run_id, entity_label, role, note) which validates against ROLES, appends role_correction evidence, and returns the proposed clarification; also expose that the perception stage output entities can be edited via existing stage edit and that edit counts as correction evidence only when the role was changed by the user.",
+  "API under /api/v1 in server.py (follow the regex dispatch style and error envelope): GET /learning (active version, evidence counts, pending candidates, last gate report), POST /learning/corrections {run_id?, term, role}, POST /learning/cycle (build proposals from evidence, run the gate, activate or reject, return the before/after table), GET /learning/versions, POST /learning/rollback {to?}. All validation errors are 422 via existing ValidationFailed; no AI call is made here.",
+  "CLI in cli.py: `learn status`, `learn correct --term T --role R`, `learn cycle`, `learn history`, `learn rollback`. Output the measured before/after metric table, and say plainly when nothing changed or the candidate was rejected.",
+  "UI: add a small Learning panel in static/app.js and index.html (follow existing patterns and .kiro/steering/ui-design-system.md): shows active version, evidence counts, history with accepted/rejected status and gate table, a Roll back button, and role-correction control on perceived entities with a guessed role. Keep helpers pure in lib.js if possible and extend ui_helpers.test.mjs; run node tests only if node exists, else mark UNVERIFIED.",
+  "Honest explanation texts: the panel and CLI state that learning is limited to the lexicon overlay and conditional priors, that a gate on frozen sets protects against regressions, and that the gate cannot detect harm that those sets do not cover.",
+  "Tests (backend/tests/platform/test_learning_app.py, use existing test_server.py / test_cli.py harness patterns): end to end loop through the real HTTP server and the CLI in a temp home: run a discovery on text containing an unknown word, correct its role twice from two runs, run a cycle, show the next run labels that word role_source 'learned' with the version id, roll back and show it returns to unknown/previous; accept/reject annotations produce evidence with conditions; a rejected cycle leaves the active version unchanged; invalid role returns 422; ISOMORPH_HOME isolation."
+ ],
+ "acceptance_criteria": [
+  "Full pytest suite passes",
+  "The end-to-end test demonstrates evidence -> proposal -> gate -> new version -> changed perception on a later run -> rollback",
+  "python3 ./isomorph learn status works in a temp ISOMORPH_HOME",
+  "Runs without learning data behave as before"
+ ],
+ "verification": [
+  "cd backend && python3 -m pytest tests -q",
+  "ISOMORPH_HOME=$(mktemp -d) python3 ./isomorph learn status",
+  "python3 scripts/run_demo.py"
+ ],
+ "status": "completed",
+ "blocked_reason": null,
+ "findings": "321 passed, 2 skipped (8 new in tests/platform/test_learning_app.py). node exists (v22), ui_helpers.test.mjs passes (12 tests) and runs inside test_ui_bundle; the browser UI itself (Learning page, role-correction control) was never rendered and is UNVERIFIED. Added: config.learning_dir (<home>/learning), services/learning.py (LearningService: status, versions, record_correction, record_feedback, cycle, rollback, LIMITS text), App.learning/set_annotation/correct_role/edit_stage, Orchestrator(learned_source=...) uses the active overlay in the perception stage for the local provider only (no AI call) and writes learned_version into the perception output (also v0); reports include learned_version (markdown line only when not v0). API: GET /learning, GET /learning/versions, POST /learning/corrections, /learning/cycle, /learning/rollback; /settings now lists roles. CLI: learn status|correct|cycle|history|rollback. UI: Learning page plus role-correction card on the run Progress tab. Engine tweaks in loop.py: hypothesis_feedback accepts optional hypothesis_id; propose_priors counts the latest decision per (run, hypothesis); propose_lexicon counts one vote per (run or event, term), latest wins. Limits: the orchestrator applies only the lexicon overlay. Conditional priors are recorded and versioned but are not applied in the staged orchestrator (only pipeline.investigate uses them). Remote AI perception ignores the overlay and records no learned_version. Perception stage edits count as role_correction evidence only for nodes whose id existed before and whose role changed. A 'none' decision or delete is not evidence and does not retract earlier feedback. No data/benchmark_problems changes; run_demo.py leaves data/demo unchanged."
+}

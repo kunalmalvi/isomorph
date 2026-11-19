@@ -235,6 +235,42 @@ export function parseRoute(hash) {
   if (parts[0] === "new") return { name: "new" };
   if (parts[0] === "knowledge") return { name: "knowledge", id: parts[1] || null };
   if (parts[0] === "settings") return { name: "settings" };
+  if (parts[0] === "learning") return { name: "learning" };
   if (parts[0] === "run" && parts[1]) return { name: "run", id: parts[1], tab: parts[2] || "progress" };
   return { name: "notfound" };
+}
+
+export const LEARNING_LIMITS =
+  "Learning is limited to a lexicon overlay (words you corrected to a role) and conditional priors (small nudges that apply only under the recorded conditions). " +
+  "A gate on frozen sets rejects any candidate that lowers a metric. The gate cannot detect harm those sets do not cover, " +
+  "and a pass on metrics that did not change is not evidence that a change helps.";
+
+/** Rows for the gate before/after table. Delta sign and a text verdict are included so color is never the only signal. */
+export function gateRows(metrics) {
+  return Object.entries(metrics || {}).map(([name, r]) => ({
+    name,
+    before: r.before,
+    after: r.after,
+    delta: r.delta,
+    verdict: r.delta < -1e-9 ? "dropped" : r.delta > 1e-9 ? "improved" : "unchanged",
+  }));
+}
+
+/** Plain words for a version status. */
+export function versionStatusText(status) {
+  return { active: "active", superseded: "superseded (kept in history)", rejected: "rejected by the gate", rolled_back: "rolled back" }[status] || String(status);
+}
+
+/** Entities of a perception output whose role is a guess or unknown, so the user can correct them. */
+export function correctableEntities(perceptionOutput) {
+  const nodes = (((perceptionOutput || {}).problem || {}).graph || {}).nodes || [];
+  return nodes
+    .filter((n) => !n.role || (n.attrs && n.attrs.role_source))
+    .map((n) => ({ id: n.id, label: n.label, role: n.role || null, source: (n.attrs && n.attrs.role_source) || null }));
+}
+
+/** Lower-case a label the way the server does, and say whether it can be learned (1 to 4 alphabetic words). */
+export function learnableTerm(label) {
+  const t = String(label || "").toLowerCase().split(/\s+/).filter(Boolean).join(" ");
+  return /^[a-z]+( [a-z]+){0,3}$/.test(t) ? t : null;
 }

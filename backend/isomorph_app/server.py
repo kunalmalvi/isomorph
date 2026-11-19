@@ -25,6 +25,7 @@ from urllib.parse import parse_qs, unquote, urlsplit
 from core.errors import AppError, Forbidden, NotFound, PayloadTooLarge, Unauthorized, ValidationFailed, error_envelope
 from core.rate_limit import RateLimiter
 from core.sse import format_sse, parse_last_event_id, progress_stream
+from intelligence.schemas import ROLES
 from services.annotations import DECISIONS
 
 from . import __version__
@@ -270,7 +271,7 @@ class Handler(BaseHTTPRequestHandler):
             s = app.settings
             return self._json(200, {"version": __version__, "provider": s.ai_provider, "home": app.config.home,
                                     "auth_required": bool(app.config.token), "max_body_bytes": app.config.max_body_bytes,
-                                    "knowledge": knowledge_summary(app.kb), "decisions": list(DECISIONS)})
+                                    "knowledge": knowledge_summary(app.kb), "decisions": list(DECISIONS), "roles": list(ROLES)})
 
         # knowledge (read only)
         if path == "/domains" and method == "GET":
@@ -291,6 +292,30 @@ class Handler(BaseHTTPRequestHandler):
             if s is None:
                 raise NotFound("knowledge system not found")
             return self._json(200, s.to_dict())
+
+        # learning loop (evidence, gated cycles, versions, rollback). No AI call is made by any of these.
+        if path == "/learning" and method == "GET":
+            return self._json(200, app.learning.status())
+        if path == "/learning/versions" and method == "GET":
+            return self._json(200, app.learning.versions())
+        if path == "/learning/corrections" and method == "POST":
+            body = self._read_json()
+            rid = body.get("run_id")
+            if rid is not None and not isinstance(rid, str):
+                raise ValidationFailed("run_id must be a string")
+            term = body.get("term", body.get("entity_label"))
+            note = body.get("note") or ""
+            if not isinstance(note, str) or len(note) > 1000:
+                raise ValidationFailed("note must be a string of at most 1000 characters")
+            return self._json(201, app.correct_role(rid, term, body.get("role"), note))
+        if path == "/learning/cycle" and method == "POST":
+            self._read_json()
+            return self._json(200, app.learning.cycle())
+        if path == "/learning/rollback" and method == "POST":
+            to = self._read_json().get("to")
+            if to is not None and not isinstance(to, str):
+                raise ValidationFailed("to must be a version id string")
+            return self._json(200, app.learning.rollback(to))
 
         # uploads
         if path == "/uploads" and method == "POST":
@@ -371,7 +396,7 @@ class Handler(BaseHTTPRequestHandler):
                 if "output" not in body:
                     raise ValidationFailed("body must contain 'output'")
                 app.require_run(rid)
-                run = app.orch.edit_stage(rid, stage, body["output"])
+                run = app.edit_stage(rid, stage, body["output"])
                 return self._json(200, run.stages[stage].to_dict(False))
         g = m(r"/discoveries/([A-Za-z0-9_-]{1,64})/stages/([a-z_]{1,40})/rerun", path)
         if g and method == "POST":
@@ -383,7 +408,7 @@ class Handler(BaseHTTPRequestHandler):
                 body = self._read_json()
                 if hid not in app.hypothesis_ids(rid):
                     raise NotFound("hypothesis not found in this discovery")
-                return self._json(200, app.annotations.set(rid, hid, body.get("decision", "none"), body.get("note", "")))
+                return self._json(200, app.set_annotation(rid, hid, body.get("decision", "none"), body.get("note", "")))
             if method == "DELETE":
                 app.require_run(rid)
                 app.annotations.delete(rid, hid)
