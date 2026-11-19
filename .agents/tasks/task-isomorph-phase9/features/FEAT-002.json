@@ -23,7 +23,7 @@
   "python3 scripts/evaluate_perception.py && python3 scripts/evaluate_heldout.py && python3 scripts/evaluate_benchmarks.py",
   "git diff --stat -- data/benchmark_problems must be empty"
  ],
- "status": "pending",
+ "status": "completed",
  "blocked_reason": null,
- "findings": ""
+ "findings": "313 passed, 2 skipped (25 new in tests/intelligence/test_learning_loop.py). evaluate_* scripts print byte-identical output to the pre-change code. Shared eval code moved to backend/evaluation/{perception,heldout,benchmarks}.py; scripts are thin wrappers (names re-exported). New: learning_engine/loop.py (EvidenceLog, ModelRegistry at <dir>/versions/vN.json + active.json + audit.jsonl, propose_lexicon, propose_priors, build_candidate, learned_prior, leak guard heldout_vocabulary/heldout_overlap), learning_engine/gate.py (run_gate, compute_metrics). propose(config, evidence_ids, reason, gate_fn=None) gates and activates or records rejection; returns None if config equals active. perceive_text(text, title, overlay=None, overlay_version=None) uses ContextVars; overlay is skipped when the head word resolves via lexicon/synonyms; role_source 'learned' conf 0.6. MemoryStore.prior_adjustment(concept_type, conditions=None) needs >=3 matching records with conditions. investigate(..., learned=<version dict with id and config>) returns learned_version. Honest caveats: retrieval metrics do not depend on the config, so the gate is only sensitive to lexicon overlays via perception metrics; priors are metric-neutral and reports say 'gate not sensitive'. Leak guard is conservative: quarantines a term if its head word is a word of a held-out phrase or the term occurs in any frozen text. Engine DECISIONS tuple duplicated from services.annotations (test keeps them equal). Harmful-candidate test builds an overlay from held-out phrases directly and calls the gate; it is rejected and audited with active still v0. No data/benchmark_problems changes."
 }
